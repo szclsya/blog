@@ -1,0 +1,24 @@
+#+TITLE: 暗色模式!
+#+DATE: 2019-09-27T13:52:41
+#+DESCRIPTION: Hello darkness my old friend.
+#+TAGS[]: blog
+#+SERIES: Hugo
+#+LICENSE: cc-sa
+
+给主题加入了暗色模式支持！
+
+* 一些细节
+主要是使用到了 [[https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme][prefers-color-scheme]] 这一个 [[https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Media_queries][CSS媒体查询功能]]. 顺便借此机会把站内所有的颜色都放到了两个 [[https://sass-lang.com/documentation/values/maps][sass map]] 里面.
+
+{{< del >}}现在知道 css-in-js 的好了...{{</ del >}}
+
+* 如何使用?
+在新版的 Windows 和 macOS 当中, 只要在设置里面选择使用暗色主题, Chrome 就会默认使用暗色模式了.
+
+Linux 下则相对有点麻烦, 似乎还没有一个统一的接口. 目前我使用的解决方案是在 ~~/.config/chromium-flags.conf~ 内加入一行
+#+BEGIN_SRC
+--force-dark-mode
+#+END_SRC
+
+Chromium 就会默认使用暗色模式了.
+

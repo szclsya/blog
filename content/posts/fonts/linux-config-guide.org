@@ -1,0 +1,214 @@
+#+TITLE: Linux 下的字体调校指南
+#+DATE: 2019-09-23T17:01:42
+#+DESCRIPTION: Linux 下的字体可以很漂亮! 当然，这里是 Linux，你需要一点小小的配置。
+#+TAGS[]: font linux
+#+SERIES: 拯救狗眼
+#+LICENSE: cc-sa
+#+TOC: true
+
+很长时间以来，Linux上的中文字体一直...不容乐观。但是随着 FreeType2 由于专利过期默认开启了高质量的 LCD 优化，以及一批高质量的开源字体的公布，Linux上的中文字体渲染已经可以和 macOS 扳扳手腕了。
+
+当然，这里是 Linux，你需要一点小小的配置。
+
+（Windows 的字体渲染从技术上来说是相当先进的，问题是在中文字体的选择上实在是不忍直视...）
+
+（其实 macOS 的糊成一片的渲染方式也有它的问题... 但这就不在本文讨论范围之内了。）
+
+* 太长不看版
+安装字体 (=archlinuxcn= required):
+#+BEGIN_SRC bash
+sudo pacman -S noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-sarasa-gothic
+#+END_SRC
+
+下载 [[https://bitbucket.org/szclsya/dotfiles/src/master/fontconfig/fonts.conf][fonts.conf]] 并扔进你的 ~~/.config/fontconfig~ 里面, 重新登录，结束。[fn:1]
+
+[fn:1] 这份 font.conf 基于 Michael Yang 的 [[https://ohmyarch.github.io/2017/01/15/Linux%E4%B8%8B%E7%BB%88%E6%9E%81%E5%AD%97%E4%BD%93%E9%85%8D%E7%BD%AE%E6%96%B9%E6%A1%88/][Linux下终极字体配置方案]]. 本文很多内容也基于这篇文章, 感谢!
+
+* 选择字体
+Arch Linux 提供了成吨的字体可供选择。完整的列表可以在 [[https://wiki.archlinux.org/index.php/Fonts#Font_packages][这里]] 找到，找自己看得顺眼的就是，具体不再赘述。
+
+这是我选择字体：
++ 拉丁字体
+  - Noto Sans - 无衬线
+  - Noto Serif - 衬线
+  - Sarasa Term SC - 等宽（直接使用 Iosevka Term 会导致 emacs 中的蜜汁bug）
++ 中文字体
+  - Noto Sans CJK SC (又称 思源黑体）
+  - Noto Serif CJK SC （又称 思源宋体）
+
+* 安装字体
++ ~noto-fonts~ Noto Sans, Noto Serif
++ ~noto-fonts-cjk~ Noto Sans CJK SC, Noto Serif CJK SC
++ ~noto-fonts-emoji~ Emoji
++ ~ttf-sarasa-gothic~ ^{AUR} Sarasa Term SC
+
+* 配置
+现在，什么也不用做，打开一个中文页面，应该已经不会存在豆腐块了。
+{{< btw >}} Noto 字体家族正是得名于此. Noto -> No Toufu -> 没有豆腐块. {{</ btw >}}
+
+然而...
+
+#+CAPTION: 默认配置下的 Installation Guide
+[[https://static.szclsya.me/img/fonts/archwiki-wrongfont.jpg]]
+
+看上去不大对劲，不是么？
+
+#+CAPTION: 破 案 了
+[[https://static.szclsya.me/img/fonts/archwiki-fontsused.jpg]]
+
+...怎么默认到日语字形上去了.
+
+这就是为什么我们需要 [[https://www.freedesktop.org/wiki/Software/fontconfig/][Fontconfig]].
+
+** 一些基础
+Fontconfig 是一个用来 _配置_ 字体渲染的程序。也就是说，fontconfig 本身没有将字体渲染成位图的能力（真正执行这个工作的是 [[https://www.freetype.org/][FreeType]]），但是它能向程序提供可用字体列表并指导 FreeType 引擎将字体正确地渲染出来。
+
+默认情况下，Fontconfig 的用户配置文件位于 ~~/.config/fontconfig/fonts.conf~. 它使用 XML 格式，一个最简单配置文件长这样:
+
+#+BEGIN_SRC xml
+<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+
+  <!-- 具体设置在这里 -->
+
+</fontconfig>
+#+END_SRC
+
+我们要做的就是往里面填写具体的配置.
+
+** 渲染相关参数
+#+BEGIN_SRC xml
+  <!-- 显示器使用的像素排列方式. 现代显示器基本都是用rgb排列. -->
+  <match target="font">
+    <edit mode="assign" name="rgba">
+      <const>rgb</const>
+    </edit>
+  </match>
+
+  <!-- 字体微调的程度, 可选为 hintnone, hintlight, hintmedium, hintfull. -->
+  <!-- 简单来说，更高的 hinting 等级可以使字体更锐利，但同时也会损失更多的细节. -->
+  <match target="font">
+    <edit mode="assign" name="hintstyle">
+      <const>hintlight</const>
+    </edit>
+  </match>
+
+  <!-- 抗锯齿. 除非你的屏幕DPI奇高否则建议开启. -->
+  <match target="font">
+    <edit mode="assign" name="antialias">
+      <bool>true</bool>
+    </edit>
+  </match>
+  
+  <!-- 关于lcdfilter, 因为我们在使用 FreeType2 自带的 Harmony 子像素渲染, 应该是不需要设置的. -->
+#+END_SRC
+
+这只是一小部分，但是对于普通使用而言调整这些已经足够。如果还是不满意，可以继续查看 [[https://wiki.archlinux.org/index.php/Font_configuration][ArchWiki]].
+
+** 设置首选字体
+依照自己的选则替换即可.
+#+BEGIN_SRC xml
+<!-- 全局默认字体　-->
+<!-- Default font (no fc-match pattern) -->
+  <match>
+    <edit mode="prepend" name="family">
+      <string>Noto Sans</string>
+    </edit>
+  </match>
+
+<!-- 全局默认中文字体 -->
+<!-- Default font for the zh_CN locale (no fc-match pattern) -->
+  <match>
+    <test compare="contains" name="lang">
+      <string>zh_CN</string>
+    </test>
+    <edit mode="prepend" name="family">
+      <!-- 更改下一行即可, 以下同理 -->
+      <string>Noto Sans CJK SC</string>
+    </edit>
+  </match>
+
+<!-- 默认无衬线字体 -->
+<!-- Default sans-serif font -->
+  <match target="pattern">
+    <test qual="any" name="family">
+      <string>sans-serif</string></test>
+    <edit name="family" mode="prepend" binding="same">
+      <string>Noto Sans</string>
+    </edit>
+  </match>
+
+<!-- 默认衬线字体 -->
+<!-- Default serif fonts -->
+  <match target="pattern">
+    <test qual="any" name="family">
+      <string>serif</string>
+    </test>
+    <edit name="family" mode="prepend" binding="same">
+      <string>Noto Serif</string>
+    </edit>
+  </match>
+
+<!-- 默认等宽字体 -->
+<!-- Default monospace fonts -->
+  <match target="pattern">
+    <test qual="any" name="family">
+      <string>monospace</string>
+    </test>
+    <edit name="family" mode="prepend" binding="same">
+      <string>Sarasa Term SC</string>
+    </edit>
+  </match>
+#+END_SRC
+
+** 设置备用字体
+因为我们也会遇到其他语种的文字，需要告诉 Fontconfig 如果特定字符在默认字库里找不到应该去哪里找备用字形.
+
+至于如何查找字体的具体名字，可以使用 ~fc-list | grep $fontName~ 查询.
+#+BEGIN_SRC xml
+<!-- Fallback fonts preference order -->
+  <alias>
+    <family>sans-serif</family>
+    <prefer>
+      <family>Noto Sans</family>
+      <family>Noto Sans CJK SC</family>
+      <family>Noto Sans CJK TC</family>
+      <family>Noto Sans CJK JP</family>
+      <family>Noto Sans CJK KR</family>
+      <family>Noto Color Emoji</family>
+      <family>Noto Emoji</family>
+    </prefer>
+  </alias>
+  <alias>
+    <family>serif</family>
+    <prefer>
+      <family>Noto Serif</family>
+      <family>Noto Serif CJK SC</family>
+      <family>Noto Serif CJK TC</family>
+      <family>Noto Serif CJK JP</family>
+      <family>Noto Serif CJK KR</family>
+      <family>Noto Color Emoji</family>
+      <family>Noto Emoji</family>
+    </prefer>
+  </alias>
+  <alias>
+    <family>monospace</family>
+    <prefer>
+      <family>Sarasa Term SC</family>
+      <family>Sarasa Term TC</family>
+      <family>Sarasa Term J</family>
+      <family>Noto Color Emoji</family>
+      <family>Noto Emoji</family>
+    </prefer>
+  </alias>
+
+#+END_SRC
+
+** 大功告成!
+把配置文件保存，打开一个程序(比如浏览器)，应该就可以看到变化了!
+
+还有几点需要注意:
++ 有一些(老顽固)程序会忽略 Fontconfig 的设置，需要修改 [[https://wiki.archlinux.org/index.php/Font_configuration#Applications_without_fontconfig_support][Xresources]]. ArchWiki 上提供的事例配置应该足够了.
++ 很多程序有自己的字体配置. 一般而言，将无衬线字体设置成 =sans-serif=, 将衬线字体设置成 =serif=, 将等宽字体设置成 =monospace=, 就会遵循 fontconfig 的设置了.
+

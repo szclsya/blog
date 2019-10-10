@@ -1,0 +1,10 @@
+#+TITLE: Links
+#+DATE: 2019-09-23T00:57:56
+
+* 老相识
++ [[https://learningis1.st/][Chenyijia001]]
+
+* From a magical fishing wire
+Or a copper wire, whatever.
++ [[https://blog.yoitsu.moe][约伊兹的萌狼乡手札]]
++ [[https://originco.de][OriginCode 札記]]

@@ -1,0 +1,19 @@
+baseURL = "https://szclsya.me"
+languageCode = "zh-cn"
+DefaultContentLanguage = "zh-cn"
+title = "Leo's Field"
+theme = "less"
+
+pygmentsUseClassic = true
+pygmentsUseClasses = true
+pygmentsCodefences = true
+pygmentsOptions = 'linenos=table'
+
+[params]
+  description = "Time to change drinks and mix... wait"
+  author = "Leo Shen"
+  staticFileBaseUrl = "https://static.szclsya.me"
+
+[taxonomies]
+  tag = "tags"
+  series = "series"

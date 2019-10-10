@@ -1,0 +1,113 @@
+#+TITLE: 一些细节
+#+DATE: 2019-09-20T20:21:00
+#+DESCRIPTION: 🎶 And we're out of beta, we're releasing on time. 🎶
+#+TAGS[]: blog
+#+SERIES: Hugo
+#+LICENSE: cc-sa
+#+TOC: true
+#+MATH: true
+#+IMG: /img/hugo/blog-v1.jpg
+
+* 折腾的过程
+算下来我写博客也不短了（现在看来内容简直没营养...），但后期皆因缺乏动力断更了，甚至原文都全部流失了。
+[fn::也许 Wayback Machine 上还有？但反正没啥有意义的内容，管它呢。]
+
+在这之前，我一直使用 =WordPress= 作为博客引擎，但是不大满意。
+1. 仅仅作为个人博客使用的话，WordPress 太重了。
+2. 可视化编辑器实在不好用，备份起来也很麻烦。
+
+所以在发现了静态网站生成器之后，就有了把 WordPress 换掉的想法。
+
+最先尝试的是 =Pelican= 。看到 [[https://farseerfc.me/][fc老师]] 和 [[https://blog.yoitsu.moe/][萌狼]] 的博客，感觉看上去还不错，于是也依葫芦画瓢用 [[https://materializecss.com/][MaterializeCSS]] 写了一个 Pelican 的主题。但是写好之后自己都觉得丑（审美没救了...）于是就没有实际使用。
+
+然后又去试了试 =Hexo=, 但 Hexo 的文档只能用简陋来形容，写起模板来蛋疼无比，于是就放弃了，写到一半的模板也一同被扔进了 ~/dev/null~ 。
+
+最后 {{<del>}}在绕了一大圈之后{{</del>}} 留在了 =Hugo= 上。虽说文档里面也有一些坑但总体来说还算不错。最重要的是，它是少数几个支持 =Org-mode= 的生成器（详细见下文），就是它了！
+
+* 一些特点
+在{{<del>}}无数次推倒重做中{{</del>}}也算是积累了一些想法，其中这些应用到了这个主题的创作中。
+
+** 关于标记语言的选择
+现在最主流的 {{<del>}}供人类使用的{{</del>}} 的标记语言无疑是 Markdown 了，主流的静态网站生成器都支持这种语言。但问题是原版的 Markdown 特性非常...基本，例如脚注之类的功能根本没有。而增强的 Markdown 也存在，但是很多都是各自为战。
+
+自然，这个缺点可以由 Shortcode 弥补，但是这样写起来就太不爽了，因此不选择 Markdown。
+
+另一个选择是 reStructuredText，在 Python 社区中很流行。rSt的语言特性是足够了，但是看上去实在是有点反人类... 弃。
+
+最后就是相对小众的 Org-mode，可以说是 Emacs 上的杀手级应用。但是同时也是因为和 Emacs 联系过于紧密，Org-mode 在其他语言上的实现相对罕见（都用Emacs了要什么其他平台(逃）。
+
+我很早就开始使用 Emacs + Org-mode 了，但是在博客上一直在用 Markdown + shortcode 方式凑合。后来发现 Hugo 支持直接渲染 Org-mode 后就毫无悬念地切了过去。
+
+** 关于字体
+（话说一开始想要离开 WordPress 的一个原因就是内嵌的 Google Fonts 严重拖慢国内访问速度且很难清除。）
+
+字体很重要！毕竟在阅读一篇文章的时候，人们是在盯着那些字看，而不是华丽的背景或动画。
+
+#+CAPTION: Font matters indeed. ([[https://www.reddit.com/r/funny/comments/977s8h/font_matters/][Source]])
+[[../font-matters.jpg]]
+
+对于西文来说，我选择通过嵌入 webfont 的方式统一各平台之间的表现。下面是我选择的字体：
++ [[http://vollkorn-typeface.com/][Vollkorn]] - 衬线体
++ [[https://www.ibm.com/plex][IBM Plex Sans]] - 无衬线体
++ [[https://typeof.net/Iosevka/][Iosevka Type]] - 等宽体
+
+中文则有点无能为力。由于汉字数量比西文多得多（得多得多），汉字字体都非常巨大。单个字重的思源黑体就要占用 16M ~ 25M 的空间（想象一下，你偶然打开这篇文章，发现用掉了30M流量）。这对一个网站来说是无法接受的。所以只能退而求其次使用系统的自带字体。
+
+这在 macOS 和 GNU/Linux 上面来说其实问题都不大。macOS有 冬青黑体 和 华文宋体, 而大部分中文圈 GNU/Linux 用户都会安装 思源黑体 和 思源宋体，质量都还不错。但在 Windows 上就是另一个故事了...
+
+微软雅黑质量一般，凑合凑合也算能看，最麻烦的是衬线体，在没有 Office 的情况下只有 SimSum......
+
+#+BEGIN_QUOTE
+微软唯一的问题就是他们没有品位,一点儿都没有。
+-- Steve Jobs
+#+END_QUOTE
+
+所以？在 Windows 下直接全局微软雅黑咯，去它的！
+
+{{< btw >}}
+如果你想获得最好的阅读体验，请安装 思源黑体 和 思源宋体（或者买一台 Mac）.
+{{< del >}}总之别用 Windows 就对了~{{</ del >}}
+{{</ btw >}}
+** 关于代码高亮
+Hugo 自带代码高亮支持，但是默认的 [[https://github.com/alecthomas/chroma][Chroma]] 支持的语言比较少，所以还是使用 Pygments.
+
+Color scheme 来自于 [[https://github.com/mozmorris/tomorrow-pygments][tomorrow-pygments]].
+
+** 关于数学公式
+（假装会在博客里面写学术的玩意...）
+
+数学公式渲染使用了 \( \KaTeX \). 听说会比 MathJax 快很多.
+
+{{< btw >}}
+有一些带有上标和下标的数学公式暂时无法正常渲染。（例如 \( \lim_{x \to 2} f(x) \) ）。这是 Hugo 使用的 Org-mode 渲染后端的问题，暂时只能通过 shortcode  绕过（这一段在一个 shortcode 中，所以上文公式正常的）。
+{{</ btw >}}
+** 关于静态
+既然这是一个博客而不是一个 Web App，自然不需要很多的 JavaScript {{<del>}}（才不是因为我不会呢！）{{</del>}} .
+
+所以除了一个进度计（兼回到顶部）和列表里面的折叠以外，就没有多余的 JS 了。
+
+* 这个可以有!
+也许会实现？
++ 评论框 - 计划使用 [[https://posativ.org/isso][ISSO]]
++ {{< del >}}夜间模式{{</ del >}} [[{{< ref "2-dark-mode.org" >}}][DONE!]]
+
+* 一些致谢
+没有你们，这一切都不可能实现.
+
+** 审美拯救
++ [[https://practicaltypography.com/][Butterick’s Practical Typography]]
+
+** 灵感来源
++ [[https://ioover.net/][I/O OVER · この星の半分を真っ赤に染めた]]
++ [[https://blog.yoitsu.moe][约伊兹的萌狼乡手札]]
++ [[https://farseerfc.me/][Farseerfc的小窩]]
+
+** 用到的项目
++ [[https://gohugo.io/][Hugo]]
++ [[https://ionicons.com/][Ionicons]]
++ [[https://katex.org/][\(\KaTeX\)]]
++ [[http://vollkorn-typeface.com/][Vollkorn]] 字体
++ [[https://www.ibm.com/plex][IBM Plex Sans]] 字体
++ [[https://typeof.net/Iosevka/][Iosevka Type]] 字体
++ [[http://pygments.org/][Pygments]]
+...以及无数默默无闻的开源软件.

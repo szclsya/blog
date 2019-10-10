@@ -1,0 +1,29 @@
+#+TITLE: Hello, world!
+#+DATE: 2019-09-20T20:00:00
+#+DESCRIPTION: I made it!
+#+TAGS[]: blog
+#+SERIES: Hugo
+#+LICENSE: cc-sa
+#+IMG: /img/hugo/blog-v1.jpg
+
+噫，好，终于弄完了。这本不是什么大事，但也值得纪念一下（我居然咕完了一个项目！），那就写点什么吧。
+
+* 关于名字
+#+BEGIN_QUOTE
+精神是一片园地.
+
+“The mind is a garden,” said he. 
+#+END_QUOTE
+
+* 关于博客
+#+BEGIN_QUOTE
+社交媒体是写给别人的，博客是写给自己的。
+#+END_QUOTE
+
+之前也搞过两三次blog，但最终都以不了了之收场。一年前开始试着写一个 static site generator 的主题，原本预计一两个月怎么也得写完了，然而由于各种原因（自己都觉得丑= =）重写N次，现在总算差不多结束了。
+
+原来的博客基本都是写一些技术性的短文，但大多没有什么营养（很多时候不如直接去看 [[https://wiki.archlinux.org][ArchWiki]]），所以到后期就失去了创作欲望。这次算是给自己打造了一套还算能看的平台，希望能坚持的更久一点吧。
+
+在写这套玩意的时候也做了不少功课，一些只言片语可以在 [[{{< ref "1-some-notes.org" >}}][这里]] 里面看到。
+
+恩，暂时就这样。

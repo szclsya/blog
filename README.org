@@ -1,0 +1,13 @@
+#+TITLE: Leo's Field 
+
+* Dependencies
+In order to build, these packages is needed:
++ pygmentize
++ npm
++ postcss-cli (from npm)
++ autoprefixer (from npm)
+
+Also, to grab the theme, submodule update is required. Just trigger ~git submodule update --init~ and it should be good to go.
+
+* License
+See frontmatter of each artile. Some art works may subject to copyright. If so, please let me know and I will remove them as soon as possible.

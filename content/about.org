@@ -1,0 +1,26 @@
+#+TITLE: About
+#+DATE: 2019-09-20
+
+Hi.
+
+我是 Leo 。不过如果你在哪看到了一个叫 =szclsya= 的家伙，那大概率就是我。
+
+
+* ~/me~
++ Undergraduate Mathematics student at University of Waterloo.
++ 热爱音乐, 有一个 Walkman.
++ 用 Arch Linux 并快乐着.
++ Use Emacs & vim, Emacs 多一点.
++ 使用 SinkPad
++ 有一台 Nintendo Switch, 最喜欢的游戏是 Xenoblade 2.
+
+* 联系我
++ Email: me^{at}szclsya_{dot}me
++ Email: szclsya^{at}gmail_{dot}com
++ Github: [[https://github.com/szclsya][szclsya]]
+
+
+** PGP
+如果可能的话，用PGP联系我吧.
+
+PGP KeyID: =91351F513F67552E1ECAAB60498CB4BB3F4A10A2=
