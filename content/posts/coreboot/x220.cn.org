@@ -1,0 +1,279 @@
+#+TITLE: Coreboot, me_cleaner, Tianocore, ThinkPad X220
+#+DATE: 2019-10-07T19:31:00
+#+DESCRIPTION: 给 X220 刷上 coreboot
+#+DESCRIPTION:
+#+TAGS[]: thinkpad coreboot
+#+LICENSE: cc-sa
+#+TOC: true
+
+自从2011年起，所有基于 Intel 处理器的计算机都有一个小小的 OS 藏在里面。这玩意叫 Intel Management Engine (Intel 管理引擎)。它能在未经任何授权的情况下访问网络(通过内置的Intel以太网卡), 直接访问内存内容，甚至在电脑未启动时它仍在运行。
+
+对于企业来说，这玩意无疑是非常有用的，但是对于个人用户来说，它完全无用。恰恰相反，它是一个巨大的安全隐患。就算它没有任何窃取隐私的行为，让一个完全闭源，十分复杂，而且能够连接到网络的系统运行在特权权限也是非常危险的。[fn:1]
+[fn:1] 事实上，已经有关于 ME 的 [[https://www.intel.com/content/www/us/en/security-center/advisory/intel-sa-00075.html][漏洞]] 被发现了，一度闹得鸡飞狗跳的。
+
+
+最糟糕的是，Intel 官方没有提供任何关闭 ME 的方式。
+不过在2017年左右，在人们基本摸清楚了 ME 分区的结构后，[[https://github.com/corna/me_cleaner][me_cleaner]] 项目提供了一个很方便的限制 ME 功能的工具。在 Sandy Bridge 及之后的处理器架构上，ME仍无法被完全去除（因为现在 ME 也承担了很多硬件初始化及管理的功能），但我们至少可以去除大部分可能涉及隐私的部分。
+
+当配合 [[https://www.coreboot.org/][coreboot]] [fn:2] 食用时，我们就得到了一个几乎完全自由的固件。当然，一般的厂商不会允许一个未知来源的固件直接写入主板里（这很危险！），所以很多支持 coreboot 的笔记本都得通过拆机直接刷写固件芯片的方式来安装 coreboot。
+
+[fn:2] 前身是 LinuxBoot。提供一个十分轻量且开源的 BIOS/UEFI 替代品。Google 的 Chromebook 使用的就是 Coreboot。在其他厂商的产品中很罕见，大多需要拆机手动刷写。
+
+
+ThinkPad X220 是一个很不错的选择。它还算新，拥有很不错的 coreboot 支持，而且文档十分详细。[fn:3]
+[fn:3] T400 和 X200 等使用 Penryn 或更旧处理器的机型可以完全移除 ME，但是按照现在的眼光来看性能有一些过时了，功耗控制也比较糟糕。
+
+* 准备
++ {{<del>}}SinkPad{{</del>}}ThinkPad X220
++ SOP-8 测试夹（连接 ROM 芯片用）
++ Raspberry Pi（充当 SPI 刷写器）
++ 另一台电脑（充当终端和编译机。也可以给 rPi 接键盘和显示器，但是用 rPi 编译固件会比较慢）
+ 
+以及耐心和细心！
+
+* 准备树莓派
+我使用了 [[https://www.raspberrypi.org/downloads/raspbian/][Raspbian]]. 按照往常那样设置就好. (刷固件, 联网, etc.)
+
+然后, 用 ~sudo raspi-config~ 启用 SPI. 进入 =Interfacing Options= 然后选择 =SPI=.
+
+* 备份原始固件 
+{{% card danger %}}
+在做任何事情之前, *_确保电源和电池都已经断开!_*
+{{% /card %}}
+
+把笔记本拆开来(记得看看 [[https://download.lenovo.com/ibmdl/pub/pc/pccbbs/mobiles_pdf/0a60739.pdf][X220 硬件维护手册]]!). 掌托和键盘都得取下来.
+
+主板被防静电膜覆盖着, 我们要找的芯片位于主板左下角, ExpressCard 卡槽附近. 把防静电膜的左下角掀起来应该就能看到了. 
+
+#+CAPTION: BIOS/UEFI 固件芯片
+[[../bios_chip-web.jpg]]
+
+** 绕接固件芯片
+把测试夹夹道芯片上. 引脚排列[fn:4]如下:
+ 
+#+BEGIN_SRC 
+屏幕 (远端)
+             ____
+  MOSI  5 --|    |-- 4  GND
+   CLK  6 --|    |-- 3  N/C
+   N/C  7 --|    |-- 2  MISO
+   VCC  8 --|___°|-- 1  CS
+
+掌托边缘 (近端)
+#+END_SRC
+
+然后把另一端连接到树莓派上(同样, _记得断电!_):
+
+#+BEGIN_SRC 
+# 边缘
+                                                           CS
+                                                            |
++--------------------------------------------------------------------------------------------------------+   # 以太网接口
+|    x    x    x    x    x    x    x    x    x    x    x    x    x    x    x    x    x    x    x    x    |   # &&
+|    x    x    x    x    x    x    x    x    x    x    x    x    x    x    x    x    x    x    x    x    |   # USB 接口
++--------------------------------------------^----^----^----^---------------------------------------^----+
+                                             |    |    |    |                                       |
+                                            3.3V  MOSI MISO |                                      GND
+                                           (VCC)           CLK
+# 主板 (芯片, HDMI接口, etc.)
+#+END_SRC
+
+(没错,我们只需要其中的6根针脚连接就够了.)
+
+#+CAPTION: 绕接完成的 X220 和 Raspberry Pi
+[[../flashing_in_progress-web.jpg]]
+
+[fn:4] [[https://www.coreboot.org/Board:lenovo/x220#Flashing][Board:lenovo/x220 - coreboot]]
+
+** 使用 flashrom 备份固件
+现在可以启动树莓派了. 编译 =flashrom=. 我们将用它来备份原厂 ROM 以及写入新的 ROM.
+
+#+BEGIN_SRC bash
+sudo apt install libpci-dev libusb-1.0-dev
+git clone "https://review.coreboot.org/flashrom"
+cd flashrom
+git checkout 1.0.x
+make
+sudo make install
+#+END_SRC
+
+现在我们可以试着读取了!
+
+#+BEGIN_SRC bash
+sudo flashrom -p linux_spi:dev=/dev/spidev0.0
+#+END_SRC
+
+如果成功检测到芯片, 应该会有类似下面的输出: 
+
+#+BEGIN_SRC
+flashrom v1.0.1 on Linux 4.14.98-v7+ (armv7l)
+flashrom is free software, get the source code at https://flashrom.org
+
+Using clock_gettime for delay loops (clk_id: 1, resolution: 1ns).
+Using default 2000kHz clock. Use 'spispeed' parameter to override.
+Found Winbond flash chip "W25Q64.V" (8192 kB, SPI) on linux_spi.
+Reading flash... done.
+#+END_SRC
+
+现在我们可以读取芯片里面的内容了. 多读取几份以保证连接稳定.
+
+#+BEGIN_SRC bash
+sudo flashrom -p linux_spi:dev=/dev/spidev0.0 -r flash01.bin
+sudo flashrom -p linux_spi:dev=/dev/spidev0.0 -r flash02.bin
+sudo flashrom -p linux_spi:dev=/dev/spidev0.0 -r flash03.bin
+# 检查校验和, 如果都一样说明读取可靠.
+sha512sum flash01.bin flash02.bin flash03.bin
+#+END_SRC
+
+如果三个 md5 校验和都是一样的, 说明我们的连接(有很高机率)是有效的而我们读取的固件是正确的. 把读取的固件好好保存, 后面有用.
+{{< del >}}
+而且实在搞不定还可以恢复到原始固件上去.
+{{</ del >}}
+
+* 编译并刷写 coreboot
+我使用一台台式机进行编译操作(因为可怜的小 Pi 实在是有点慢).
+
+** 获取闭源组件
+{{< del >}}Blob -> 神秘大包{{</ del >}}
+
+X220 的固件主要由5部分组成:
++ Flash Descriptor (4K)
+  - 直译为 闪存描述, 应该是类似分区表的存在
++ BIOS (3M)
++ Intel ME 固件 (5M)
++ Gigabit Ethernet ROM (8K)
++ Platform data
+  - 直译为 平台数据, 我们用不到
+
+我们只需要 decriptor, me固件 和 GbE固件. 为了能在 coreboot 中使用, 需要使用 ~ifdtool~ 来分离他们.
+
+#+BEGIN_SRC bash
+git clone https://review.coreboot.org/coreboot.git
+cd ~/Code/x220/coreboot/util/ifdtool
+make
+make install
+
+cd ~/Code/x220/x220bios/
+ifdtool -x original_dump.bin
+#+END_SRC
+
+** 干掉 Intel Management Engine
+我使用 Tianocore 作为启动载荷. 因为 Tianocore 相对较大, 得想办法给它腾点空间出来. me_cleaner 默认只会将需要破坏的部分填充无用数据, 但我们也可以直接把这些部分去掉以缩小 ME 固件的体积.
+
+#+BEGIN_SRC bash
+git clone https://github.com/corna/me_cleaner.git
+cd ~/Code/x220/me_cleaner
+python me_cleaner.py -t -r me_original.bin -O me.bin
+#+END_SRC
+
+** 准备 coreboot 编译工具链
+#+BEGIN_SRC bash
+# 之前编译安装 flashrom 和 ifdtool 的时候已经下载了 coreboot 的代码库, 此处仅需进入即可
+cd ~/Code/x220/coreboot
+git submodule update --init --recursive
+# 默认情况下, git submodule 不会自动下载 blobs 仓库 (很奇怪)
+# 所以只好手动下载一下
+cd ~/Code/x220/coreboot/3rdparty
+git clone "https://review.coreboot.org/blobs"
+
+# 然后把我们 dump 出来的 blob 添加进 blob tree 里面
+cd ~/Code/x220/coreboot/blobs
+mkdir -p ~/Code/x220/coreboot/3rdparty/blobs/mainboard/lenovo/x220
+
+# 复制 descriptor.bin  gbe.bin  me.bin
+cp ~/Code/x220/x220bios/* ~/Code/x220/coreboot/3rdparty/blobs/mainboard/lenovo/x220
+
+cd ~/Code/x220/coreboot/ # 回到仓库根目录
+# 编译交叉编译工具链. 如果使用 Arch Linux 的话, 记得在运行之前安装 gcc-ada.
+make crossgcc-i386 CPUS=6 # CPU数根据你的处理器调整
+#+END_SRC
+
+** 私人定制 coreboot!
+运行 ~make nconfig~ 进入配置界面.
+
+下面是我的配置. 注意选项可能在未来变化.
+
+#+BEGIN_SRC
++ general
+  - Compress ramstage with LZMA
+  - Include the coreboot .config file into the ROM image
+  - Allow use of binary-only repository
++ mainboard
+  - Mainboard vendor (Lenovo)
+  - Mainboard model (ThinkPad X220)
+  - ROM chip size (8192 KB (8 MB))
+  - (0x200000) Size of CBFS system in ROM
++ chipset
+  - Enable VMX for virtualization
+  - Support bluetooth on wifi cards
+  - Add Intel descriptor.bin file
+  - Add Intel ME/TXE firmware
+  - Add gigabit ethernet configuration
++ devices
+  - Graphics initialization (Use libgfxinit)
+  - Display
+    - Framebuffer mode (Linear "high-resolution" framebuffer)
+  - Enable PCIe Clock Power Management
+  - Enable PCIe ASPM L1 SubState
++ generic drivers
+  - Support Intel PCI-e WiFi adapters
+  - PS/2 keyboard init
++ console
+  - Show POST codes on the debug console
++ payloads
+  - Add a payload (Tianocore coreboot payload package)
+  - Use LZMA compression for secondary payloads
+#+END_SRC
+
+完成之后, 使用 ~make~ 并等待编译完成即可.
+
+** 刷入新固件
+一切正常的话, 新的固件应该能在 ~coreboot/build/coreboot.rom~ 找到. 把它复制到树莓派上并使用
+#+BEGIN_SRC bash
+sudo flashrom -p linux_spi:dev=/dev/spidev0.0 -w coreboot.rom
+#+END_SRC
+将固件写入芯片中.
+
+* 大功告成!
+然后, 断开编程夹, 重新接上掌托和键盘, 连接电源, 试着开机!
+
+如果屏幕上出现了一只小兔子, 大功告成! 
+
+#+CAPTION: Coreboot Logo on Tianocore
+[[../coreboot_bunny-web.jpg]]
+
+** 如果没成呢?
+如果一直黑屏, 很有可能是 coreboot 遇到了错误. 试着检查你的配置. 实在不行的话, 你永远可以重新刷入官方固件.
+
+** 检查 ME 状态
+理论上来说, 现在 ME 已经处于功能受限状态了. 如果你想检查一下成果, 可以使用 [[https://github.com/zamaudio/intelmetool][intelmetool]] 来查看 ME 的工作状态.
+
+安装好 intelmetool^{AUR} 后, 重启并在内核参数中添加 ~iomem=relaxed~. 然后使用 root 权限运行 intelmetool, 你应该会得到类似下面的结果:
+
+#+BEGIN_SRC
+Bad news, you have a `QM67 Express Chipset LPC Controller` so you have ME hardware on board and it is very difficult to remove, continuing...
+RCBA at 0xfed1c000
+MEI was hidden on PCI, now unlocked
+MEI found: [8086:1c3a] 6 Series/C200 Series Chipset Family MEI Controller #1
+
+ME Status   : 0x1e003052
+ME Status 2 : 0x10320002
+
+ME: FW Partition Table      : OK
+ME: Bringup Loader Failure  : NO
+ME: Firmware Init Complete  : NO
+ME: Manufacturing Mode      : YES
+ME: Boot Options Present    : NO
+ME: Update In Progress      : NO
+ME: Current Working State   : Recovery
+ME: Current Operation State : M0 with UMA
+ME: Current Operation Mode  : Normal
+ME: Error Code              : Image Failure
+ME: Progress Phase          : BUP Phase
+ME: Power Management Event  : Clean Moff->Mx wake
+ME: Progress Phase State    : M0 kernel load
+#+END_SRC
+
+可以看到, ME 的工作状态已经是 Recovery 模式了. 也就是说, 大多数可能有害的功能模块都处于无法运行的状态了.
+
+
