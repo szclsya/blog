@@ -2,6 +2,7 @@
 #+DATE: 2019-10-17T18:58:54
 #+DESCRIPTION: "Because we can"
 #+TAGS[]: walkman linux
+#+LICENSE: cc-sa
 #+TOC: true
 
 * WTF why do you want to do this?
@@ -11,14 +12,16 @@
 
 Well, the actual reason I did this is because the operating system on my laptop just broke down and I don't have any USB drives lying around. But I have a Walkman, another computer that runs Linux, and a good Internet connection.
 
-(Pretty rare scenario, I admit.)
+(Pretty rare scenario, I admit.)[fn:1]
 
-* A little bit about the background
+[fn:1] If, unfortunately, you encounter a similar situation but have a rooted Android phone, try [[https://www.drivedroid.io/][DriveDroid]]. It actually has served me very well since the Android 4.4 KitKat age, but unfortunately on that day it is not working properly. Probably due to Android 10. Anyway, much more convenient than setting up a Walkman.
+
+* A little bit of background
 To be specific, I'm using a ZX300a. If you really want to try this, just check you have a Walkman that supports =USB Mass Storage= mode. This mode basically turns the device into a USB flash drive.
 
-Most Walkmans which runs the proprietary system (which is actually based on Linux[fn:1]) use this mode, but some models that uses Android does not support it (such models use the crappy MTP protocol).
+Most Walkmans which runs the proprietary system (which is actually based on Linux[fn:2]) use this mode, but some models that uses Android does not support it (such models use the crappy MTP protocol).
 
-Thanks to the UEFI specification, on a USB drive, there's not much thing to do to make an OS to boot. Just copy everything to the FAT32-formatted partition on the USB drive and bam! It's that simple.
+Thanks to the UEFI specification, on a USB drive, it is quite simple to make an OS to boot. Just copy everything to the FAT32-formatted partition on the USB drive and voilà! It's that simple.
 
 However, since the Walkman is never meant to be used as a USB drive, there's some issues:
 
@@ -29,7 +32,7 @@ However, since the Walkman is never meant to be used as a USB drive, there's som
 
 Fortunately, these problems can be bypassed relatively easily.
 
-[fn:1] You can actually find the source code for ZX300 [[http://oss.sony.net/Products/Linux/Audio/NW-ZX300.html][here]], on Sony's website.
+[fn:2] You can actually find the source code for ZX300 [[http://oss.sony.net/Products/Linux/Audio/NW-ZX300.html][here]], on Sony's website.
 
 * How?
 If you still think this is cool and want to try it out, here's how you do it.
@@ -49,13 +52,13 @@ Just in case you don't know how to mount a ISO image to a mount point, here's ho
 sudo mount -t iso9660 -o loop archlinux-2019.10.01-x86_64.iso /mnt/iso
 #+END_SRC
 
-Then, edit ~$WM_MOUNT_POINT/loader/entries/archiso-x86_64.conf~. Change the ~options~ line to[fn:2] (find your own disk id by using ~ls -al /dev/disk/by-id~)
+Then, edit ~$WM_DIR/loader/entries/archiso-x86_64.conf~. Change the ~options~ line to[fn:3] (find your own disk id by using ~ls -al /dev/disk/by-id~)
 
 #+BEGIN_SRC
 options archisobasedir=arch archisodevice=/dev/disk/by-id/usb-SONY_WALKMAN_1234567890ABCD-0:0
 #+END_SRC
 
-[fn:2] More information on [[https://wiki.archlinux.org/index.php/USB_flash_installation_media#In_GNU/Linux_2][USB flash installation media - ArchWiki]].
+[fn:3] More information on [[https://wiki.archlinux.org/index.php/USB_flash_installation_media#In_GNU/Linux_2][USB flash installation media - ArchWiki]].
 
 ** Boot!
 Now, umount all partition of the Walkman, disable Mass Storage mode, and plug it into the desired computer. 
@@ -64,11 +67,12 @@ Start the desired computer, (quickly) enable the USB Mass Storage mode on Walkma
 
 There should be two options appear at the Boot Menu. One is =USB FDD: SONY WALKMAN= and the other one is =USB HDD: SONY WALKMAN=. It seems that the FDD drive corresponds to the internal memory and the HDD drive corresponds to the SD card. So use the FDD one.
 
-#+CAPTION: Two Walkman devices in boot menu
+#+CAPTION: Two Walkman USB devices in the boot menu
 [[/img/walkman/0_boot_menu-web.jpg]]
 
-Then choose to boot from archiso. After the kernel is loaded, the Walkman disables the Mass Storage mode so the kernel cannot find the ~/run/archiso/bootmnt~ partition. 
-#+CAPTION: Confused Arch Linux and nauty Walkman
+Then choose to boot from archiso. After the kernel is loaded, the Walkman disables the Mass Storage mode so the kernel cannot find the ~/run/archiso/bootmnt~ partition. Nasty little Walkman.
+
+#+CAPTION: Confused Arch Linux and naughty Walkman
 [[/img/walkman/1_umount_after_kernel.jpg]]
 
 So we have to do it manually. After the Walkman finishes refreshing database, turn on Mass Storage once again. Then in the interactive fallback shell, type

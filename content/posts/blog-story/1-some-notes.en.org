@@ -1,4 +1,4 @@
-#+TITLE: Some notes
+#+TITLE: Some notes about the creation of this blog
 #+DATE: 2019-09-20T20:21:00
 #+DESCRIPTION: 🎶 And we're out of beta, we're releasing on time. 🎶
 #+TAGS[]: blog
@@ -42,7 +42,7 @@ Font matters! When reading an article, people are reading the text, but not the 
 #+CAPTION: Font matters indeed. ([[https://www.reddit.com/r/funny/comments/977s8h/font_matters/][Source]])
 [[/img/blog-story/font-matters-web.jpg]]
 
-For latin characters, I decided to intergrate webfons to unify the look on platforms. Here the fonts I chose:
+For latin characters, I decided to intergrate webfonts to unify the look on platforms. Here the fonts I chose:
 + [[http://vollkorn-typeface.com/][Vollkorn]] - Serif
 + [[https://www.ibm.com/plex][IBM Plex Sans]] - Sans-serif
 + [[https://typeof.net/Iosevka/][Iosevka Type]] - Monospace
@@ -67,16 +67,16 @@ Hugo came with an internal font highlighting library ([[https://github.com/alect
 The color scheme is adapted from [[https://github.com/mozmorris/tomorrow-pygments][tomorrow-pygments]].
 
 ** Math equations
-(Let's pretend I will write math stuff here...)
+(Let's just pretend I will write math stuff here...)
 
 \( \KaTeX \) is used to render Math equations, hope it is quicker than MathJax.
 
 ** Static!
-Since it is a blog but not a Web App, we not need many JavaScript.
+Since it is a blog but not a Web App, we don't need many JavaScript.
 
-So, a progress meter (and Back to Top button) and fold function, and that's it.
+So, a progress meter (also a Back to Top button) and fold function, and that's it.
 
-* This could be interesting?
+* Interesting additions?
 + Commenting - Maybe [[https://posativ.org/isso][ISSO]]?
 + {{< del >}}Dark mode{{</ del >}} [[{{< ref "2-dark-mode.en.org" >}}][DONE!]]
 
@@ -99,4 +99,4 @@ It is impossible without you!
 + [[https://www.ibm.com/plex][IBM Plex Sans]] font
 + [[https://typeof.net/Iosevka/][Iosevka Type]] font
 + [[http://pygments.org/][Pygments]]
-... and so many other open source projects! You are awesome!
+... and so many other open source projects!
