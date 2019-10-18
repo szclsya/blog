@@ -1,6 +1,6 @@
 #+TITLE: Coreboot, me_cleaner, Tianocore, ThinkPad X220
-#+DATE: 2019-10-06T11:45
-#+DESCRIPTION:
+#+DATE: 2019-10-06T11:45:00
+#+DESCRIPTION: Flash coreboot to X220
 #+TAGS[]: thinkpad, coreboot
 #+LICENSE: cc-sa
 #+TOC: true
