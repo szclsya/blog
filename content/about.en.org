@@ -1,0 +1,25 @@
+#+TITLE: About
+#+DATE: 2019-09-20
+
+Hi.
+
+This is Leo Shen. But if you see a guy called =szclsya= somewhere, that should be me.
+
+* ~/me~
++ Undergraduate Mathematics student at University of Waterloo.
++ Music enthusiast, have a Walkman.
++ Use Arch Linux and love it.
++ Use Emacs & vim, little bit more Emacs.
++ Use {{<del>}}SinkPad{{</del>}} ThinkPad
++ Have Nintendo Switch, favourite game is Xenoblade Chronicles 2.
+
+* Contact
++ Email: me^{at}szclsya_{dot}me
++ Email: szclsya^{at}gmail_{dot}com
++ Github: [[https://github.com/szclsya][szclsya]]
+
+
+** PGP
+If possible, please contact me via PGP.
+
+PGP KeyID: =91351F513F67552E1ECAAB60498CB4BB3F4A10A2=

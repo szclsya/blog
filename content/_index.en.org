@@ -1,0 +1,10 @@
+#+TITLE: Index page
+#+DATE: 2019-09-22T22:56:41
+
+/中文版呢? 请使用左上角的翻译按钮./
+
+* Hello there
+This is a little field of Leo. Not much to see now, but may get interesting later.
+
+If you want to see something I write, [[/posts][here]] is all my articles.
+

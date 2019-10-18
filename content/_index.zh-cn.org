@@ -1,7 +1,7 @@
 #+TITLE: Index page
 #+DATE: 2019-09-22T22:56:41
 
-/Where is the English version? Still working on it./
+/Where is the English version? Please use the translation button on the top left./
 
 * Hello there
 这里是 Leo 在网上的一块园地。现在还是一片荒芜，不过假以时日说不定会变得有趣起来。

@@ -6,7 +6,7 @@
 #+LICENSE: cc-sa
 #+TOC: true
 #+MATH: true
-#+IMG: /img/hugo/blog-v1.jpg
+#+IMG: /img/blog-story/blog-v1-web.jpg
 
 * 折腾的过程
 算下来我写博客也不短了（现在看来内容简直没营养...），但后期皆因缺乏动力断更了，甚至原文都全部流失了。
@@ -44,7 +44,7 @@
 字体很重要！毕竟在阅读一篇文章的时候，人们是在盯着那些字看，而不是华丽的背景或动画。
 
 #+CAPTION: Font matters indeed. ([[https://www.reddit.com/r/funny/comments/977s8h/font_matters/][Source]])
-[[../font-matters.jpg]]
+[[/img/blog-story/font-matters-web.jpg]]
 
 对于西文来说，我选择通过嵌入 webfont 的方式统一各平台之间的表现。下面是我选择的字体：
 + [[http://vollkorn-typeface.com/][Vollkorn]] - 衬线体
@@ -89,7 +89,7 @@ Color scheme 来自于 [[https://github.com/mozmorris/tomorrow-pygments][tomorro
 * 这个可以有!
 也许会实现？
 + 评论框 - 计划使用 [[https://posativ.org/isso][ISSO]]
-+ {{< del >}}夜间模式{{</ del >}} [[{{< ref "2-dark-mode.org" >}}][DONE!]]
++ {{< del >}}夜间模式{{</ del >}} [[{{< ref "2-dark-mode.zh-cn.org" >}}][DONE!]]
 
 * 一些致谢
 没有你们，这一切都不可能实现.

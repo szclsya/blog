@@ -1,0 +1,27 @@
+#+TITLE: Hello, world!
+#+DATE: 2019-09-20T20:00:00
+#+DESCRIPTION: I made it!
+#+TAGS[]: blog
+#+SERIES: Hugo
+#+LICENSE: cc-sa
+#+IMG: /img/blog-story/blog-v1-web.jpg
+
+Finally, it is finished!
+
+* The name?
+#+BEGIN_QUOTE
+“The mind is a garden,” said he. 
+#+END_QUOTE
+
+* Blog?
+#+BEGIN_QUOTE
+Social media is written for others, blog is written for myself.
+#+END_QUOTE
+
+I had a few blogs before, but was eventually discontinued. One year ago, I tried to create a unique theme for static site generator, but for some reasons (too ugly even in my eyes= =) I rewrote for several times. 
+
+I mainly wrote about some technical short articles, but most of them are not very meaningful (most of time you'd better off reading [[https://wiki.archlinux.org][ArchWiki]]...). Hope this time it would last a bit longer.
+
+Some details about the creation of this blog can be found [[{{< ref "1-some-notes.en.org" >}}][here]].
+
+Yup, that's it for now.

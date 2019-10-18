@@ -49,12 +49,12 @@ Arch Linux 提供了成吨的字体可供选择。完整的列表可以在 [[htt
 然而...
 
 #+CAPTION: 默认配置下的 Installation Guide
-[[https://static.szclsya.me/img/fonts/archwiki-wrongfont.jpg]]
+[[/img/fonts/archwiki-wrongfont-web.jpg]]
 
 看上去不大对劲，不是么？
 
 #+CAPTION: 破 案 了
-[[https://static.szclsya.me/img/fonts/archwiki-fontsused.jpg]]
+[[/img/fonts/archwiki-fontsused-web.jpg]]
 
 ...怎么默认到日语字形上去了.
 

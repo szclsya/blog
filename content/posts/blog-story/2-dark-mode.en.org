@@ -1,0 +1,26 @@
+#+TITLE: Dark mode!
+#+DATE: 2019-09-27T13:52:41
+#+DESCRIPTION: Hello darkness my old friend.
+#+TAGS[]: blog
+#+SERIES: Hugo
+#+LICENSE: cc-sa
+#+IMG: /img/blog-story/blog-v1-dark.jpg
+
+Add dark mode support to [[https://github.com/szclsya/hugo-theme-less][less]] theme used by this blog!
+
+* Some details
+I use the [[https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme][prefers-color-scheme]] [[https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Media_queries][CSS media query]]. 
+Also, I put all color used in this site inside two [[https://sass-lang.com/documentation/values/maps][sass map]].
+
+{{< del >}}Now I understand why human invents css-in-js...{{</ del >}}
+
+* How to use it?
+In the latest version of Windows, macOS, Android 10 and iOS, just set the color scheme to Dark Mode in system setting, and Chrome will use the dark mode automatically.
+
+Under Linux, things are not there yet. There has not been an universal API yet. Now what I do is add this into ~~/.config/chromium-flags.conf~
+#+BEGIN_SRC
+--force-dark-mode
+#+END_SRC
+
+And then Chromium will use dark mode for all website that supports it.
+

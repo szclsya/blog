@@ -1,0 +1,102 @@
+#+TITLE: Some notes
+#+DATE: 2019-09-20T20:21:00
+#+DESCRIPTION: 🎶 And we're out of beta, we're releasing on time. 🎶
+#+TAGS[]: blog
+#+SERIES: Hugo
+#+LICENSE: cc-sa
+#+TOC: true
+#+MATH: true
+#+IMG: /img/blog-story/blog-v1-web.jpg
+
+* A bit about the struggle
+I used =WordPress= for a long time, but am not satisfied for a few reasons:
++ WordPress is too heavy weight for a personal blog
++ The visual editor is not handy
++ Backup is not convenient
+
+So, after I discovered static site generators, I decided to replace WordPress.
+
+I tried =Pelican= first, and I managed to write a template using [[https://materializecss.com/][MaterializeCSS]]. But it is even too ugly in my eyes, so I didn't use it eventually.
+
+Then I tried =Hexo=, but Hexo's documentation is just too simple and lack of detail. Writing templates for Hexo just feels like trial and error, so I discard that too and throw the half-way-done template to ~/dev/null~.
+
+After messing around for a lot of time, I stick with =Hugo=. The documentation is relatively good (still not as detailed as it could, but much better than other generators). 
+
+* Design choices
+** Markup language
+The most famous markup language {{<del>}}for human being{{</del>}} is Markdown. Most static site generators support this language. But the basic Markdown has very limited (no footnote, no italics, no underline, etc.). There are some extension of Markdown, but currently it is a mess and there's not any standards yet. Oops.
+
+Of course, this disadvantage can be overcame by Shortcodes, but I don't want tons of non-standard and ugly shortcodes in my article.
+
+Another choice is reStructuredText. It is very popular among the Python community. rSt has more that enough language features, but it looks really confusing.
+
+At last, there is the Org-mode, a killer application on Emacs. Since it is so tightly connected to Emacs, there are few good Org-mode parsers for other languages. Fortunately, Hugo has a quite good Org-mode parser.
+
+I've been using Emacs and Org-mode for GTD and note-taking for a long time now, but for writing blog, I used Markdown with shortcode before. Then I discovered Hugo can do Org-mode, and that's far more comfortable for me.
+
+** Fonts
+(One of the reason I want to switch from WordPress is the intergrated Google Fonts is painfully slow when accessing from China and it is a hassle to remove them)
+
+Font matters! When reading an article, people are reading the text, but not the fancy background or animations.
+
+#+CAPTION: Font matters indeed. ([[https://www.reddit.com/r/funny/comments/977s8h/font_matters/][Source]])
+[[/img/blog-story/font-matters-web.jpg]]
+
+For latin characters, I decided to intergrate webfons to unify the look on platforms. Here the fonts I chose:
++ [[http://vollkorn-typeface.com/][Vollkorn]] - Serif
++ [[https://www.ibm.com/plex][IBM Plex Sans]] - Sans-serif
++ [[https://typeof.net/Iosevka/][Iosevka Type]] - Monospace
+
+I don't have much choice about Chinese characters though. The number of glyphs are much higher than latin characters. Thus, a font file for Chinese could be very big. For example, a font file for sigle font weight Google's Noto Sans CJK could take up 16M to 25M. (Imagine you click this site and it eat you 30M+ of bandwith, oops.) It is quite unacceptable for a website, so I have to choose from fonts came with the operating system.
+
+It is no huge issue for macOS and GNU/Linux users. macOS has Hiragino Sans GB and Songti SC (华文宋体), and most recent Linux distros have Source Sans CJK and Source Serif CJK. All pretty good fonts, but it is not the case on Windows...
+
+Microsoft YaHei is not bad, the trouble is serif. Without Microsoft Office installed, the only choice is SimSum, which is an awful font for HiDPI screens (it has been there for decades...)...
+
+#+BEGIN_QUOTE
+The only problem with Microsoft is they just have no taste, they have absolutely no taste,” he said. “I don’t mean that in a small way. I mean that in a big way, in the sense that they don’t think of original ideas and they don’t bring much culture into their product.”
+
+-- Steve Jobs
+#+END_QUOTE
+
+The solution? Just use Microsoft YaHei for every single Chinese text under Windows, screw it!
+
+** Syntax highlighting
+Hugo came with an internal font highlighting library ([[https://github.com/alecthomas/chroma][chroma]], to be specific). But compared to Pygments, Chroma has less supported languages, so I stick with Pygments.
+
+The color scheme is adapted from [[https://github.com/mozmorris/tomorrow-pygments][tomorrow-pygments]].
+
+** Math equations
+(Let's pretend I will write math stuff here...)
+
+\( \KaTeX \) is used to render Math equations, hope it is quicker than MathJax.
+
+** Static!
+Since it is a blog but not a Web App, we not need many JavaScript.
+
+So, a progress meter (and Back to Top button) and fold function, and that's it.
+
+* This could be interesting?
++ Commenting - Maybe [[https://posativ.org/isso][ISSO]]?
++ {{< del >}}Dark mode{{</ del >}} [[{{< ref "2-dark-mode.en.org" >}}][DONE!]]
+
+* Thanks lads
+It is impossible without you!
+
+** Aid with athetics
++ [[https://practicaltypography.com/][Butterick’s Practical Typography]]
+
+** Inspirations
++ [[https://ioover.net/][I/O OVER · この星の半分を真っ赤に染めた]]
++ [[https://blog.yoitsu.moe][约伊兹的萌狼乡手札]]
++ [[https://farseerfc.me/][Farseerfc的小窩]]
+
+** Projects used
++ [[https://gohugo.io/][Hugo]]
++ [[https://ionicons.com/][Ionicons]]
++ [[https://katex.org/][\(\KaTeX\)]]
++ [[http://vollkorn-typeface.com/][Vollkorn]] font
++ [[https://www.ibm.com/plex][IBM Plex Sans]] font
++ [[https://typeof.net/Iosevka/][Iosevka Type]] font
++ [[http://pygments.org/][Pygments]]
+... and so many other open source projects! You are awesome!

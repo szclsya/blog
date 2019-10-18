@@ -1,0 +1,264 @@
+#+TITLE: Coreboot, me_cleaner, Tianocore, ThinkPad X220
+#+DATE: 2019-10-06T11:45
+#+DESCRIPTION:
+#+TAGS[]: thinkpad, coreboot
+#+LICENSE: cc-sa
+#+TOC: true
+
+Since 2011, all computers with an Intel processor has a hidden little operating system inside. It is called Intel Management Engine, an OS based on Minix. It can access the network adapters, full access of RAM, and is even on when the computer is completly off. There is no doubt it is very handy for enterprise useage, but it worries many that it is still there for consumer processors and there is absolutely no way to turn it off. That is, until me_cleaner project comes to rescue.
+
+This project allows the users to disable most of the functionalities of ME and shrink down the size of ME (from 5MB to ~86KB).
+{{< btw >}} Because ME now manages the hardware initialization, it is not possible to eliminate ME totally now. A reverse engineering is possible, but still not avaliable for now. {{</ btw >}}
+When used with =coreboot=, an almost completly open source firmware can be built.
+
+* Some explanations
++ coreboot :: Formally LinuxBoot, it is a project aimed to provide a lightweight and open source replacement of the BIOS/UEFI in most computers.
++ me_cleaner :: A Python script to eliminate or remove most functionalities of Intel Management Engine
+
+ThinkPad X220 is a good choice for this combination. It is one of the few hardware supported by coreboot, and it is relatively cheap to grab. Also, there is plenty of documentation about how to do it.
+
+WARNING: It is not trival to go through the whole process. You need at least some knowledge about Linux and command line. Flashing the chip may potentially fry your chip, and if you do it wrong, you may lose the content of the original BIOS and make the motherboard useless. If you want to do it, proceed with caution.
+
+* Preparations
+You need:
++ ThinkPad X220
++ SOP-8 Clip (To connect to ROM chip)
++ Raspberry Pi (For its spi capability)
++ Another computer (Or monitors and keyboard for rPi, I recommand another computer because the compiling on rPi is really slow)
+
+And your patience!
+
+* Prepare the rPi
+I use [[https://www.raspberrypi.org/downloads/raspbian/][Raspbian]] on my Raspberry Pi. Do the usual stuff to initialize your rPi.
+
+Then, use ~sudo raspi-config~ to enable SPI. Enter =Interfacing Options= and choose =SPI=.
+
+* Dump the original firmware
+{{% card danger %}}
+Before you do anything, *REMOVE THE BATTERY* and *DISCONNECT THE POWER SOURCE*!
+{{% /card %}}
+
+Now, disassemble the laptop. Make sure you check the [[https://download.lenovo.com/ibmdl/pub/pc/pccbbs/mobiles_pdf/0a60739.pdf][X220 Hardware Maintenance Manual]].
+
+Remove screws that has marks of palmrest and keyboard around. Then, push the keyboard forward and lift it. Remove the ribbon cable for the keyboard and a little ribbon for the touchpad and fingerprint sensor. Now you should be able to lift the palmrest up.
+
+The motherboard is covered with black antistatic film. Lift up the bottom left of the film (just to the right of the ExpressCard slot) should reveal the chip.
+
+#+CAPTION: BIOS/UEFI firmware chip
+[[/img/coreboot/bios_chip-web.jpg]]
+
+** Wire the chip to the Pi
+Connect the clip to the chip. The pinout of the chip is (Quoted from [[https://www.coreboot.org/Board:lenovo/x220][X220 - coreboot]]):
+#+BEGIN_SRC 
+ Screen (furthest from you)
+             ____
+  MOSI  5 --|    |-- 4  GND
+   CLK  6 --|    |-- 3  N/C
+   N/C  7 --|    |-- 2  MISO
+   VCC  8 --|___°|-- 1  CS
+
+Edge (closest to you)
+#+END_SRC
+
+Then connect the other end of to Raspberry Pi (Make sure it is not turned on!):
+#+BEGIN_SRC 
+# Edge
+                                                           CS
+                                                            |
++--------------------------------------------------------------------------------------------------------+   # Ethernet Port
+|    x    x    x    x    x    x    x    x    x    x    x    x    x    x    x    x    x    x    x    x    |   # &&
+|    x    x    x    x    x    x    x    x    x    x    x    x    x    x    x    x    x    x    x    x    |   # USB Ports
++--------------------------------------------^----^----^----^---------------------------------------^----+
+                                             |    |    |    |                                       |
+                                            3.3V  MOSI MISO |                                      GND
+                                           (VCC)           CLK
+# Rest of the board (SoC and other stuff)
+#+END_SRC
+
+(Yup, we just need 6 of 8 pin on the chip.)
+
+#+CAPTION: Wired X220 and Raspberry Pi
+[[/img/coreboot/flashing_in_progress-web.jpg]]
+
+** Dump the firmware
+Then power on the pi. Compile ~flashrom~, the tool we will be using to dump the ROM and write the new ROM.
+#+BEGIN_SRC bash
+sudo apt install libpci-dev libusb-1.0-dev
+git clone "https://review.coreboot.org/flashrom"
+cd flashrom
+git checkout 1.0.x
+make
+sudo make install
+#+END_SRC
+
+Then we can try to read the chip!
+#+BEGIN_SRC bash
+sudo flashrom -p linux_spi:dev=/dev/spidev0.0 # Check if it detects a chip
+#+END_SRC
+
+If it does found there's a chip, it will say something like this:
+
+#+BEGIN_SRC bash
+flashrom v1.0.1 on Linux 4.14.98-v7+ (armv7l)
+flashrom is free software, get the source code at https://flashrom.org
+
+Using clock_gettime for delay loops (clk_id: 1, resolution: 1ns).
+Using default 2000kHz clock. Use 'spispeed' parameter to override.
+Found Winbond flash chip "W25Q64.V" (8192 kB, SPI) on linux_spi.
+Reading flash... done.
+#+END_SRC
+
+Then we can read it. We read it multiple times to make sure we have a good contact.
+
+#+BEGIN_SRC bash
+sudo flashrom -p linux_spi:dev=/dev/spidev0.0 -r flash01.bin
+sudo flashrom -p linux_spi:dev=/dev/spidev0.0 -r flash02.bin
+sudo flashrom -p linux_spi:dev=/dev/spidev0.0 -r flash03.bin
+# Check if they are same to make sure a good read
+md5sum flash01.bin flash02.bin flash03.bin
+
+#+END_SRC
+
+If the three md5 checksum is the same, it means for a high chance we have a good read and the dump is correct. Make sure you keep the original dump safe since we need the content of it.
+
+* Configure and compile coreboot
+I do the compiling stuff on my main computer because it is much faster compared to our poor little pi.
+
+** Get blobs
+The ROM of a X220 mainly consists five parts:
++ Flash Descriptor (4K)
++ Actual BIOS (3M)
++ Intel ME firmware (5M)
++ Gigabit Ethernet ROM (8K)
++ Platform data
+
+We only need the descriptor, me firmware and the GbE firmware. In order to intergrate it into coreboot, we need to split them using ~ifdtool~.
+
+#+BEGIN_SRC bash
+git clone https://review.coreboot.org/coreboot.git
+cd ~/Code/x220/coreboot/util/ifdtool
+make
+make install
+
+cd ~/Code/x220/x220bios/
+ifdtool -x original_dump.bin
+#+END_SRC
+
+** Eliminate ME
+Since we're going to use Tianocore as the payload and it is kinda large, we have to save some space for it. We can do so by remove some malicious and unnecessary part of ME and use its space for coreboot.
+#+BEGIN_SRC bash
+git clone https://github.com/corna/me_cleaner.git
+cd ~/Code/x220/me_cleaner
+python me_cleaner.py -t -r me.bin -O out.bin
+#+END_SRC
+
+Now we can start setting up coreboot toolchain.
+
+** Prepare coreboot toolchain
+#+BEGIN_SRC bash
+cd ~/Code/x220/coreboot
+git submodule update --init --recursive
+# By default, git submodule won't download the blobs (Which is weird)
+# So we have to do it manually
+cd ~/Code/x220/coreboot/3rdparty
+git clone "https://review.coreboot.org/blobs"
+
+# Then we add our dumpped blobs to the blob tree
+cd ~/Code/x220/coreboot/blobs
+mkdir -p ~/Code/x220/coreboot/3rdparty/blobs/mainboard/lenovo/x220
+
+# Copy descriptor.bin  gbe.bin  me.bin to the directory
+cp ~/Code/x220/x220bios/* ~/Code/x220/coreboot/3rdparty/blobs/mainboard/lenovo/x220
+
+cd ~/Code/x220/coreboot/ # Back to root dir
+# Compile the cross compiler. You need to install gcc-ada on Arch Linux before hand
+make crossgcc-i386 CPUS=6
+#+END_SRC
+
+** Customize your very own coreboot!
+Run ~make nconfig~ to enter configure menu.
+
+Here's my config. Notice that it may change in the future.
+
+#+BEGIN_SRC
++ general
+  - Compress ramstage with LZMA
+  - Include the coreboot .config file into the ROM image
+  - Allow use of binary-only repository
++ mainboard
+  - Mainboard vendor (Lenovo)
+  - Mainboard model (ThinkPad X220)
+  - ROM chip size (8192 KB (8 MB))
+  - (0x200000) Size of CBFS system in ROM
++ chipset
+  - Enable VMX for virtualization
+  - Support bluetooth on wifi cards
+  - Add Intel descriptor.bin file
+  - Add Intel ME/TXE firmware
+  - Add gigabit ethernet configuration
++ devices
+  - Graphics initialization (Use libgfxinit)
+  - Display
+    - Framebuffer mode (Linear "high-resolution" framebuffer)
+  - Enable PCIe Clock Power Management
+  - Enable PCIe ASPM L1 SubState
++ generic drivers
+  - Support Intel PCI-e WiFi adapters
+  - PS/2 keyboard init
++ console
+  - Show POST codes on the debug console
++ payloads
+  - Add a payload (Tianocore coreboot payload package)
+  - Use a custom bootspalsh image
+  - Use LZMA compression for secondary payloads
+#+END_SRC
+
+When you finished, just hit =Esc= and choose save. Then just use ~make~ to let thing happen.
+
+** Flash new rom
+If everything is good, the new rom should be located at ~coreboot/build/coreboot.rom~. Transfer the file to the rPi (always check the checksum!) and use
+#+BEGIN_SRC bash
+sudo flashrom -p linux_spi:dev=/dev/spidev0.0 -w coreboot.rom
+#+END_SRC
+To flash the rom into the machine.
+
+* Finish!
+Now, detach the Pi, connect the handrest and the keyboard. Connect to power supply, and hit the power button.
+
+If you have a cute rabbit on the screen, you are a winner! 
+
+#+CAPTION: Coreboot Logo on Tianocore
+[[/img/coreboot/coreboot_bunny-web.jpg]]
+
+If not, it's okay. You can always try again. And if everything goes wrong, you can just flash back to the original dump and stick with all the ME nonsense.
+
+** Check ME status
+In theory, ME should be in limited function status right now. If you want to make sure, you can use [[https://github.com/zamaudio/intelmetool][intelmetool]] to check ME status.
+
+After install the tool in AUR, reboot the system and add ~iomem=relaxed~ in your kernel parameter. Then, run intelmetool in root. You should get something like this:
+
+#+BEGIN_SRC
+Bad news, you have a `QM67 Express Chipset LPC Controller` so you have ME hardware on board and it is very difficult to remove, continuing...
+RCBA at 0xfed1c000
+MEI was hidden on PCI, now unlocked
+MEI found: [8086:1c3a] 6 Series/C200 Series Chipset Family MEI Controller #1
+
+ME Status   : 0x1e003052
+ME Status 2 : 0x10320002
+
+ME: FW Partition Table      : OK
+ME: Bringup Loader Failure  : NO
+ME: Firmware Init Complete  : NO
+ME: Manufacturing Mode      : YES
+ME: Boot Options Present    : NO
+ME: Update In Progress      : NO
+ME: Current Working State   : Recovery
+ME: Current Operation State : M0 with UMA
+ME: Current Operation Mode  : Normal
+ME: Error Code              : Image Failure
+ME: Progress Phase          : BUP Phase
+ME: Power Management Event  : Clean Moff->Mx wake
+ME: Progress Phase State    : M0 kernel load
+#+END_SRC
+
+As you can see, ME is working in Recovery mode right now. Which means most malicious functions should not work any more.

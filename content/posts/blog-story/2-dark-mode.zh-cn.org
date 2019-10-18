@@ -4,6 +4,7 @@
 #+TAGS[]: blog
 #+SERIES: Hugo
 #+LICENSE: cc-sa
+#+IMG: /img/blog-story/blog-v1-dark.jpg
 
 给主题加入了暗色模式支持！
 

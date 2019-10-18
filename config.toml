@@ -1,6 +1,6 @@
 baseURL = "https://szclsya.me"
-languageCode = "zh-cn"
-DefaultContentLanguage = "zh-cn"
+languageCode = "en-us"
+DefaultContentLanguage = "en"
 title = "Leo's Field"
 theme = "less"
 
@@ -17,3 +17,9 @@ pygmentsOptions = 'linenos=table'
 [taxonomies]
   tag = "tags"
   series = "series"
+
+[languages]
+  [languages.en]
+    weight = 1
+  [languages.zh-cn]
+    weight = 2
