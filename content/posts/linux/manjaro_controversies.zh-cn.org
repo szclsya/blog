@@ -1,0 +1,124 @@
+#+TITLE: [译] Manjaro 悖论
+#+DATE: 2019-10-20T00:59:30
+#+TAG[]: blog
+#+LICENSE: cc-sa
+#+DRAFT: true
+
+#+BEGIN_QUOTE
+本文译自 [[https://rentry.co/manjaro-controversies]], 纯净无添加.
+目前为 Beta 版, 敬请捉虫.
+#+END_QUOTE
+
+* 背景
+Manjaro 是一个着重于易用及稳定的基于 Arch Linux 的 Linux 发行版.
+
+然而, 近几年来出现了不少关于 Manjaro 的争议.
+
+* 稳定
+#+BEGIN_QUOTE
+Manjaro [...] 易于使用而稳定.
+#+END_QUOTE
+
+Manjaro 称它自己为一个稳定发行版 [fn:1], 但是 Manjaro 的开发者所做的仅仅是将 Arch 的软件包推迟一个星期发布以确保他们加入的改动能够顺利安装.^{不确定的翻译}
+
+* 适合新手使用
+#+BEGIN_QUOTE
+Manjaro 适合新手和 Linux 老鸟使用.
+#+END_QUOTE
+
+#+BEGIN_QUOTE
+Manjaro 适合新手使用 [...] [fn:1]
+#+END_QUOTE
+
+Manjaro 是一个 =滚动发行= 的发行版, 而滚动发行版并 *不* 适合新手.
+
+你必须确保你的系统保持最新, 这意味着至少一星期更新一次.
+
+由于软件包一旦准备好就会被立即发布, 你得为潜在的问题做好准备.
+
+作为一个滚动发行版用户, 你必须熟悉排除故障的知识, 包括:
++ 明白 =包管理软件= 是如何工作地
++ 明白 =软件包依赖= 是何物
++ 给磁盘分区
++ 使用终端
++ 当图形界面崩溃时, 明白如何用终端修理
+
+经常性的内核更新也会偶尔引起驱动问题，而你必须手动排障.
+
+* SSL 证书问题
+Manjaro 的开发者已经多次没有按时地更新 SSL 证书了. 第一次发生在2015年, 而他们推荐的解决方法是 *调后系统时钟*. [fn:3] 第二次事故发生在2016年, 他们推荐用户在浏览器中添加一个例外.
+
+* 部分更新
+Manjaro 团队建议用户进行 =部分更新=. 这项功能并不被 Arch 官方支持, 且有可能搞崩你的系统.
+
+* Yaourt & Pacman
+Manjaro 自带 Pamac [fn:5]. Pamac 是一个 带有 AUR helper 功能的 pacman 的前端. AUR helper 并不会教授用户 如何使用AUR. AUR并不是一个完全安全的地方, 所以用户应该在安装之前检查 PKGBUILD. 盲目地安装来自 AUR 的软件包有可能损害你的系统.
+
+在 Pamac 之前, Manjaro 曾经默认安装 yaourt. yaourt 是一个陈旧且 被证实^{私货} 不安全的 AUR helper.
+
+* 商业化
+Manjaro 正在商业化. Manjaro 官方售卖预安装 Manjaro 的电脑. [fn:6] 这是否是好事完全取决于你, 但请注意 Arch Linux 仅接受捐款.
+
+* 一些小事
+Manjaro 的系统更新脚本在更新过程中对 锁文件^{Need furthur explain} 使用 ~rm~ 操作. [fn:7] 此脚本亦在 pacman 早已原生支持搜索软件包时使用 ~pacman -Q | grep~.
+
+Manjaro 的一个 bash 脚本中发现了一个一个本地的 DoS, PrivEsc ^{Need inspection} 漏洞 [fn:8].
+
+Manjaro 的一个 Linux 内核模块对内核模块所处的文件夹使用 ~rm~ 命令. [fn:9]
+
+Manjaro 使用机器人在 Distrowatch 上作弊. [fn:2][fn:10]
+
+Manjaro 经常建议用户重新下载整个 pacman 数据库. 此种操作仅应该在数据库损坏时进行. [fn:14]
+
+* systemd 手动降级
+2019年1月, Manjaro 团队发布了一个新稳定版. 与此同时, systemd 发布了一个大更新 ^{意译}. Manjaro 自己维护 systemd 包, 而这似乎导致部分用户的系统无法启动.
+
+Manjaro 团队建议用户在更新系统时启用降级选项[fn:11]. 这样, 用户就可以降级 systemd 并避免无法启动的问题. Pacman 支持 ~epoch~ 变量来避免降级, 然而 Manjaro 出于某种原因没有使用. [fn:12]
+
+在引用链接中的 "重要提示" 似乎已经从主公告中移除[fn:13]. 现在仅能在另外一个帖子中找到.
+
+* 总结
+使用 Manjaro, 你仅仅能得到更差的支持, 更糟糕的软件包质量和无从谈起的安全保证.
+
+#+BEGIN_QUOTE
+他们仅仅转发我们的安全警示却从不阅读它们. 他们任由紧急的安全问题在他们的 '稳定' 仓库中腐烂, 仅仅维修一些用户公开告知他们的问题. [fn:10]
+#+END_QUOTE
+
+况且, Manjaro 从不向上游贡献. [fn:2]
+
+本文中提到的问题在 Arch Linux 的衍生版中很常见, 但是 Manjaro 尤其糟糕. 请考虑使用原生 Arch Linux, 或尝试使用不基于 Arch 的发行版.
+
+* 既然如此, 我应该用什么呢?
+如果你因为 Arch Linux 才去使用 Manjaro, 请直接用 Arch. 请注意, 你应该使用 Arch 官方的安装指南, 而不是某一篇不知名的文章或视频.
+
+如果你只是想用一个滚动发行版而且不想用 Arch Linux, 请考虑使用 OpenSUSE Tumbleweed.
+
+如果你想用一个对新手友好且稳定的发行版, 你应该考虑一个拥有 长期支持(Long Term Support, 常被简写为 LTS) 的发行版. 可以试试 Ubuntu 及它的衍生版, 或者 OpenSUSE Leap.
+
+[fn:1] https://manjaro.org (https://archive.fo/pBN8X)
+
+[fn:2] https://reddit.com/comments/adf6cx/_/edgpidc (https://archive.fo/TwuVC)
+
+[fn:3] https://web.archive.org/web/20150409095421/https://manjaro.github.io/expired_SSL_certificate/
+
+[fn:4] https://web.archive.org/web/20171203081155/http://manjaro.github.io:80/SSL-Certificate-Expired/
+
+[fn:5] https://forum.manjaro.org/t/pamac-introducing-our-own-aur-support/17924
+
+[fn:6] https://manjaro.org/hardware-bladebook, https://manjaro.org/hardware-spitfire
+
+[fn:7] https://gitlab.manjaro.org/packages/core/manjaro-system/blob/3b806753e245b7ec7e18bb674e916e28d751a429/manjaro-update-system.sh#L45(https://archive.fo/dofw8)
+
+[fn:8] https://lists.manjaro.org/pipermail/manjaro-security/2018-August/000785.html (https://archive.fo/L6NYn)
+
+[fn:9] https://forum.manjaro.org/t/usr-lib-modules-getting-deleted-on-boot/49984
+
+[fn:10] https://reddit.com/comments/9ur2lu/_/e96qch1 (https://archive.fo/DTZGs)
+
+[fn:11] https://forum.manjaro.org/t/no-longer-able-to-boot-after-latest-update/73014/3
+
+[fn:12] https://reddit.com/comments/ajclsq/_/eeuzv75/ (https://archive.fo/dPfyn)
+
+[fn:13] https://forum.manjaro.org/t/stable-update-2019-01-23-kernels-mesa-browsers-nvidia-deepin-virtualbox
+
+[fn:14] https://forum.manjaro.org/t/stable-update-2019-02-19-kernels-kde-libreoffice-systemd-virtualbox-deepin-qt-firmwares-wine/76420/2
