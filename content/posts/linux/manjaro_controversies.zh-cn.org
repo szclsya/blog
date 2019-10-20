@@ -1,11 +1,13 @@
 #+TITLE: [译] Manjaro 悖论
 #+DATE: 2019-10-20T00:59:30
+#+DESCRIPTION: Manjaro is awesome.{webp,jpg}
 #+TAG[]: blog
 #+LICENSE: cc-sa
-#+DRAFT: true
 
 #+BEGIN_QUOTE
 本文译自 [[https://rentry.co/manjaro-controversies]], 纯净无添加.
+
+This article is a translation of https://rentry.co/manjaro-controversies.
 #+END_QUOTE
 
 {{%btw%}}
