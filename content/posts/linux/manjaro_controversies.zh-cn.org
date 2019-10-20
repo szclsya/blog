@@ -6,11 +6,14 @@
 
 #+BEGIN_QUOTE
 本文译自 [[https://rentry.co/manjaro-controversies]], 纯净无添加.
-目前为 Beta 版, 敬请捉虫.
 #+END_QUOTE
 
+{{%btw%}}
+此类卡片中包含的是译者添加的内容, 原文中不包含.
+{{%/btw%}}
+
 * 背景
-Manjaro 是一个着重于易用及稳定的基于 Arch Linux 的 Linux 发行版.
+[[https://en.wikipedia.org/wiki/Manjaro][Manjaro]] 是一个着眼于易用及稳定的, 基于 [[https://en.wikipedia.org/wiki/Arch_Linux][Arch Linux]] 的 Linux 发行版.
 
 然而, 近几年来出现了不少关于 Manjaro 的争议.
 
@@ -19,7 +22,7 @@ Manjaro 是一个着重于易用及稳定的基于 Arch Linux 的 Linux 发行�
 Manjaro [...] 易于使用而稳定.
 #+END_QUOTE
 
-Manjaro 称它自己为一个稳定发行版 [fn:1], 但是 Manjaro 的开发者所做的仅仅是将 Arch 的软件包推迟一个星期发布以确保他们加入的改动能够顺利安装.^{不确定的翻译}
+Manjaro 称它自己为一个稳定发行版 [fn:1]. 但是相对于 Arch Linux, Manjaro 的开发者所做的仅仅是将 Arch 的软件包推迟一个星期发布, 以确保他们加入的改动不影响安装.
 
 * 适合新手使用
 #+BEGIN_QUOTE
@@ -38,40 +41,46 @@ Manjaro 是一个 =滚动发行= 的发行版, 而滚动发行版并 *不* 适�
 
 作为一个滚动发行版用户, 你必须熟悉排除故障的知识, 包括:
 + 明白 =包管理软件= 是如何工作地
-+ 明白 =软件包依赖= 是何物
++ 明白 =软件包依赖= 为何物
 + 给磁盘分区
 + 使用终端
-+ 当图形界面崩溃时, 明白如何用终端修理
++ 当图形界面崩溃时, 明白如何用命令行修理
 
-经常性的内核更新也会偶尔引起驱动问题，而你必须手动排障.
+经常性的内核更新也会偶尔引起驱动问题. 一旦遇到, 你只能手动排障.
 
 * SSL 证书问题
-Manjaro 的开发者已经多次没有按时地更新 SSL 证书了. 第一次发生在2015年, 而他们推荐的解决方法是 *调后系统时钟*. [fn:3] 第二次事故发生在2016年, 他们推荐用户在浏览器中添加一个例外.
+Manjaro 的开发者已经多次没有按时地更新 SSL 证书了. 第一次发生在2015年, 而他们推荐的解决方法是 *把系统时钟调到过去*. [fn:3] 
+
+第二次事故发生在2016年, 这次他们提出的临时解决方案是: 让用户在浏览器中添加一个例外.
 
 * 部分更新
-Manjaro 团队建议用户进行 =部分更新=. 这项功能并不被 Arch 官方支持, 且有可能搞崩你的系统.
+Manjaro 团队建议用户进行 [[https://wiki.archlinux.org/index.php/System_maintenance#Avoid_certain_pacman_commands][部分更新]]. 这项功能并[[https://wiki.archlinux.org/index.php/System_maintenance#Partial_upgrades_are_unsupported][不被 Arch 官方支持]], 且有可能[[https://gist.github.com/vodik/5660494][搞崩你的系统]].
 
 * Yaourt & Pamac
-Manjaro 自带 Pamac [fn:5]. Pamac 是一个 带有 AUR helper 功能的 pacman 的前端. AUR helper 并不会教授用户 如何使用AUR. AUR并不是一个完全安全的地方, 所以用户应该在安装之前检查 PKGBUILD. 盲目地安装来自 AUR 的软件包有可能损害你的系统.
+Manjaro 自带 Pamac [fn:5]. Pamac 是一个 带有 [[https://wiki.archlinux.org/index.php/AUR_helpers][AUR助手]] 功能的 pacman 的前端. AUR助手 并不会教授用户[[https://wiki.archlinux.org/index.php/Arch_User_Repository][如何使用AUR]]. AUR并不是一个完全安全的地方, 所以用户应该在安装之前检查 PKGBUILD. 盲目地安装来自 AUR 的软件包有可能损害你的系统.
 
-在 Pamac 之前, Manjaro 曾经默认安装 yaourt. yaourt 是一个陈旧且 被证实^{私货} 不安全的 AUR helper.
+在 Pamac 之前, Manjaro 曾经默认安装 [[https://wiki.archlinux.org/index.php/AUR_helpers][Yaourt]]. Yaourt 是一个早已停止维护且被证明不安全的 AUR助手程序.
 
 * 商业化
-Manjaro 正在商业化. Manjaro 官方售卖预安装 Manjaro 的电脑. [fn:6] 这是否是好事完全取决于你, 但请注意 Arch Linux 仅接受捐款.
+Manjaro 正在商业化. Manjaro 官方售卖预安装 Manjaro 的电脑. [fn:6] 这是好是坏完全取决于你. 但请注意, Arch Linux 仅接受捐款.
 
 * 一些小事
-Manjaro 的系统更新脚本在更新过程中对 锁文件^{Need furthur explain} 使用 ~rm~ 操作. [fn:7] 此脚本亦在 pacman 早已原生支持搜索软件包时使用 ~pacman -Q | grep~.
+Manjaro 的系统更新脚本在更新过程中删除(调用 ~rm~)了锁文件. [fn:7] 此脚本亦在 pacman 早已原生支持搜索软件包时使用 ~pacman -Q | grep~.
 
-Manjaro 的一个 bash 脚本中发现了一个一个本地的 DoS, PrivEsc ^{Need inspection} 漏洞 [fn:8].
+{{%btw%}}
+pacman 的锁文件(lockfile) 保证了在同一时间内仅有一个 pacman 可以运行. 除非用户很明确此文件是由于某种意外退出而造成的, 否则直接调用 rm 删除锁文件都是危险而不负责任的.
+{{%/btw%}}
+
+Manjaro 的一个 bash 脚本中发现了一个本地的拒绝服务及提权漏洞 [fn:8].
 
 Manjaro 的一个 Linux 内核模块对内核模块所处的文件夹使用 ~rm~ 命令. [fn:9]
 
-Manjaro 使用机器人在 Distrowatch 上作弊. [fn:2][fn:10]
+Manjaro 使用机器人在 Distrowatch 上作弊. [fn:2] [fn:10]
 
-Manjaro 经常建议用户重新下载整个 pacman 数据库. 此种操作仅应该在数据库损坏时进行. [fn:14]
+Manjaro 经常建议用户[[https://gist.github.com/Brottweiler/952c8b0de0afc01c6c8ef18b5a1a5294][重新下载]]整个 pacman 数据库. 此种操作仅应该在数据库损坏时进行. [fn:14]
 
-* systemd 手动降级
-2019年1月, Manjaro 团队发布了一个新稳定版. 与此同时, systemd 发布了一个大更新 ^{意译}. Manjaro 自己维护 systemd 包, 而这似乎导致部分用户的系统无法启动.
+* 手动降级 systemd 
+2019年1月, Manjaro 团队发布了一个新稳定版. 与此同时, systemd 发布了一个大更新. Manjaro 自己维护 systemd 包, 而这似乎导致部分用户的系统无法启动.
 
 Manjaro 团队建议用户在更新系统时启用降级选项[fn:11]. 这样, 用户就可以降级 systemd 并避免无法启动的问题. Pacman 支持 ~epoch~ 变量来避免降级, 然而 Manjaro 出于某种原因没有使用. [fn:12]
 
@@ -89,11 +98,11 @@ Manjaro 团队建议用户在更新系统时启用降级选项[fn:11]. 这样, �
 本文中提到的问题在 Arch Linux 的衍生版中很常见, 但是 Manjaro 尤其糟糕. 请考虑使用原生 Arch Linux, 或尝试使用不基于 Arch 的发行版.
 
 * 既然如此, 我应该用什么呢?
-如果你因为 Arch Linux 才去使用 Manjaro, 请直接用 Arch. 请注意, 你应该使用 Arch 官方的安装指南, 而不是某一篇不知名的文章或视频.
+如果你因为 [[https://www.archlinux.org/][Arch Linux]] 才去使用 Manjaro, 请直接[[https://wiki.archlinux.org/index.php/installation_guide][安装 Arch]]. 请注意, 你应该使用 Arch 官方的安装指南, 而不是某一篇不知名的文章或视频.
 
-如果你只是想用一个滚动发行版而且不想用 Arch Linux, 请考虑使用 OpenSUSE Tumbleweed.
+如果你只是想用一个滚动发行版而且不想用 Arch Linux, 请考虑使用 [[https://en.opensuse.org/Portal:Tumbleweed][OpenSUSE Tumbleweed]].
 
-如果你想用一个对新手友好且稳定的发行版, 你应该考虑一个拥有 长期支持(Long Term Support, 常被简写为 LTS) 的发行版. 可以试试 Ubuntu 及它的衍生版, 或者 OpenSUSE Leap.
+如果你想用一个对新手友好且稳定的发行版, 你应该考虑一个拥有 长期支持(Long Term Support, 常被简写为 LTS) 的发行版. 可以试试 [[https://www.ubuntu.com/download/flavours][Ubuntu 及它的衍生版]], 或者 [[https://en.opensuse.org/Portal:Leap][OpenSUSE Leap]].
 
 
 [fn:1] https://manjaro.org (https://archive.fo/pBN8X)
