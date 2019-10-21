@@ -4,7 +4,7 @@
 #+TAGS[]: walkman linux
 #+LICENSE: cc-sa
 #+TOC: true
-#+IMG: /img/walkman/for_and_by_lovers.jpg
+#+IMG: /img/walkman/for_and_by_lovers-web.jpg
 
 * 搞这个干嘛?
 #+BEGIN_QUOTE
@@ -74,7 +74,7 @@ options archisobasedir=arch archisodevice=/dev/disk/by-id/usb-SONY_WALKMAN_12345
 然后就像往常一样选择从 Archiso 启动. 在内核加载后, Walkman 会自动关闭大容量存储模式, 因此系统无法挂载它所需的 ~/run/archiso/bootmnt~ 分区.
 
 #+CAPTION: 困惑的 Arch Linux 和顽皮的 Walkman
-[[/img/walkman/1_umount_after_kernel.jpg]]
+[[/img/walkman/1_umount_after_kernel-web.jpg]]
 
 还好, 在挂载失败时会进入一个 fallback shell 环境. 我们只需手动挂载即可. 在 shell 中输入:
 

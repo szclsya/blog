@@ -4,6 +4,7 @@
 #+TAGS[]: walkman linux
 #+LICENSE: cc-sa
 #+TOC: true
+#+IMG: /img/walkman/for_and_by_lovers-web.jpg
 
 * WTF why do you want to do this?
 #+BEGIN_QUOTE
@@ -73,7 +74,7 @@ There should be two options appear at the Boot Menu. One is =USB FDD: SONY WALKM
 Then choose to boot from archiso. After the kernel is loaded, the Walkman disables the Mass Storage mode so the kernel cannot find the ~/run/archiso/bootmnt~ partition. Nasty little Walkman.
 
 #+CAPTION: Confused Arch Linux and naughty Walkman
-[[/img/walkman/1_umount_after_kernel.jpg]]
+[[/img/walkman/1_umount_after_kernel-web.jpg]]
 
 So we have to do it manually. After the Walkman finishes refreshing database, turn on Mass Storage once again. Then in the interactive fallback shell, type
 
