@@ -1,4 +1,4 @@
-#+TITLE: Update firmware update of a Crucial SSD with systemd-boot
+#+TITLE: Update firmware of a Crucial SSD with systemd-boot
 #+DATE: 2019-11-07T20:42:11
 #+DESCRIPTION: Well, the title covers it good.
 #+TAGS[]: linux ssd
