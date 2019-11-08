@@ -1,0 +1,76 @@
+#+TITLE: Update firmware update of a Crucial SSD with systemd-boot
+#+DATE: 2019-11-07T20:42:11
+#+DESCRIPTION: Well, the title covers it good.
+#+TAGS[]: linux ssd
+#+LICENSE: cc-sa
+
+I bought this Crucial MX300 around two years ago and it has served me well. Today I (randomly) found out that I have not update the firmware for this drive for a long time now. I looked at the firmware page and, sure enough, there's a firmware update.
+
+* Grab firmware
+There are two ways to update the firmware. The first way is to use a software on Windows, which is HUGE and slow. The other way is to use an ISO, which you are supposed to write to a USB flash drive and boot from there.
+
+In order to update via Linux, we have to use the ISO way. The download link can be found [[https://www.crucial.com/usa/en/support-ssd][here]].
+
+{{%btw%}}
+I'm not quite sure if there are different versions of firmware for different regions. So, for safety sake, do some research.
+{{%/btw%}}
+
+* Find its secret
+OK now we have the update ISO. Let's mount it and have a look. Still, if you don't know how to mount a ISO, here's how:
+
+#+BEGIN_SRC bash
+sudo mount -t iso9660 MX300_M0CR070_Firmware_Update.iso /mnt/iso
+#+END_SRC
+
+Since the firmware is released at 2018, I'm pretty confident that it should support UEFI. And no surprise, it does. We can see our old friend - EFI folder here.
+
+#+BEGIN_SRC
+$ cd /mnt/iso
+$ ls -al
+total 6
+drwxr-xr-x 1 root root 2048 Nov 12  2018 .
+drwxr-xr-x 4 root root   28 Oct 26 16:50 ..
+dr-xr-xr-x 1 root root 2048 Nov 12  2018 boot
+dr-xr-xr-x 1 root root 2048 Nov 12  2018 EFI
+#+END_SRC
+
+Okay let's dig deeper... Wait.
+
+#+BEGIN_SRC 
+$ cat EFI/BOOT/grub/grub.cfg
+GRUB_DEFAULT=0
+GRUB_TIMEOUT=0
+linux /boot/vmlinuz64 libata.allow_tpm=1 quiet base loglevel=3 cde waitusb=10 consoleblank=0 superuser mse-iso rssd-fw-update rssd-fwdir=/opt/firmware
+initrd /boot/corepure64.gz
+boot
+#+END_SRC
+
+It's just Linux! Booted by GRUB!
+
+Well that's a surprise. From now on it's our routine Linux boot stuff. It seems that it is trying to boot the kernel =vmlinuz64= and the payload =corepure64.gz= from ~/boot~, so let's copy these stuff into our EFI partition.
+
+#+BEGIN_SRC bash
+cp -r /mnt/efi/boot /boot
+#+END_SRC
+
+Then, add a new entry to =systemd-boot=. Edit ~/boot/loader/entries/ssd_update.conf~:
+
+#+BEGIN_SRC
+title Crucial MX300 Firmware Update
+linux /Boot/vmlinuz64
+initrd /Boot/corepure64.gz
+options libata.allow_tpm=1 quiet base loglevel=3 cde waitusb=10 consoleblank=0 superuser mse-iso rssd-fw-update rssd-fwdir=/opt/firmware
+#+END_SRC
+
+{{%btw%}}
+Notice it suddenly become ~/Boot/~ here. This is because I have Windows installed on this computer, and Windows create this folder. And since FAT32 is not case sensitive, ~cp~ copies the files into this folder. Should not be a huge deal.
+{{%/btw%}}
+
+That should be all we need.
+
+* Actually flash the firmware
+Now we can reboot and choose the new boot entry we just created. And sure enough, it is Linux. To be specific, it is Tiny Core Linux. Actually quite appropriate if you ask.
+
+Then it is the routine flash. Nothing special. Firmware get update, everyone is happy.
+
+(No picture this time, it's just a boring flash. Even the font is same as our daily Linux tty font.)
