@@ -17,7 +17,9 @@ When used with =coreboot=, an almost completly open source firmware can be built
 
 ThinkPad X220 is a good choice for this combination. It is one of the few hardware supported by coreboot, and it is relatively cheap to grab. Also, there is plenty of documentation about how to do it.
 
-WARNING: It is not trival to go through the whole process. You need at least some knowledge about Linux and command line. Flashing the chip may potentially fry your chip, and if you do it wrong, you may lose the content of the original BIOS and make the motherboard useless. If you want to do it, proceed with caution.
+{{% card warning %}}
+It is not trival to go through the whole process. You need at least some knowledge about Linux and command line. Flashing the chip may potentially fry your chip, and if you do it wrong, you may lose the content of the original BIOS and make the motherboard useless. If you want to do it, proceed with caution.
+{{% /card %}}
 
 * Preparations
 You need:
