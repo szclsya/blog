@@ -2,7 +2,6 @@
 
 * Dependencies
 In order to build, these packages is needed:
-+ pygmentize
 + npm
 + postcss-cli (from npm)
 + autoprefixer (from npm)
