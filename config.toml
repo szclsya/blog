@@ -4,7 +4,11 @@ DefaultContentLanguage = "en"
 title = "Leo's Field"
 theme = "less"
 
-linenos = "table"
+[markup]
+  [markup.highlight]
+    lineNos = true
+    lineNumbersInTable = true
+    noClasses = false
 
 [params]
   description = "Time to change drinks and mix... wait"
