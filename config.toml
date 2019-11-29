@@ -4,10 +4,7 @@ DefaultContentLanguage = "en"
 title = "Leo's Field"
 theme = "less"
 
-pygmentsUseClassic = true
-pygmentsUseClasses = true
-pygmentsCodefences = true
-pygmentsOptions = 'linenos=table'
+linenos = "table"
 
 [params]
   description = "Time to change drinks and mix... wait"
