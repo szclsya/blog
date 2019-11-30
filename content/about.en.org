@@ -17,9 +17,13 @@ This is Leo Shen. But if you see a guy called =szclsya= somewhere, that should b
 + Email: me^{at}szclsya_{dot}me
 + Email: szclsya^{at}gmail_{dot}com
 + Github: [[https://github.com/szclsya][szclsya]]
++ Steam: szclsya
 
 
 ** PGP
 If possible, please contact me via PGP.
 
 PGP KeyID: =91351F513F67552E1ECAAB60498CB4BB3F4A10A2=
+* This blog
+This blog is built with [[https://gohugo.io/][Hugo]]. The theme is written by me and source code can be found at [[https://github.com/szclsya/hugo-theme-less][github]]. The source code of the articles is also open source at [[https://github.com/szclsya/blog][github]]. Feel free to share and remix my work, as long as the license under the article is followed.
+
