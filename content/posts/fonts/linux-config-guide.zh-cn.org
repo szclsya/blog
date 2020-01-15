@@ -86,11 +86,12 @@ Fontconfig 是一个用来 _配置_ 字体渲染的程序。也就是说，fontc
     </edit>
   </match>
 
-  <!-- 字体微调的程度, 可选为 hintnone, hintlight, hintmedium, hintfull. -->
+  <!-- 字体微调的程度, 可选为 hintnone, hintslight (默认), hintmedium, hintfull. -->
   <!-- 简单来说，更高的 hinting 等级可以使字体更锐利，但同时也会损失更多的细节. -->
+  <!-- 如果你的显示器的 DPI 高得不像话 (>=300), 那么就可以关闭 hinting, 因为字体会自然对齐像素. -->
   <match target="font">
     <edit mode="assign" name="hintstyle">
-      <const>hintlight</const>
+      <const>hintslight</const>
     </edit>
   </match>
 
@@ -106,6 +107,14 @@ Fontconfig 是一个用来 _配置_ 字体渲染的程序。也就是说，fontc
 
 这只是一小部分，但是对于普通使用而言调整这些已经足够。如果还是不满意，可以继续查看 [[https://wiki.archlinux.org/index.php/Font_configuration][ArchWiki]].
 
+{{ %btw% }}
+DPI 即为 Dots per inch (每英尺点数), 可简单理解为显示器的像素密度. 
+由于在较低的像素密度下, 字形无法严格对齐像素格, 我们必须通过 hinting 和 抗锯齿 让字形在较低DPI的屏幕上有较好的观感. 
+{{ %/btw% }}
+
+{{ %btw% }}
+为了得到你的显示器的具体 DPI 数值, 可以使用 [[https://www.sven.de/dpi/][DPI Calculator]].
+{{ %/btw% }}
 ** 设置首选字体
 依照自己的选则替换即可.
 #+BEGIN_SRC xml
