@@ -1,5 +1,6 @@
 #+TITLE: Links
 #+DATE: 2019-09-23T00:57:56
+#+MATH: true
 
 * Old friend
 + Chenyijia001 (a.k.a learningis1st) :: [[https://learningis1.st/]]. A long-term friend of mine. Active Wikipedian and PC enthusiast. 
@@ -7,7 +8,7 @@
 * From a magical fishing wire
 Or a copper wire, whatever.
 + ヨイツの賢狼ホロ :: [[https://blog.yoitsu.moe][约伊兹的萌狼乡手札]]. The Goddess of Harvest (according to the book). Active in the #archlinux-cn community and very helpful to the beginners. The guy who lead me into the [[http://localhost:1313/posts/coreboot/x220/][coreboot]] thing and static site generator thing.
-+ Le Code d'Origine as Force0x1 :: [[https://originco.de][OriginCode 札記]]. Still at high school, but already an expert at package maintenance on Arch Linux platform. Good job! {{< del >}}Name may vary based on which course he's currently taking.{{</ del >}}
++ Le Code d'Origine as Force0x1 :: [[https://originco.de][OriginCode 札記]]. Still at high school, but already an expert at package maintenance on Arch Linux platform. Good job! +Name may vary based on which language course he's currently taking.+
 + Mingcong Bai :: [[https://mingcongbai.wtf][POWER to the People]]. History and Russian student who is also the mainstay of the AOSC distro. I mean, wow. Also, "have a distinct taste on computers".
 #+BEGIN_QUOTE
 i.e. OCD
@@ -16,4 +17,5 @@ i.e. OCD
 
 + Farseerfc :: [[https://farseerfc.me/][Farseerfc's Nest]]. Arch Linux TU. Developed the awesome [[https://github.com/farseerfc/pacvis][pacvis]] tool. Resolving dependency issue has never been cooler!
 + felixonmars :: [[https://felixc.at/][Felix's Blog]]. Also Arch Linux TU. Maintain a [[https://www.archlinux.org/packages/?sort=&q=&maintainer=felixonmars&flagged=][crazy amount]] of packages. "Makes Arch Linux not only up to date, but bleeding edge."
-+ Alynx Zhou :: [[https://sh.alynx.moe/][喵's StackHarbor - Whisper to the World]]. An expressive /cat/ I guess? Streams CS:GO and Dota quite a lot on Bilibili. Also a Misaka Mikoto fan. {{< del >}}Hates C++ but loves GObject for some reason.{{< /del >}}
++ Alynx Zhou :: [[https://sh.alynx.moe/][喵's StackHarbor - Whisper to the World]]. An expressive /cat/ I guess? Streams CS:GO and Dota quite a lot on Bilibili. Also a Misaka Mikoto fan. +Spreads anti-C\plus\plus propaganda all the time.+
++ VOID001 :: [[https://void-shana.moe][VOID001's wowo]]. a.k.a /VOID133/, but based on my samples the probability that /VOID001/ is used is 99% with a confidence interval of 95%. Has a deep understanding in operating system, even produced a [[https://www.bilibili.com/video/av12169693/][great series]] on kernel development!
