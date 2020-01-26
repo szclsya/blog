@@ -1,0 +1,28 @@
+#+TITLE: 修复 Android 10 中的剪贴板权限
+#+DATE: 2020-01-25T23:40:40
+#+DESCRIPTION: 剪贴板同步棒极了, 让我们修好它.
+#+TAGS[]: android
+#+LICENSE: cc-sa
+
+Android 10 加入了许多有关用户隐私的保护措施, 但这些措施也造成了一些问题. 其中一点是后台应用再也无法读取剪贴板中的内容(除非是IME或者系统应用)[fn:1]. 这一项改动直接破坏了 KDE Connect 的 =剪贴板同步= 功能, 讨厌得很.
+
+[fn:1] [[https://developer.android.com/about/versions/10/privacy/changes#clipboard-data][Privacy Changes in Android 10 | Android Developers]]
+
+
+好在, Android (目前为止) 还是一个允许用户为所欲为的操作系统. 如果手机解锁并安装了 Magisk 的话, 可以使用一个名为 [[https://github.com/Kr328/Riru-ClipboardWhitelist-Magisk][Riru-ClipboardWhitelist]] 的 Magisk 模块来使用户规定的应用绕过这一个限制.
+
+* 太长不看!
+如果你信得过我的话, 你可以使用我已经配置好 KDE Connect 并打包好的模块. 首先从官方仓库中安装 =Riru Core=, 然后从 [[/stuff/Riru-ClipboardWhitelist-KDEConnected.zip][这里]] 下载模块并安装. 重启过后 KDE Connect 的剪贴板同步应该就能运作如常了.
+
+* 手动安装
+同样先从官方模块仓库中安装 =Riru Core=, 然后从 [[https://github.com/Kr328/Riru-ClipboardWhitelist-Magisk][Github仓库]] 中下载模块的代码. 将里面的所有文件打包至一个 zip 文件的根目录, 并用 =Magisk Manager= 安装.
+
+重启后, 找一个终端模拟器 (JuiceSSH, Termux, etc.), 获取 root 权限后, 使用如下命令:
+
+#+BEGIN_SRC sh
+# 这里, org.kde.kdeconnect_tp 是 KDE Connect 的包名. 你也可以添加其他应用.
+# 将包名替换成你想添加的应用并执行即可.
+echo "org.kde.kdeconnect_tp" >> /data/misc/riru/modules/clipboard_whitelist/packages.list
+#+END_SRC
+
+再重启一次, 现在你所指定的应用应该能如期运作了!

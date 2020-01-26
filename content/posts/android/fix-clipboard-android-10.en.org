@@ -1,0 +1,29 @@
+#+TITLE: Fix clipboard permission on Android 10
+#+DATE: 2020-01-23T12:05:36
+#+DESCRIPTION: Clipboard sync is awesome, let's bring it back.
+#+TAGS[]: android
+#+LICENSE: cc-sa
+
+Android 10 has some great improvements on user privacy, but it also brings problems. One issue I faced is that background applications can no longer access the clipboard [fn:1]. This directly breaks the clipboard share functionality of KDE Connect, and that's annoying.
+
+[fn:1] [[https://developer.android.com/about/versions/10/privacy/changes#clipboard-data][Privacy Changes in Android 10 | Android Developers]]
+
+
+Fortunately, it's Android, and (at least for now) we can do whatever we want to it. And, for sure, there is a solution. There's a Magisk module called [[https://github.com/Kr328/Riru-ClipboardWhitelist-Magisk][Riru-ClipboardWhitelist]] that can inject a list of Apps that bypasses this limitation. 
+
+* The Lazy Way
+If you trust me, you can use the module I packaged which already include KDE Connect's package name. It is avaliable for download [[/stuff/Riru-ClipboardWhitelist-KDEConnected.zip][here]] Just install =Riru-Core= (from module repository) and this zip file via Magisk, do a reboot, and voilà!
+
+* The Manual Way
+Using this module is quite straight forward, just clone the Git repository and add everything in the repository to a zip file. Then install the zip file with Magisk Manager (Require [[https://github.com/RikkaApps/Riru][Riru - Core]], which is avaliable in the official Magisk module repository), and do a reboot.
+
+Then, head toward a shell (JuiceSSH, Termux, whatever you like), obtain root privilege, and type:
+
+#+BEGIN_SRC sh
+# Here, org.kde.kdeconnect_tp is a example. You can also add other apps.
+# Just replace the package name and do this multiple times.
+echo "org.kde.kdeconnect_tp" >> /data/misc/riru/modules/clipboard_whitelist/packages.list
+#+END_SRC
+
+Then do another reboot. Now the clipboard sync capability of KDE Connect should work as before!
+
