@@ -3,20 +3,21 @@
 
 Hi.
 
-我是 Leo 。不过如果你在哪看到了一个叫 =szclsya= 的家伙，那大概率就是我。
+我是 Leo. 如果你在哪看到了一个叫 =szclsya= 的家伙，那大概率就是我.
 
 * ~/me~
 + Undergraduate Mathematics student at University of Waterloo.
-+ 热爱音乐, 有一个 Walkman.
-+ 用 Arch Linux 并快乐着.
-+ Use Emacs & vim, Emacs 多一点.
-+ 使用 {{< del >}}SinkPad{{</ del >}} ThinkPad
++ 热爱音乐, 有一个 Walkman 并[[{{< ref "/posts/walkman/install-arch.zh-cn.org" >}}][用它做奇怪的事情]].
++ 用 [[https://www.archlinux.org][Arch Linux]] 和 [[https://aosc.io][AOSC OS]], 在 AOSC OS 那里有一点微小的贡献.
++ 使用 [[https://github.com/szclsya/.emacs.d][Emacs]] & vim, Emacs 多一点.
++ 使用 +SinkPad+ ThinkPad
 + 有一台 Nintendo Switch, 最喜欢的游戏是 Xenoblade 2.
 
 * 联系我
 + Email: me^{at}szclsya_{dot}me
 + Email: szclsya^{at}gmail_{dot}com
 + Github: [[https://github.com/szclsya][szclsya]]
++ Steam: [[https://steamcommunity.com/id/szclsya/][szclsya]]
 
 
 ** PGP

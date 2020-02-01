@@ -7,17 +7,17 @@ This is Leo Shen. But if you see a guy called =szclsya= somewhere, that should b
 
 * ~/me~
 + Undergraduate Mathematics student at University of Waterloo.
-+ Music enthusiast, have a Walkman.
-+ Use Arch Linux and love it.
-+ Use Emacs & vim, little bit more Emacs.
-+ Use {{<del>}}SinkPad{{</del>}} ThinkPad
++ Music enthusiast, have a Walkman [[{{< ref "/posts/walkman/install-arch.en.org" >}}][and use it to do weird things]].
++ Use [[https://www.archlinux.org][Arch Linux]] && [[https://aosc.io][AOSC OS]], also a contributer to AOSC OS.
++ Use [[https://github.com/szclsya/.emacs.d][Emacs]] & vim, little bit more Emacs.
++ Use +SinkPad+ ThinkPad
 + Have Nintendo Switch, favourite game is Xenoblade Chronicles 2.
 
 * Contact
 + Email: me^{at}szclsya_{dot}me
 + Email: szclsya^{at}gmail_{dot}com
 + Github: [[https://github.com/szclsya][szclsya]]
-+ Steam: szclsya
++ Steam: [[https://steamcommunity.com/id/szclsya/][szclsya]]
 
 
 ** PGP
