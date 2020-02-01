@@ -69,7 +69,9 @@
 {{< del >}}总之别用 Windows 就对了~{{</ del >}}
 {{</ btw >}}
 ** 关于代码高亮
-Hugo 自带代码高亮支持，但是默认的 [[https://github.com/alecthomas/chroma][Chroma]] 支持的语言比较少，所以还是使用 Pygments.
+Hugo 自带代码高亮支持， +但是默认的[[https://github.com/alecthomas/chroma][Chroma]]支持的语言比较少，所以还是使用Pygments.+
+
+*Update 19/11/29:* Hugo 已于 [[https://github.com/gohugoio/hugo/releases/tag/v0.60.0][v0.60.0]] 放弃了 Pygments 支持, 因此不得不转回使用 Chroma. 但是因此编译速度也快了好多, not bad.
 
 Color scheme 来自于 [[https://github.com/mozmorris/tomorrow-pygments][tomorrow-pygments]].
 
@@ -78,9 +80,9 @@ Color scheme 来自于 [[https://github.com/mozmorris/tomorrow-pygments][tomorro
 
 数学公式渲染使用了 \( \KaTeX \). 听说会比 MathJax 快很多.
 
-{{< btw >}}
-有一些带有上标和下标的数学公式暂时无法正常渲染。（例如 \( \lim_{x \to 2} f(x) \) ）。这是 Hugo 使用的 Org-mode 渲染后端的问题，暂时只能通过 shortcode  绕过（这一段在一个 shortcode 中，所以上文公式正常的）。
-{{</ btw >}}
++有一些带有上标和下标的数学公式暂时无法正常渲染。（例如 \( \lim_{x \to 2} f(x) \) ）。这是 Hugo 使用的 Org-mode 渲染后端的问题，暂时只能通过 shortcode  绕过。+
+
+\( \LaTeX \) 支持已经在 go-org [[https://github.com/niklasfasching/go-org/commit/76b157b8ced6eafc30abb373667fb62d6520dc83][76b157b8]] 中加入支持. 所有 LaTeX 公式应该都可以正常渲染.
 ** 关于静态
 既然这是一个博客而不是一个 Web App，自然不需要很多的 JavaScript {{<del>}}（才不是因为我不会呢！）{{</del>}} .
 
@@ -109,5 +111,5 @@ Color scheme 来自于 [[https://github.com/mozmorris/tomorrow-pygments][tomorro
 + [[http://vollkorn-typeface.com/][Vollkorn]] 字体
 + [[https://www.ibm.com/plex][IBM Plex Sans]] 字体
 + [[https://typeof.net/Iosevka/][Iosevka Type]] 字体
-+ [[http://pygments.org/][Pygments]]
++ +[[http://pygments.org/][Pygments]]+
 ...以及无数默默无闻的开源软件.
