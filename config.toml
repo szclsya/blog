@@ -11,7 +11,7 @@ theme = "less"
     noClasses = false
 
 [params]
-  description = "Time to change drinks and mix... wait"
+  description = "Honk honk!"
   author = "Leo Shen"
   staticFileBaseUrl = "https://static.szclsya.me"
 
