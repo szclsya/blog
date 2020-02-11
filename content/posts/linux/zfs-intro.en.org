@@ -1,0 +1,122 @@
+#+TITLE: Have fun with ZFS: Introduction
+#+DATE: 2020-02-09T18:09:54
+#+DESCRIPTION: 
+#+TAGS[]: linux filesystem
+#+LICENSE: cc-sa
+#+TOC: true
+
+For many people, filesystem is pretty boring. On Windows, your only choice is =NTFS= [fn:ntfs]. On macOS, it is =APFS=. There is a little bit more choice on Linux, but =xfs= and =ext4= are good enough and work just fine.
+
+[fn:ntfs] Well we also have =ReFS= on Windows, which is also a CoW filesystem. But it only provides few new features, and Microsoft doesn't seem to provide much support to it, So let's just ignore it for now. 
+
+
+But filesystems can actually be very powerful. With some special design principles, modern filesystems can achieve many astonishing functions in order to protect your data. In this article, we will investigate a filesystem that is truly amazing: ZFS.
+
+* Introduction to filesystems
+In order to understand how ZFS achieves its features, we need to have a basic concept of how filesystems works.
+
+** Early days
+Early file systems (like FAT and its friends) are simple. You have a disk, the file system specify a place to store the index, and that's generally it. When you add a file, the file system write a new record about where should it find the data in the index area, and write the data to the allocated area. And when you delete a file, just erase the record in the index. Simple.
+
+{{% btw %}}
+I'm keeping it really simple here, there are much more things going on under the hood, but let's just don't worry about it.
+{{%/ btw %}}
+
+{{% btw %}}
+FAT file system got its name from =File Association Table=, not because it can use "fat" drives. (Well I thought it was for a period of time...)
+{{%/ btw %}}
+
+But there is an issue: when subjecting to a power loss, such file systems are very fragile: if there is a power loss when a program is still writing data (and the on-disk structure has been changed to accommodate the change the size of the file), the new allocation table would not be updated. And now, you have a broken file system and any new write actions may cause data corruption (since the table and the actual data does not match any more).
+
+** Journaling
+So, in order to solve this, journaling is invented. The concept is that before the file system do anything, it would create an record about what it is gonna to do. So, if a power loss happens (or other issue, like disk suddenly disconnected), a "state" of the file system is stored in the disk. When the power is back, the file system can read the journal and know what's going on, and fix the system accordingly. You may still lose the writing data, but at least the old data is safe.
+
+Most modern operating systems use this type of file system. =NTFS=, =HFS+=, =ext4=, =xfs= are all examples of journal file systems.
+** Copy-on-Write
+But there is yet another approach to solve this issue. Recall that in the journal method, the file system writes data in the original place and write a journal before actually do the operation. In a COW file system, when the program request to change a file, the program is actually writing to a new location allocated by the file system. And only after the write is complete, the allocation table is updated to point to the new location, and the overwritten data is marked free and is ready to be used in the future.
+
+In this method, if a power loss happens, the original data and the allocation table is still intact. And since the new data is written to a place where it is still considered unused, nothing bad would happen.
+
+This method also prevents data loss on unexpected power shortage, and have some very interesting features. For example, implementing snapshot on such structure is really easy. Simply mark the old block as occupied and don't delete them!
+
+However, if you know some basic about computers, you may notice that such method will cause a lot of disk fragmentation. But since recently HDD are becoming the "slow but huge" data pool and we can use SSD as a cache device, the issue is not that worrying as before.
+
+* Why ZFS then?
+Great stuff. But why ZFS?
+
+Compared to conventional file systems, COW file systems can effectively do multiple features very easily. The most obvious one is the snapshot feature we mentioned in the Intro section. We will scratch the surface here and introduce a few more unique features of ZFS.
+
+** Self-healing
+ZFS doesn't need any conventional =fsck= process. This may sounds like magic. The implement sure is, but the principle is actually simple. Every time a block is read, ZFS will check the checksum against what it recorded on the parent block, and if it does not match, ZFS would automatically seek a backup source (like other copy of data on the disk, cached write intentions on write cache, etc.) and provide it to the reading programs. Then, ZFS would mark this block bad, and prevent using it. SMART on file system level, basically.
+
+You may notice that this scheme only applies to active data. For cold data, ZFS relies on a process called =scrub= to make sure nothing goes wrong. This process generally reads all the blocks on the disk and check their checksum. Good ZFS system admin usually use a cron job (or similar stuffs) to run it one per week.
+
+** RAIDZ
+RAID should be a familiar word for many. On ZFS, we use a soft RAID solution called RAIDZ. Compared to a hardware RAID card, RAIDZ is far more flexible and fast. For example, combined with the self-healing capability, sometimes when a disk failure happens, a ZFS pool will still be usable during the rebuild process with only some speed degradation, instead of waiting for a lengthy rebuild process.
+
+** Native compression
+ZFS supports compression to each block. When configured correctly (by using a compression algorithm that is fast enough), it would not only save space but also increase performance.
+
+** Dataset
+ZFS dataset is similar to a separate file system on LVM, but its still using ZFS's POSIX layer. It's especially useful to manage different types of data on a single data pool. For example, you can use a slow and space-efficient compression algorithm on a dataset which stores cold data, and use a faster compression on some more frequently used data.
+
+* Drawbacks
+#+BEGIN_QUOTE
+This sounds awesome! I should migrate to ZFS now, should I?
+#+END_QUOTE
+
+Nope.
+
+Sure ZFS is /really/ awesome, but there are some issues.
+
+** License situation (with Linux)
+OK some history first. Sun Microsystems developed ZFS to replace the aging UFS on their Solaris operating system, and in 2005 its code base is released as a part of OpenSolaris. The issue is the code license is =CDDL=, which is also an open source license but is incompatible with =GPLv2=, which is used by Linux.
+
+This means ZFS cannot be integrated into the mainline Linux kernel tree, and cannot be distributed as pre-compiled modules in the kernel. This means Linux distros cannot distribute ZFS with the system, and the users have to compile the code every time they want to use it.
+
+Additionally, out-of-tree ZFS modules also means it is really hard if you want to install a Linux instance with ZFS as root. If you messed up or the system cannot boot, it's really hard to grab a copy of LiveCD which supports ZFS so that you can fix your system with it.
+
+{{% btw %}}
+Out-of-tree development also means sometimes developers of ZFSonLinux have issue catching up with the latest kernel. This question is especially frequent on rolling-release distros like Arch Linux.
+{{%/ btw %}}
+
+Such inconvenience restricts the application of ZFS on Linux (since it requires a lot of work to set them up in scale).
+So, Linux now has its own COW filesystem called =BtrFS=, but at least for now ZFS has a way better safety record, and is still in active development.
+
+In the other hand, kernels which has permissive license (a good example is FreeBSD's kernel) has ZFS built in and ZFS support there is simply awesome.
+
+** Disk removal
+The most annoying one is that if you have a RAIDZ array, you cannot remove disk from it or shrink the volume of the ZFS partition. Not a huge issue if you are using this on a NAS of somewhat permanent storage system, but if you are using ZFS on a personal system and you "get ideas" frequently, maybe it's not a good idea to use ZFS.
+
+The good news is that since ZFSonLinux [[https://github.com/zfsonlinux/zfs/releases/tag/zfs-0.8.0][v0.8.0]], it is now possible to remove a disk from a simple/mirrored pool.
+
+** Performance
+Yes, performance. Due to the nature of COW file systems, the fragmentation on mechanical hard drives is a big issue. But sill, if you use it as a data pool, it should be fine
+
+** Ridiculous RAM usage
+ZFS uses its own cache model to achieve a better cache hit rate, but it also means it is not accounted into the kernel's =cached= RAM section but =used= RAM. This means when the system is low on RAM, ZFS will not release its cache. So it is recommended to use ZFS on a computer with ample of RAM.
+
+* Givemme Givemme Givemme
+Great! Now you've determined to use ZFS as your file system. What's now?
+
+The best operating system for ZFS now is =FreeBSD=. Since ZFS's CDDL license is compatible with FreeBSD's relatively permissive BSD license, ZFS is actually a part of FreeBSD and you can run FreeBSD with ZFS root without much problem. However, since FreeBSD is not very popular on desktops, it may be best suited to use FreeBSD if you want to build a pure NAS device.
+
+[[https://zfsonlinux.org/][ZFSonLinux]], on the other hand, is an out-of-tree module. But except the latest kernel version, the support should be good enough and you can use =DKMS= to install the modules easily.
+
+macOS also have a port called [[https://openzfsonosx.org/][OpenZFS on OS X]]. It has a long history now and is a pretty decent port. Notice that the most actively developed branch is currently ZFSonLinux, so you may want to disable some features if you want to share the same pool between different ZFS ports. More on that in the future.
+
+Recently, Windows also get a port of ZFS called [[https://github.com/openzfsonwindows/ZFSin][ZFSin]]. The port is relatively new, and due to the close source nature of Windows, the port is not very stable and causes BSoD from time to time. But it's getting more and more stable. and it's really interesting to see the project mature.
+
+* Further readings
+File system is a complicated topic, and ZFS is probably the most complex file system ever created. (Along with its interesting history)
+
+Here is some awesome readings and videos about ZFS and file systems in general, enjoy!
+
++ [[https://www.youtube.com/channel/UC0IK6Y4Go2KtRueHDiQcxow][OpenZFS on YouTube]]
++ [[https://www.freebsd.org/doc/handbook/zfs.html][ZFS in FreeBSD handbook]]
++ [[http://open-zfs.org/wiki/OpenZFS_Developer_Summit][OpenZFS Developer Summit]], if you are interested in some recent development of ZFS.
++ [[http://www.osdevcon.org/2009/slides/zfs_internals_uli_graef.pdf][ZFS Internal Structure]], nerdy stuff.
++ [[https://jrs-s.net/2015/02/03/will-zfs-and-non-ecc-ram-kill-your-data/][Will ZFS and non-ECC RAM kill your data?]], some ideas about the controversial ECC RAM topic.
+
+* Salutations!
+Thanks to everyone who [[http://open-zfs.org/wiki/Contributors][created ZFS]]!
