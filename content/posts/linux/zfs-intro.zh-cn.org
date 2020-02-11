@@ -1,6 +1,6 @@
 #+TITLE: ZFS 入门指北: 基础篇
 #+DATE: 2020-02-09T20:55:17
-#+DESCRIPTION: File system could be fun!
+#+DESCRIPTION: File system can be fun!
 #+TAG[]: linux filesystem
 #+LICENSE: cc-sa
 #+TOC: true

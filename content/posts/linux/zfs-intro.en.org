@@ -1,6 +1,6 @@
 #+TITLE: Have fun with ZFS: Introduction
 #+DATE: 2020-02-09T18:09:54
-#+DESCRIPTION: 
+#+DESCRIPTION: File system can be fun!
 #+TAGS[]: linux filesystem
 #+LICENSE: cc-sa
 #+TOC: true
