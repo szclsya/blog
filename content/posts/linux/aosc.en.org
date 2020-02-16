@@ -1,0 +1,173 @@
+#+TITLE: Way to AOSC OS Maintainer
+#+DATE: 2020-02-16T17:50:40
+#+STARTUP: indent
+#+TOC: true
+
+#+BEGIN_QUOTE
+So you want to make a package, you got the urge to make a package, you got the nerve to make a package, so go ahead...
+#+END_QUOTE
+
+* Introduction
+Building system: 
++ ciel
+  - Used to manage nspawn containers.
++ acbs
+  - Manage tree (like our main tree, aosc-os-acbs)
+  - Call Autobuild3 to (actually) build the thing
++ Autobuild3
+  - Actually read the package info and run the build script
++ pushpkg
+  - Push the built package to the official repository
+
+
+** Release model
+AOSC OS uses a semi-rolling release model. That is, there's no version numbers for AOSC OS (similar to rolling release distros like Arch Linux). However, the does not goes into stable repository immediately. Instead, they have to go through a process until finally get their way into the stable repository.
+
+There are three main useable branches, =stable= and =testing=, and three branchs mainly used for development: =stable-proposed=, =testing-proposed= and =explosive=.
+
+=stable-proposed= is always open for updates, and only security updates is allowed to be pushed directly to this branch. This branch will be merged to =stable= weekly.
+
+=testing-proposed= is the place where new packages and major updates are introduced. This is where most of the work takes place. The developemnt on this branch follows a three-month iteration schedule. At the first two months, developers test the new releases and update them in =testing-proposed= branch. 
+
+At the beginning of the last month, =testing-proposed= get merged into =testing=. During this month, users who enables =testing= repository will receive the updated packages and test them. If everything goes well, at the end of the month, =testing= will be merged into =stable= and thus complete the cycle.
+
+* Set up environment
+The first thing is to install =ciel= on the computer. On AOSC OS, just install ciel from the official repository.
+
+Since we are going to use ciel to manage the build environment, the build process does not have to happen on an AOSC machine. If you are using Arch Linux, you can install ciel from AUR.
+
+Then, we need to create a workspace for ciel. I'll use ~~/ciel~ for demonstration. Notice that ciel will need to be root.
+
+#+BEGIN_SRC bash
+mkdir ~/ciel
+cd ~/ciel
+ciel init
+#+END_SRC
+
+Now, we can load the BuildKit. BuildKit is a minimal AOSC OS variant for the sole purpose to build packages. It contains acbs and Autobuild3, so no additional installation is required.
+
+#+BEGIN_SRC bash
+ciel load-os
+# Or if you have already downloaded BuildKit
+ciel load-os PATH_TO_BUILDKIT
+#+END_SRC
+
+It is always a good idea to keep the OS up-to-date.
+
+#+BEGIN_SRC bash
+ciel update-os
+#+END_SRC
+
+The next step is to load an acbs tree. For this instance, we will work on the official =aosc-os-acbs= tree.
+
+#+BEGIN_SRC bash
+ciel load-tree # By default, ciel will load the official tree.
+# Or, you can just clone the desired repository to ciel/TREE
+#+END_SRC
+
+* Build our very first package!
+Now we have a build environment set-up, we can try to build a package that is already in the tree. Let's build a trivial one, =flac=.
+
+Before that, we need to create an instance for ciel. It is recommended to use separate instance for different branches. Run:
+
+#+BEGIN_SRC bash
+ciel add stable # Since we are going to build on stable
+#+END_SRC
+
+And make sure we are actually on the stable branch.
+
+#+BEGIN_SRC bash
+cd TREE
+git checkout stable
+#+END_SRC
+
+Then, we need to configure ciel to use the correct repositories. In order to prevent incorrect dependencies, the build environment should use packages that matches the branch. For example, we need =stable= repository to build ~stable~ tree, and =testing= and =stable= to build ~testing~ packages.
+
+#+BEGIN_SRC bash
+ciel config -i stable
+#+END_SRC
+
+First enter your info, whether to enable DNSSEC. And when ciel ask if you want to edit ~source.list~, say yes, and modify.
+
+#+BEGIN_SRC INI
+# For building stable packages
+deb https://repo.aosc.io/debs stable main
+
+# For building testing packages
+deb https://repo.aosc.io/debs testing main
+deb https://repo.aosc.io/debs stable-proposed main
+deb https://repo.aosc.io/debs stable main
+
+# And you get the idea.
+#+END_SRC
+
+Now we can actually build the package! Simply type:
+
+#+BEGIN_SRC bash
+ciel build -i stable flac
+# -i is used to select the instance used to build
+#+END_SRC
+
+If there's no error seen and a =Build Summary= is present, it is a success! You should be able to find the generated deb inside ~OUTPUT/debs~.
+
+* Add a new package
+But surely you won't be satisfied by simply building existing packages right? Here we will discover how to construct a new package from scratch.
+
+Dive into the =TREE= folder, you will find a lot of categories of folders, including some begins with =core-= and some begins with =extra-=. These folders are for organizing purposes, and inside them you will find the actual package building files.
+
+We will still use ~flac~ as an example. This package can be found at ~TREE/extra-multimedia/flac~ for obvious reasons. Upon entering the directory, you should see such file structure:
+
+#+BEGIN_SRC 
+.
+├── autobuild
+│   ├── defines
+│   └── patches
+│       └── CVE-2017-6888.patch
+└── spec
+#+END_SRC
+
+We will go through which each file is for.
+
+** ~spec~
+This file is responsible for telling =acbs= where to download the source file, and the version information. A basic ~spec~ file should look like this:
+
+#+BEGIN_SRC bash
+VER=1.3.2 # Version of the software
+REL=4 # Revision number
+SRCTBL="https://downloads.xiph.org/releases/flac/flac-$VER.tar.xz" # Download address for the source code
+CHKSUM="sha256::91cfc3ed61dc40f47f050a109b08610667d73477af6ef36dcad31c31a4a8d53f" # Checksum of the source tarbell
+#+END_SRC
+
+One thing worth noting is the revision number. You can ignore this line if you are creating a new package, but sometimes (like applying an emergency security patch), the version number is not changed, but we still need to inform the package manager on users computer that there is an update available. In these circumstances, just increase the REL by 1 (default is 0). 
+
+** ~autobuild/~ directory
+This is the directory where all the =Autobuild3= scripts lives. =Autobuild3= is a sophisticated build system that can automatically determine things, like which build system to use, which build parameter to use, and so on.
+
+** ~autobuild/defines~
+This file contains the core configuration like:
++ ~PKGNAME~ : Package name 
++ ~PKGDES~ : Package description 
++ ~PKGSEC~ : Section where the package belongs to
++ ~PKGDEP~ : Package dependencies 
++ ~PKGCONFL~ : Package conflicts 
++ ~BUILDDEP~ : Build dependencies (packages which are required during build, but not use)
++ ~PKGRECOM~ : Not mandatory, but recommended dependencies
+
+These are only the most common configuration entries. There are also more configurations, but if the software is fairly standard, these configuration would be enough. Other information like which C compiler flags to use, which build system to use, can be filled automatically by =Autobuild=.
+
+Here is a basic example taken from ~TREE/extra-multimedia/flac~:
+
+#+BEGIN_SRC bash
+PKGNAME=flac
+PKGDES="FLAC analyzing library"
+PKGSEC=libs
+PKGDEP="libogg"
+
+if [ "${CROSS:-$ARCH}" = "amd64" ]; then
+	AUTOTOOLS_AFTER+=" --enable-sse"
+else
+	AUTOTOOLS_AFTER+=" --disable-sse"
+fi
+#+END_SRC
+
+Notice here that you can actually write bash logic inside ~defines~. This is useful when adding platform-specific flags or dependencies, but this is *NOT* a recommended action, and will be prohibited in the future. For adding platform specific info, use ~$VAR__$ARCH~.
