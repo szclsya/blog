@@ -1,4 +1,5 @@
-#+TITLE: Way to AOSC OS Maintainer
+#+TITLE: Way to AOSC OS Maintainer: Basics
+#+DESCRIPTION: This article is sponsered by Commit-O-Matic™
 #+DATE: 2020-02-16T17:50:40
 #+STARTUP: indent
 #+TOC: true
@@ -115,14 +116,24 @@ But surely you won't be satisfied by simply building existing packages right? He
 
 Dive into the =TREE= folder, you will find a lot of categories of folders, including some begins with =core-= and some begins with =extra-=. These folders are for organizing purposes, and inside them you will find the actual package building files.
 
-We will still use ~flac~ as an example. This package can be found at ~TREE/extra-multimedia/flac~ for obvious reasons. Upon entering the directory, you should see such file structure:
+We will still use ~i3~ as an example. This package can be found at ~TREE/extra-wm/i3~ for obvious reasons. Upon entering the directory, you should see such file structure:
 
 #+BEGIN_SRC 
 .
 ├── autobuild
+│   ├── beyond
+│   ├── conffiles
 │   ├── defines
-│   └── patches
-│       └── CVE-2017-6888.patch
+│   ├── overrides
+│   │   └── usr
+│   │       ├── bin
+│   │       │   └── i3exit
+│   │       └── share
+│   │           └── pixmaps
+│   │               └── i3-logo.svg
+│   ├── patches
+│   │   └── 0001-Use-OVER-operator-for-drawing-text.patch
+│   └── prepare
 └── spec
 #+END_SRC
 
@@ -132,13 +143,13 @@ We will go through which each file is for.
 This file is responsible for telling =acbs= where to download the source file, and the version information. A basic ~spec~ file should look like this:
 
 #+BEGIN_SRC bash
-VER=1.3.2 # Version of the software
-REL=4 # Revision number
-SRCTBL="https://downloads.xiph.org/releases/flac/flac-$VER.tar.xz" # Download address for the source code
-CHKSUM="sha256::91cfc3ed61dc40f47f050a109b08610667d73477af6ef36dcad31c31a4a8d53f" # Checksum of the source tarbell
+VER=4.17.1  # Version of the software
+# REL=0 The package revision. If not specified, it's 0.
+SRCTBL="https://i3wm.org/downloads/i3-$VER.tar.bz2" # Download address for the source code
+CHKSUM="sha256::1e8fe133a195c29a8e2aa3b1c56e5bc77e7f5534f2dd92e09faabe2ca2d85f45" # Checksum of the source tarbell
 #+END_SRC
 
-One thing worth noting is the revision number. You can ignore this line if you are creating a new package, but sometimes (like applying an emergency security patch), the version number is not changed, but we still need to inform the package manager on users computer that there is an update available. In these circumstances, just increase the REL by 1 (default is 0). 
+One thing worth noting is the revision number. You can ignore this line if you are creating a new package, but sometimes (like applying an emergency security patch), the version number is not changed, but we still need to inform the package manager on users computer that there is an update available. In these circumstances, just increase the REL by 1. 
 
 ** ~autobuild/~ directory
 This is the directory where all the =Autobuild3= scripts lives. =Autobuild3= is a sophisticated build system that can automatically determine things, like which build system to use, which build parameter to use, and so on.
@@ -158,16 +169,96 @@ These are only the most common configuration entries. There are also more config
 Here is a basic example taken from ~TREE/extra-multimedia/flac~:
 
 #+BEGIN_SRC bash
-PKGNAME=flac
-PKGDES="FLAC analyzing library"
-PKGSEC=libs
-PKGDEP="libogg"
+PKGNAME=i3
+PKGSEC=x11
+PKGDEP="dmenu libev libxkbcommon pango perl-anyevent-i3 perl-json-xs \
+        startup-notification xcb-util-cursor xcb-util-keysyms \
+        xcb-util-wm yajl xcb-util-xrm"
+PKGRECOM="i3lock i3status"
+BUILDDEP="graphviz doxygen xmlto"
+PKGDES="Improved tiling WM (window manager)"
 
-if [ "${CROSS:-$ARCH}" = "amd64" ]; then
-	AUTOTOOLS_AFTER+=" --enable-sse"
-else
-	AUTOTOOLS_AFTER+=" --disable-sse"
-fi
+PKGCONFL="i3-gaps"
 #+END_SRC
 
 Notice here that you can actually write bash logic inside ~defines~. This is useful when adding platform-specific flags or dependencies, but this is *NOT* a recommended action, and will be prohibited in the future. For adding platform specific info, use ~$VAR__$ARCH~.
+
+For a complete list of available parameters, visit [[https://github.com/AOSC-Dev/aosc-os-abbs/wiki/Autobuild3][Wiki for Autobuild3]].
+
+** ~autobuild/prepare~
+This file is the script that will be executed before the build process begins. Usually it is used to prepare files or set environment variables used in the build process.
+
+** ~autobuild/patches/~
+This is a directory containing all the patches that will be applied to the source codes before the build.
+
+Simple as drop it in. :)
+
+* A complete example: ~light~
+That's all the basic knowledge you need to build a simple package! Now, we will try to build a really simple program: [[https://github.com/haikarainen/light][light]].
+
+This program is used to provide a easy command to control the backlight of laptop. Since it only uses file API to interact with the backlight subsystem, this program is very simple and does not require and dependency other that =glibc=. So, we choose this as our example program.
+
+Return to the TREE (assuming you have ciel set-up). First, make sure that you are on the right branch. For the first two months of the cycle, use =testing-proposed=. For the last month, use =explosive=.
+
+Since this program is obviously a utility, we create a directory called ~light~ under the directory ~TREE/extra-utils~.
+
+#+BEGIN_SRC bash
+cd TREE/extra-utils
+mkdir light
+cd light
+#+END_SRC
+
+Then, we create the ~spec~ file. Look up the project website, and we find out the URL and the latest version. After manually check the sha256 of the latest tarball, we can fill in the file.
+
+#+BEGIN_SRC bash
+VER=1.2.1
+SRCTBL="https://github.com/haikarainen/light/archive/v$VER.tar.gz"
+CHKSUM="sha256::53d1e74f38813de2068e26a28dc7054aab66d1adfedb8d9200f73a57c73e7293"
+#+END_SRC
+
+Notice here we replaced the version number inside the tarball URL with an environmental variable ~$VAR~. This is considered as a good practice (since it reduce the modification required when updating the package), and should be used when possible.
+
+Then, we create the ~autobuild~ folder, and create the ~defines~ file.
+
+Since this is an application used in the GUI environment, we give it the section of ~x11~. The complete ~defines~ file looks like the following:
+
+#+BEGIN_SRC bash
+PKGNAME=light
+PKGSEC=x11
+PKGDES="Program to easily change brightness on backlight-controllers."
+#+END_SRC
+
+And we are done! We can now head back to the base folder of ciel, and trigger:
+
+#+BEGIN_SRC bash
+ciel build -i stable light
+#+END_SRC
+
+Although we didn't write anything about how to build this program, ~Autobuild3~ automatically figured out that this should be built with ~autotools~, and build the program successfully. If you want to double check, use ~dpkg-deb -c DEB_FILE~ to check the files inside the deb file.
+
+** git conventions
+AOSC OS has strict conventions about git logs. We will only mention the most used ones here.
+
+For example, we are adding a new package to the tree. Then the log should be something like this:
+
+#+BEGIN_SRC 
+light: new, 1.2.1
+$PKG_NAME: new, $VER
+#+END_SRC
+
+If you are updating the version of an exisiting package, it should be like this:
+
+#+BEGIN_SRC 
+bash: update to 5.2
+$PKG_NAME: update to $NEW_VER
+#+END_SRC
+
+** Push built package to main repository
+After a successful build, maintainers will push local git changes to the main repository the package to the official repository.
+
+The second task can be done using [[https://github.com/AOSC-Dev/scriptlets/tree/master/pushpkg][pushpkg]]. Grab the script, add the script to PATH, make sure it has execute permission, then trigger ~pushpkg~ inside the =OUTPUT= directory. You will need to provide your LDAP credential and the destination repository.
+
+* Epilogue
+That's it! You are now able to create a new package for AOSC OS from scratch now!
+
+However, as you may see, this article only covers the absolute basic of what you need to know. When dealing with more complicated build systems, or updating a batch of packages, there's still many skills to learn. Please refer to the [[##][WIP: Way to AOSC OS Maintainer: Senior]]
