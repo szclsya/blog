@@ -1,15 +1,19 @@
 #+TITLE: Way to AOSC OS Maintainer: Basics
 #+DESCRIPTION: This article is sponsered by Commit-O-Matic™
 #+DATE: 2020-02-16T17:50:40
+#+TAGS[]: linux
 #+STARTUP: indent
+#+LICENSE: cc-sa
 #+TOC: true
 
 #+BEGIN_QUOTE
-So you want to make a package, you got the urge to make a package, you got the nerve to make a package, so go ahead...
+So you want to make a package, you got the urge to make a package, you got the nerve to make a package, so go ahead, so go ahead, so go ahead and make a package we can use!
 #+END_QUOTE
 
+*NOTICE*: This guide assumes you have moderate knowledge about Linux and its CLI (command line interface). Also, you need to have access to a Linux computer with =root= access.
+
 * Introduction
-Build system and tools: 
+We will need these tools in order to build packages. Don't worry about them for now, we will investigate them later.
 + [[https://github.com/AOSC-Dev/ciel/][Ciel]]
   - Manages systemd-nspawn(1) containers.
 + [[https://github.com/AOSC-Dev/acbs/][ACBS]]
@@ -19,7 +23,6 @@ Build system and tools:
   - Reads package specifications and run the build scripts.
 + [[https://github.com/AOSC-Dev/scriptlets/tree/master/pushpkg][pushpkg]]
   - Pushes built packages to the official repository.
-
 
 ** Release model
 AOSC OS is maintained with a semi-rolling release model which cycles every three months (or so). This means that there's no version number attached to a full AOSC OS release (similar to rolling release distros like Arch Linux). However, within the [[https://github.com/AOSC-Dev/aosc-os-abbs][aosc-os-abbs]] tree, there is a set of packages that constructs the [[https://github.com/AOSC-Dev/aosc-os-abbs/blob/testing-proposed/README.CORE.md][AOSC OS Core]], which consists of core runtime (the GNU C Library, etc.) and toolchains (GCC, etc.). This set of packages are updated in a versioned fashion (Core 7.0.1, 7.0.2, 7.1.1, etc.). Additionally, all updates to the AOSC OS repository undergo a period of testing in what is called a =*-proposed= repository.
