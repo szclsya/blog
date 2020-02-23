@@ -1,0 +1,96 @@
+#+TITLE: Record to MiniDisc with correct Track Marker
+#+DATE: 2020-02-23T09:17:34
+#+STARTUP: indent
+#+DRAFT: true
+
+Recently I got my first MiniDisc Walkman at a local Goodwill. It's a Sony MZ-R37, and it is an absolutely gorgeous machine. Most of the recorder is built with aluminum, and the disc loading mechanism is simply too fun to play with.
+
+However, since the machine was released at 1999, it is one of the older MiniDisc recorders, and does not have the fancy capabilities some later models have, like NetMD[fn::NetMD], MDLP[fn::MDLP], and Hi-MD[fn::Hi-MD]. So, the best way to put music onto a disc is limited to use a good old Optical In port. If you are not familiar with MiniDisc recorders, they usually have a Line In port that can accept both an analog input (which is our old friend, 3.5mm Stereo Mini Jack) and a Mini TOSLINK connection.
+
+{{% btw %}}
+Mini TOSLINK has the same diameter as the 3.5mm Stereo Jack, but slightly longer and doesn't have the cooper connectors. It uses the same signal as the TOSLINK (or Optical S/PDIF) connector found at TVs and computers. It can give mobile devices the capability to transfer digital audio streams. But now it is largely replaced by USB audio interfaces.
+{{%/ btw %}}
+
+So, I grabbed a TOSLINK to Mini TOSLINK cable, and connect it to my computer's Optical Out port. Then, it is as simple as letting MPD to use the Optical Out, and then play the desired songs. Everything just works.
+
+Until it doesn't! When transferring audio from a CD player, the player will send a marker when each song ends, so the MiniDisc player can automatically add a marker when each song ends. However, all the players I tried does not have this feature, which makes sense, since MiniDisc is pretty much obsolete now.
+
+* First attempt: A simple bash script!
+When messing around ~alsamixer~, I discovered that ALSA will completely cut the optical stream when the S/PDIF output is set to =mute= (which means, the light on the output will not shine at all). My specific recorder consider this as a =NO SIGNAL= situation, and will stop recording. When the recording resumes, it would add a new track marker to where the new streams comes in. 
+
+So, in theory, we can abuse this behavior to add track maker for each song we record. At first, I decided to use =mpv=, since it almost guarantee to work.
+
+#+BEGIN_SRC bash
+#!/bin/bash
+
+amixer -c 0 set 'IEC958',0 mute # First mute S/PDIF, prevent blanks before first song
+rm temp.wav
+sleep 5s # Give some time to start record on MiniDisc recorder
+
+while read file
+do
+	amixer -c 0 set 'IEC958',0 unmute # Unmute to start recording
+	sleep 1.1s # The recorder need some time to start reading stream. Can adjust time if sense blank before song.
+	mpv --audio-device=alsa/iec958 "$file"
+	amixer -c 0 set 'IEC958',0 mute # Set it back to mute again, thus give us a track mark
+	sleep 1s
+done <$1
+#+END_SRC
+
+This seems to work, as I can see the track number bumping on the front LCD.
+
+[[insert pic here.
+
+However, when I play it back, there is an issue: there's a very brief blank track between each song. This is due to the fack that =mpv= closes the audio interface before we unmute the output. And since a digital signal, the recorder sucessfully capture the very breif second before line 11 and 12, and add a blank track.
+
+* Second attempt: Hack ~ogg123~!
+{{% card info %}}
+If you want to use the method here, don't forget to adjust the commands accordingly so that it fits your sound card. You can find information via executing ~amixer -c CARD_ID~.
+{{%/ card %}}
+
+So, I have to find a way to mute the sound output just before the audio stream is closed. The best way would be to find a simple command line audio player with the minimal number of code, since I don't want to view a huge codebase and potentially mess everything up. Fortunately, there's a program called ~ogg123~, created by the awesome lads at [[https://www.xiph.org/][Xiph.org Foundation]][fn:xiph]. This is a very basic audio player, which is desirable for this project.
+
+[fn:xiph] Seriously, these guys deserve a medal for their work on free audio codecs!
+
+
+After grabbing a copy of [[https://github.com/xiph/vorbis-tools][vorbis-tools]] (which contains ~ogg123~), we can take a look. The main sound output codes are located at ~ogg123/audio.c~. And surely, there is a function called ~void free_audio_devices~. All we have to do shuold be add some codes to mute the output before the free process actually begins.
+
+I can do it cleanly by using the user space library for =ALSA=, but that means I may have to investigate a good amout of hours into learning, and I'm kinda busy. So nah, I just hacked it.
+
+Since we already know how to use ~amixer~ to mute the command, we can just use ~system()~ function (provided by =stdlib.h=) to execute a shell command. It is not expandable and flexible AT ALL, but it works and it does not kill my brain cells. 
+
+So, the ~free_audio_devices~ looks like this now:
+
+#+BEGIN_SRC c
+void free_audio_devices (audio_device_t *devices)
+{
+  audio_device_t *current;
+
+  system("amixer -c 0 set 'IEC958',0 mute");
+
+  while (devices != NULL) {
+    current = devices->next_device;
+    free (devices);
+    devices = current;
+  }
+}
+#+END_SRC
+
+Then we can trigger ~make~ and compile the patched code. Since I don't want to use this version globally, I did not install it. 
+
+Then the updated script should look like this:
+
+#+BEGIN_SRC bash
+#!/bin/bash
+while read file
+do
+	amixer -c 0 set 'IEC958',0 unmute
+	sleep 1.1s
+	/$SOMEWHERE/vorbis-tools-1.4.0/ogg123/ogg123 -d alsa --device-option dev:hw:0,1 "$file"
+	sleep 1s
+done <$1
+#+END_SRC
+
+Since now ~ogg123~ is responsible to mute the output, we can save a line here.
+
+And now it works! No more additional empty tracks, only accurate track data.
