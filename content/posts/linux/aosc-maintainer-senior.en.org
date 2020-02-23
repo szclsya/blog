@@ -1,0 +1,147 @@
+#+TITLE: Way to AOSC OS Maintainer: Senior
+#+DESCRIPTION: This article is also sponsered by Commit-O-Matic™
+#+DATE: 2020-02-17T00:00:00
+#+TAGS[]: linux
+#+STARTUP: indent
+#+TOC: true
+#+LICENSE: cc-sa
+
+#+BEGIN_QUOTE
+So you want to make a package, you got the urge to make a package, you got the nerve to make a package, so go ahead, so go ahead, so go ahead and make a package we can use!
+#+END_QUOTE
+
+After learning the basics about making packages, we can explore some senior techniques.
+
+Note that you don't have to read through this documentation word-by-word. Just take a quick look, remember these concepts, and come back when you encounter a problem.
+
+* Advanced operations in ~Autobuild3~
+We already see that in many packages, ~Autobuild3~ can automatically determines the build system used in the program, and build accordingly. But there are many complex program that require more steps to build and install, or they may require specific build parameters and compiler flags.
+
+We will introduces how we deal with these issues in AOSC OS's build system.
+
+** Manually select different build system
+Sometimes, ~Autobuil3~ may make wrong assumptions about the build system, and causes a build failure. Or, in projects with multiple build systems avaliable, it may choose the non-optimal one.
+
+In these cases, we can manually specify which build system to use by adding =ABTYPE== parameter in the ~autobuild/defines~ file.
+
+Currently, these build types are supported:
+
++ =self= : when a autobuild/build file is provided, uses user created autobuild/build as build script.
++ =autotools= : generally used for GNU autotools-based source trees, with an available configure script in source root, or defined $configure script.
++ =cmake= : used for CMake-based source tree, Autobuild3 detects for CMakeList.txt in the source trees.
++ =waf= : used for waf-based source tree, Autobuild3 detects for waf file/script in the source trees.
++ =plainmake= : used for source trees with a written Makefile, and therefore is able to be built with make command.
++ =haskell= : used for standard Haskell Cabal/Hackage source trees, comes with a set of scripts that provides Haskell package management functions like registering and unregistering.
++ =perl= : used for standard CPAN source trees.
++ =python= : used for standard PyPI source trees.
++ =qtproj= : used for Qt projects with .pro files in the source trees.
++ =ruby= : used for RubyGems source trees.
+
+** Custom build system/compiler parameter
+~Autobuild3~ has a integrated list of optimal build parameters. However, sometimes these parameters are not entirely compatible with the software and may causes some troubles. In these cases, have a look at the [[https://github.com/AOSC-Dev/autobuild3/blob/master/etc/autobuild/ab3_defcfg.sh#L105][Autobuild3's default parameters]], and set them accordingly. A complete parameter list can be found at [[https://github.com/AOSC-Dev/aosc-os-abbs/wiki/Autobuild3][Autobuil3 Wiki page]].
+
+One problem that stands out is LTO (or Link Time Optimization). This technique can improve the run-time efficiency and reduce the size of the binary, but for now enabling LTO causes build failure frequently, and consumes a ton of RAM during build. Autobuild3 uses LTO by default for its improved efficiency, but if you encounter LTO related issues, you can disable it via adding ~NOLTO=1~ in ~autobuild/defines~.
+
+** Custom build scripts
+In some cases, the software uses a special build system (or they don't need a build system at all, like pre-built binaries). In these cases, the maintainer can take over the build process themselves and manually write bash build scripts.
+
+The build script is located in ~autobuild/build~. If this script presents, the build type will be locked to ~self~, which means =Autobuild3= will not try to determine the build system and execute its integrated build script, but simply execute this script.
+
+This script should looks very similar to what you would do to manually compile the program. But one key difference is that you should *NOT* install the compiled program to the system root directory. Instead, it should be installed in ~$PKGDIR~, where later ~Autobuild3~ will make the deb based on the file inside this directory. For example, if the compiled binary is called ~hugo~ in the root of the build directory, you should install it to the ~bin~ directory of the package by:
+
+#+BEGIN_SRC bash
+abinfo "Installing Hugo binary..."
+install -Dm755 hugo "$PKGDIR"/usr/bin/hugo
+#+END_SRC
+
+Notice that we used a simple command to print log information to the build log called ~abinfo~. Just call ~abinfo "Desired build infomation"~ in the script, and it will be recorded into the build log. It is considered a great habit to use this to tell what you are doing around the location, and is very beneficial for maintainer when they try to build your package in the future.
+
+** Minor tweaks after build
+Sometimes ~Autobuild3~ handles the build process just fine, but the finished product need some tweaks (i.e: wrong directory for man pages, need to place the shell completion script into the ~$PKGDIR~, and so on). In this case, we uses the ~autobuild/beyond~ script. It will be executed after the build process.
+
+This is an example taken from ~TREE/extra-web/aria2~. Here, we need to install =aria2c='s bash_completion file, so we use the ~autobuild/beyond~ script.
+
+#+BEGIN_SRC bash
+install -d "$PKGDIR"/usr/share/bash-completion/completions
+install -m644 "$PKGDIR"/usr/share/doc/aria2/bash_completion/aria2c \
+    "$PKGDIR"/usr/share/bash-completion/completions
+
+rm -rf "$PKGDIR"/usr/share/doc/aria2/bash_completion
+#+END_SRC
+
+** ~autobuild/override~ directory
+Sometimes the source code does not contain (or contain an inappropriate version) some files needed for the package. In this cenario, we can place the correct version in the ~autobuild/override~ directory. Notice that files need to be put in their respective directory.
+
+For example, if we are building a package called =foo= and it does not contain the desktop file needed for desktop environment, we can just write our version of desktop file and place it in: 
+
+#+BEGIN_SRC 
+autobuild/overrides/usr/share/foo.desktop
+#+END_SRC
+
+** Advanced management of patches
+We've already learned in the Basics that we can patch the source code by simply place the patch file inside ~autobuild/patches~ directory. But sometimes the patches has to be applied in a specific order in order to work.
+
+We introduces ~autobuild/patches/series~ in order to solve this issue. This file contains a plain list of the names of the patches (one filename per line). If this file is present, ~Autobuil3~ will run the patches based on the specified order.
+
+* Dealing with package groups
+When maintaining packages, it is common that a batch of packages (for example, GNOME shell) need to be updated together. It would be frustrating if we have to manually change the version number and the checksum.
+
+So, there are several automation tools written by the maintainers to simplify this process. We will try to update all packages to the latest _patch releases_ in ~TREE/extra-gnome~ here.
+
+** Update version numbers, automatically.
+First, we have [[https://github.com/AOSC-Dev/piss][PISS]] [fn:PISS], which monitors package updates from upstream and provide an API that contains these infomation.
+
+[fn:PISS] A great name, I know...
+
+
+In order to actually utilize these infomation, there is a script called [[https://github.com/AOSC-Dev/scriptlets/tree/master/findupd][findupd]], which can automatically download the infomation from =PISS= and change the corresponding version in package's ~spec~ file. Just download the script, put it into your ~PATH~, and trigger:
+
+#+BEGIN_SRC bash
+cd TREE/
+findupd-stable extra-gnome/
+#+END_SRC 
+
+Then, have a look at ~git diff~, you should be able to see a bunch of changes on various of ~VAR~ lines.
+
+If you are dealing with major version bumps, just use ~findupd~ instead of ~findupd-stable~.
+
+** Update checksums, automatically.
+This is not enough, however. Although the ~VER~ has been modified, the checksum is still for the old tarball, and since it does not match with the actual checksum for the new tarball, the build would not pass.
+
+There's also ways to automate this process, but there's not a standard script yet. However, at least one maintainer uses the following method:
+
+#+BEGIN_SRC bash
+cd TREE/
+# First, generate a temporary group.
+git --no-pager diff --name-only | grep spec | sed 's/\/spec//' > groups/gnome-changes
+# Use addchksum.py to generate a patch of all the checksums
+for i in `cat groups/gnome-changes`; do; python3 ../abbs-meta/tools/addchksum.py $i/spec 2> dev/null\ndone > checksums.patch
+# Then, apply the patch
+patch -Np0 -i checksums.patch
+#+END_SRC
+
+After this, checksums should be up-to-date.
+
+** Build, automatically.
+Then we can try to build the new packages. This should be as simple as:
+
+#+BEGIN_SRC bash
+cd ciel/ # Enter ciel root directory
+ciel build -i INSTANCE groups/gnome-changes
+#+END_SRC
+
+** Commit changes, automatically.
+If all packages are built successfully, we can go ahead and commit our changes. There is also a script for that, called [[https://github.com/AOSC-Dev/scriptlets/tree/master/commit-o-matic][commit-o-matic]]. Similar with ~findupd~, just download the script and put it into your ~PATH~ and go ahead to trigger the script.
+
+Note that if you encounter a build failure and have to do some modification, you must note that in the git log. Thus, before hitting ~commit-o-matic~, you should remove the modified package from the temporary group and commit it manually first.
+
+#+BEGIN_SRC bash
+commit-o-matic.sh groups/gnome-changes
+#+END_SRC
+
+** Push changes, automatically.
+Finally, we can push the built packages to the main repository.
+
+#+BEGIN_SRC bash
+pushpkg LDAP_IDENTITY BRANCH
+#+END_SRC
