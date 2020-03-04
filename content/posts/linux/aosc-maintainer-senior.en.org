@@ -13,7 +13,7 @@ This article has been officially published in the [[https://wiki.aosc.io/develop
 So you want to make a package, you've got the urge to make a package, you've got the nerve to make a package, so go ahead, so go ahead, so go ahead and make a package we can use!
 #+END_QUOTE
 
-After learning the [[aosc-maintainer-basic.en.org][basics]] about building packages, we can now start exploring some advanced techniques.
+After learning the [[{{< ref "aosc-maintainer-basic.en.org" >}}][basics]] about building packages, we can now start exploring some advanced techniques.
 
 Pleaese note that you don't have to read this documentation word-by-word, as it should serve as a point of reference for your future work. Just take a quick look, remember these concepts, and come back when you encounter a problem.
 
