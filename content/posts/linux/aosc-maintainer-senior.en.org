@@ -3,8 +3,11 @@
 #+DATE: 2020-02-17T00:00:00
 #+TAGS[]: linux
 #+STARTUP: indent
-#+TOC: true
 #+LICENSE: cc-sa
+
+{{% card info %}}
+This article has been officially published in the [[https://wiki.aosc.io/developers/intro-to-package-maintenance][AOSC Wiki]]. The following information will not receive any update.
+{{%/ card %}}
 
 #+BEGIN_QUOTE
 So you want to make a package, you've got the urge to make a package, you've got the nerve to make a package, so go ahead, so go ahead, so go ahead and make a package we can use!
