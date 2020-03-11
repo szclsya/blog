@@ -18,5 +18,5 @@ i.e. OCD
 
 + Farseerfc :: [[https://farseerfc.me/][Farseerfc's Nest]]. Arch Linux TU. Developed the awesome [[https://github.com/farseerfc/pacvis][pacvis]] tool. Resolving dependency issue has never been cooler! Also have a great interest in filesystem implementation.
 + felixonmars :: [[https://felixc.at/][Felix's Blog]]. Also Arch Linux TU. Maintain a [[https://www.archlinux.org/packages/?sort=&q=&maintainer=felixonmars&flagged=][crazy amount]] of packages. "Makes Arch Linux not only up to date, but bleeding edge."
-+ Alynx Zhou :: [[https://sh.alynx.moe/][喵's StackHarbor - Whisper to the World]]. An expressive /cat/ I guess? Streams CS:GO and Dota quite a lot on Bilibili. Also a Misaka Mikoto fan. +Spreads anti-C\plus\plus propaganda all the time.+
++ Alynx Zhou :: [[https://sh.alynx.one/][喵's StackHarbor - Whisper to the World]]. An expressive /cat/ I guess? Streams CS:GO and Dota quite a lot on Bilibili. Also a Misaka Mikoto fan. +Spreads anti-C\plus\plus propaganda all the time.+
 + VOID001 :: [[https://void-shana.moe][VOID001's wowo]]. a.k.a /VOID133/, but based on my samples the probability that /VOID001/ is used is 99% with a confidence interval of 95%. Has a deep understanding in operating system, even produced a [[https://www.bilibili.com/video/av12169693/][great series]] on kernel development!
