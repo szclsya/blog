@@ -1,0 +1,66 @@
+#+TITLE: Build Fcitx5 IM module for proprietary software with its Qt library
+#+DATE: 2020-03-18T01:19:18
+#+DESCRIPTION: Please, make stuff open source...
+#+TAGS[]: linux fcitx
+#+LICENSE: cc-sa
+#+TOC: true
+
+So there's some really interesting stuff going on with Fcitx5, and for most time it has been stable enough to replace the aging Fcitx4. 
+
+For most open source software, they uses Qt Library provided by the operating system, and so they have no problem loading the corresbonding IM module. But for some proprietary software, they have its own Qt library (likely due to the incompability between different Qt versions), which does not want to work with the system IM module at all. Yikes.
+
+So we are gonna to fix it! The author of Fcitx, [[https://www.csslayer.info/][csslayer]], has already wrote an awesome article about this topic (which you can find it [[https://www.csslayer.info/wordpress/fcitx-dev/a-case-study-how-to-compile-a-fcitx-platforminputcontext-plugin-for-a-proprietary-software-that-uses-qt-5/][here]]). This article just explain some more details about the prosedure and change some steps to make it work with ~Fcitx5~.
+
+* Prepare the stuff
+For obvious reasons, you will need to build the library with the same Qt version that the absolutely proprietary software. Just take a look at where the Qt libraries live in, and some of them has the exact version number at the end of their file name (something like =libQt5Core.so.5.9.6=).
+
+If they don't have a version number in their file name (like ~Mathematica~), you can also just check the contents of the library. Use the following command:
+
+#+BEGIN_SRC bash
+strings libQt5Core.so.5 | grep "Qt 5"
+#+END_SRC
+
+should give you an exact version.
+
+Then, we will need to download the corresbonding version of Qt from Qt website. In this example, we will try to add Fcitx5 support to Zoom, and (for now) they are using Qt 5.9.6, so just download the installer from [[https://download.qt.io/official_releases/qt/5.9/5.9.6/][here]] and install it. We only need Qt itself for Desktop (Something like ~Desktop gcc 64bit~).
+
+Also, we will need a compiled version ~fcitx5~ in the system. In Arch Linux and AOSC OS, this can be easily done by installing the package from official repository.
+
+Also, you will need ~extra-cmake-modules~, also avaliable in official repository.
+
+* Compile the module.
+Clone the [[https://github.com/fcitx/fcitx5-qt][fcitx5-qt]] repository, and run this in the repository:
+
+#+BEGIN_SRC bash
+# $QT_PATH is where you install your Qt just now.
+cmake -DCMAKE_PREFIX_PATH=$QT_PATH/Qt5.9.6/5.9.6/gcc_64 -DENABLE_QT4=0 .
+#+END_SRC
+
+It should go very smoothly if you have everything prepared.
+
+Then, head toward ~$REPO/qt5/platforminputcontext~, and run 
+
+#+BEGIN_SRC bash
+make VERBOSE=1
+#+END_SRC
+
+And it should spill out a ~libfcitx5platforminputcontextplugin.so~ we need. Hooray!
+
+* Relink the module to the right Qt library
+But not so fast. Since during the build, it is using the Qt library from our Qt installation, not the actual Qt libray the proprietary software is actually using. Sometimes the library will (magically) work, but we'd still better link it to the correct library the program is going to use.
+
+Check the output for the last output, there should be something like this:
+
+#+BEGIN_SRC bash
+/bin/c++ -fPIC -Wall -Wextra  -Wl,--no-undefined -Wl,--as-needed  -shared  -o libfcitx5platforminputcontextplugin.so CMakeFiles/fcitx5platforminputcontextplugin.dir/fcitx5platforminputcontextplugin_autogen/mocs_compilation.cpp.o CMakeFiles/fcitx5platforminputcontextplugin.dir/qfcitxplatforminputcontext.cpp.o CMakeFiles/fcitx5platforminputcontextplugin.dir/qtkey.cpp.o CMakeFiles/fcitx5platforminputcontextplugin.dir/main.cpp.o  -Wl,-rpath,/home/sya/Qt5.9.6/5.9.6/gcc_64/lib:/home/sya/Temp/fcitx5-qt/qt5/dbusaddons: /usr/lib/libFcitx5Utils.so.1.0 /home/sya/Qt5.9.6/5.9.6/gcc_64/lib/libQt5X11Extras.so.5.9.6 /usr/lib/libxcb.so ../dbusaddons/libFcitx5Qt5DBusAddons.so.1.0 /usr/lib/libxkbcommon.so /home/sya/Qt5.9.6/5.9.6/gcc_64/lib/libQt5Gui.so.5.9.6 /home/sya/Qt5.9.6/5.9.6/gcc_64/lib/libQt5DBus.so.5.9.6 /home/sya/Qt5.9.6/5.9.6/gcc_64/lib/libQt5Core.so.5.9.6
+#+END_SRC
+
+Note that at the end, the library is dynamically linked to the Qt libraries in our Qt installation. That's not correct. We need to replace it with the Qt libary found in the software. Replace the path with the actual location of Qt lib in the proprietary software. The end result should look like this (still use zoom as an example):
+
+#+BEGIN_SRC bash
+/usr/bin/c++ -fPIC -Wall -Wextra  -Wl,--no-undefined -Wl,--as-needed  -shared  -o libfcitx5platforminputcontextplugin.so CMakeFiles/fcitx5platforminputcontextplugin.dir/fcitx5platforminputcontextplugin_autogen/mocs_compilation.cpp.o CMakeFiles/fcitx5platforminputcontextplugin.dir/qfcitxplatforminputcontext.cpp.o CMakeFiles/fcitx5platforminputcontextplugin.dir/qtkey.cpp.o CMakeFiles/fcitx5platforminputcontextplugin.dir/main.cpp.o  -Wl,-rpath,/opt/zoom:/home/sya/fcitx5/fcitx5-qt/qt5/dbusaddons: /usr/lib/libFcitx5Utils.so.1.0 /opt/zoom/libQt5X11Extras.so.5.9.6 /usr/lib/libxcb.so ../dbusaddons/libFcitx5Qt5DBusAddons.so.1.0 /usr/lib/libxkbcommon.so /opt/zoom/libQt5Gui.so.5.9.6 /opt/zoom/libQt5DBus.so.5.9.6 /opt/zoom/libQt5Core.so.5.9.6
+#+END_SRC
+
+After this, we can now copy the generated library to the destination folder, which is usually located in =platforminputcontexts= inside the proprietary software's Qt library directory.
+
+And then, everything should work.
