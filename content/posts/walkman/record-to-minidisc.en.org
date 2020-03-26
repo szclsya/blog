@@ -1,11 +1,14 @@
 #+TITLE: Record to MiniDisc with correct Track Marker
-#+DATE: 2020-02-23T09:17:34
+#+DATE: 2020-03-26T00:19:12
+#+DESCRIPTION: "It still feels good to pick songs to fit on a physical thing."
+#+TAGS[]: walkman linux
+#+LICENSE: cc-sa
+#+TOC: true
 #+STARTUP: indent
-#+DRAFT: true
 
 Recently I got my first MiniDisc Walkman at a local Goodwill. It's a Sony MZ-R37, and it is an absolutely gorgeous machine. Most of the recorder is built with aluminum, and the disc loading mechanism is simply too fun to play with.
 
-However, since the machine was released at 1999, it is one of the older MiniDisc recorders, and does not have the fancy capabilities some later models have, like NetMD[fn::NetMD], MDLP[fn::MDLP], and Hi-MD[fn::Hi-MD]. So, the best way to put music onto a disc is limited to use a good old Optical In port. If you are not familiar with MiniDisc recorders, they usually have a Line In port that can accept both an analog input (which is our old friend, 3.5mm Stereo Mini Jack) and a Mini TOSLINK connection.
+However, since the machine was released at 1999, it is one of the older MiniDisc recorders, and does not have the fancy capabilities some later models have, like NetMD, MDLP, and Hi-MD. So, the best way to put music onto a disc is limited to use a good old Optical In port. If you are not familiar with MiniDisc recorders, they usually have a Line In port that can accept both an analog input (which is our old friend, 3.5mm Stereo Mini Jack) and a Mini TOSLINK connection.
 
 {{% btw %}}
 Mini TOSLINK has the same diameter as the 3.5mm Stereo Jack, but slightly longer and doesn't have the cooper connectors. It uses the same signal as the TOSLINK (or Optical S/PDIF) connector found at TVs and computers. It can give mobile devices the capability to transfer digital audio streams. But now it is largely replaced by USB audio interfaces.
@@ -94,3 +97,15 @@ done <$1
 Since now ~ogg123~ is responsible to mute the output, we can save a line here.
 
 And now it works! No more additional empty tracks, only accurate track data.
+
+* File format conversion: make life easier.
+So the recording process is way easier. No more manual operation, eh?
+
+Well, if all your music is in CD quality (or less), just like in the 90s, that's it. However, for more advanced music format (like DSD and FLAC with higer bit rate), the MiniDisc recorder will be confused about the crazy burst of data, and won't record them at all.
+
+So, we still have to somehow downsample the audio file. Luckily, that can also be automated too. I just used ffmpeg to convert the the audio sample to 16bit, 48000Hz (which is probably the best quality the little recorder can accept). Since the script has become pretty long, I won't quote it here. You can find the exact script I use at [[https://github.com/szclsya/dotfiles/blob/master/bin/record_minidisc][here]].
+
+* Done!
+And that's it! Now, we can create an awesome MiniDisc mixtape with the correct track marker easily with a command. The only drawback for now is that the track name is still lacking, but it is not a huge deal for me.
+
+Enjoy your music!
