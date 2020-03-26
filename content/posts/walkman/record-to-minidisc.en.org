@@ -44,7 +44,7 @@ This seems to work, as I can see the track number bumping on the front LCD.
 
 [[insert pic here.
 
-However, when I play it back, there is an issue: there's a very brief blank track between each song. This is due to the fack that =mpv= closes the audio interface before we unmute the output. And since a digital signal, the recorder sucessfully capture the very breif second before line 11 and 12, and add a blank track.
+However, when I play it back, there is an issue: there's a very brief blank track between each song. This is due to the fack that =mpv= closes the audio interface before we unmute the output. And since a digital signal, the recorder successfully capture the very brief second before line 11 and 12, and add a blank track.
 
 * Second attempt: Hack ~ogg123~!
 {{% card info %}}
@@ -56,9 +56,9 @@ So, I have to find a way to mute the sound output just before the audio stream i
 [fn:xiph] Seriously, these guys deserve a medal for their work on free audio codecs!
 
 
-After grabbing a copy of [[https://github.com/xiph/vorbis-tools][vorbis-tools]] (which contains ~ogg123~), we can take a look. The main sound output codes are located at ~ogg123/audio.c~. And surely, there is a function called ~void free_audio_devices~. All we have to do shuold be add some codes to mute the output before the free process actually begins.
+After grabbing a copy of [[https://github.com/xiph/vorbis-tools][vorbis-tools]] (which contains ~ogg123~), we can take a look. The main sound output codes are located at ~ogg123/audio.c~. And surely, there is a function called ~void free_audio_devices~. All we have to do should be add some codes to mute the output before the free process actually begins.
 
-I can do it cleanly by using the user space library for =ALSA=, but that means I may have to investigate a good amout of hours into learning, and I'm kinda busy. So nah, I just hacked it.
+I can do it cleanly by using the user space library for =ALSA=, but that means I may have to investigate a good amount of hours into learning, and I'm kinda busy. So nah, I just hacked it.
 
 Since we already know how to use ~amixer~ to mute the command, we can just use ~system()~ function (provided by =stdlib.h=) to execute a shell command. It is not expandable and flexible AT ALL, but it works and it does not kill my brain cells. 
 
@@ -103,9 +103,9 @@ So the recording process is way easier. No more manual operation, eh?
 
 Well, if all your music is in CD quality (or less), just like in the 90s, that's it. However, for more advanced music format (like DSD and FLAC with higer bit rate), the MiniDisc recorder will be confused about the crazy burst of data, and won't record them at all.
 
-So, we still have to somehow downsample the audio file. Luckily, that can also be automated too. I just used ffmpeg to convert the the audio sample to 16bit, 48000Hz (which is probably the best quality the little recorder can accept). Since the script has become pretty long, I won't quote it here. You can find the exact script I use at [[https://github.com/szclsya/dotfiles/blob/master/bin/record_minidisc][here]].
+So, we still have to somehow downsample the audio file. Luckily, that can also be automated too. I just used ~ffmpeg~ to convert the audio sample to 16bit, 48000Hz (which is probably the best quality the little recorder can accept). Since the script has become pretty long, I won't quote it here. You can find the exact script I use at [[https://github.com/szclsya/dotfiles/blob/master/bin/record_minidisc][here]].
 
 * Done!
-And that's it! Now, we can create an awesome MiniDisc mixtape with the correct track marker easily with a command. The only drawback for now is that the track name is still lacking, but it is not a huge deal for me.
+And that's it! Now, we can create an awesome MiniDisc mix tape with the correct track marker easily with a command. The only drawback for now is that the track name is still lacking, but it is not a huge deal for me.
 
 Enjoy your music!
