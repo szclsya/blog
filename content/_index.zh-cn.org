@@ -4,7 +4,9 @@
 /Where is the English version? Please use the translation button on the top left./
 
 * Hello there
-这里是 Leo 在网上的一块园地。现在还是一片荒芜，不过假以时日说不定会变得有趣起来。
+这里是 Leo 在网上的一块园地.
 
-如果你想看看我的文字，[[/zh-cn/posts][档案室]] 在这里。
+我会在这里保留我生命中的一些有趣而独特的记忆碎片. 至于无聊的部分, 我想你已经在别处看的够多了.
+
+如果你想看看我的文字，[[/zh-cn/posts][档案室]] 在这里. 或者也可以以 [[https://szclsya.me/tags/][标签]] 浏览. 如果你真的很无聊的话, 也可以试着看看有没有什么荒芜的角落? 也许会找到什么有趣的东西, 谁知道呢. ;)
 

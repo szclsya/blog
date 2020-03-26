@@ -23,6 +23,8 @@ Hi.
 ** PGP
 如果可能的话，用PGP联系我吧.
 
-PGP KeyID: =91351F513F67552E1ECAAB60498CB4BB3F4A10A2=
++PGP KeyID: =91351F513F67552E1ECAAB60498CB4BB3F4A10A2= 已停止使用.+
+
+PGP KeyID: =A8A24328D9D4EEE5A50DD9E196F7202214647A8B=. 或者直接从 [[http://szclsya.me/public.asc][这里]] 下载公钥.
 * 关于这博客
-这个博客是由 [[https://gohugo.io/][Hugo]] 生成的. 主题由本人撰写并开源于 Github. 博文使用 [[https://orgmode.org/][Org mode]] 撰写, 亦开源于 [[https://github.com/szclsya/blog][Github]]. 在遵循文章中注明的协议(通常是 署名-相同方式共享 4.0 国际)的前提下, 请随意转载.
+这个博客是由 [[https://gohugo.io/][Hugo]] 生成的. 主题由本人撰写并开源于 Github. 博文使用 [[https://orgmode.org/][Org-mode]] 撰写, 亦开源于 [[https://github.com/szclsya/blog][Github]]. 在遵循文章中注明的协议(通常是 署名-相同方式共享 4.0 国际)的前提下, 请随意转载.

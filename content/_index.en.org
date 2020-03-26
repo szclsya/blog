@@ -4,7 +4,10 @@
 /中文版呢? 请使用左上角的翻译按钮./
 
 * Hello there
-This is a little field of Leo. Not much to see now, but may get interesting later.
+This is a little field of Leo on the magical Internet. 
 
-If you want to see something I write, [[/posts][here]] is all my articles.
+I will try to write down some interesting and unique aspects of my life here. As of the boring part, well, I believe you've seen enough of them.
+
+If you want to see something I write, [[/posts][here]] is all my articles. If you wish, you can also browse them in [[https://szclsya.me/tags/][tags]]. Or if you are really boring, why not try to find some non-existing pages? Just in case there's something interesting. ;)
+
 
