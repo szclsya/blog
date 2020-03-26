@@ -1,4 +1,4 @@
-#+TITLE: Record to MiniDisc with correct Track Marker
+#+TITLE: Record to MiniDisc with correct Track Marker on Linux
 #+DATE: 2020-03-26T00:19:12
 #+DESCRIPTION: "It still feels good to pick songs to fit on a physical thing."
 #+TAGS[]: walkman linux
