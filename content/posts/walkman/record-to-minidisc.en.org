@@ -42,8 +42,6 @@ done <$1
 
 This seems to work, as I can see the track number bumping on the front LCD.
 
-[[insert pic here.
-
 However, when I play it back, there is an issue: there's a very brief blank track between each song. This is due to the fack that =mpv= closes the audio interface before we unmute the output. And since a digital signal, the recorder successfully capture the very brief second before line 11 and 12, and add a blank track.
 
 * Second attempt: Hack ~ogg123~!
