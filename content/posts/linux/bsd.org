@@ -1,0 +1,44 @@
+* Install
+Brand new disk, create ZFS partition, will automatically ask you to create EFI partition. Select YES.
+
+* Config
+Change ~/etc/pkg/FreeBSD.conf~ to change pkg mirror.
+
+Install sudo, change user to wheel group, use visudo to toggle sudo privilege for wheel group.
+
+Install basic stuff: git fish vim emacs tmux
+
+Import my pool: zfs import homeTank
+
+* NAS Features
+** NFS
+Don't use ZFS's internal sharenfs system since that's buggy on FreeBSD. Just use NFS directly.
+
+Change NTP server via modifing ~/etc/ntp.conf~. Change this line:
+
+#+BEGIN_SRC 
+pool cn.ntp.org.cn iburst
+#+END_SRC
+
+Add your usual NFS mount fields in ~/etc/exports~, and to enable NFSv4 support, add a line to the top. It should look like this:
+
+#+BEGIN_SRC conf
+V4: /
+/data/blah -ro
+/blah/blah
+#+END_SRC
+
+Add these to =/etc/rc.conf=: 
+
+#+BEGIN_SRC config
+nfs_server_enable="YES"                                          # Enable the NFS Server
+nfs_server_flags="-u -t -n 6"                                    # -u(dp), -t(cp), -n(umber of servers to create (6), use between 4 and 6)
+nfsv4_server_enable="YES"                                        # Enable NFSv4 server
+nfsuserd_enable="YES"                                            # NFSv4 user/group name mapping daemon
+rpcbind_enable="YES"                                             # Run the portmapper service
+mountd_enable="YES"
+mountd_flags="-r"                                                # Flags to mountd
+#+END_SRC
+
+** Samba
+Install =samba410= from pkg. Add ~samba_server_enable="YES"~ to =/etc/rc.conf=.
