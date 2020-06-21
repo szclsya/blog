@@ -44,9 +44,9 @@ Well, JACK is for you! To be fair, JACK is NOT designed to be a general purpose 
 However, since the internal mixer of JACK is designed to be used in professional audio production works, it's quality is remarkable. Many people just use as an alternative to a more general purpose audio server but with greater flexibility and quality. You want to stream your music to your bud on a video conference? No issue! Just connect the output from the music player to the input of the video conferencing software, and that's it.
 
 Sounds great, eh? So why PulseAudio still takes over the Linux desktop scene? Well, JACK require additional work to be set up. You may need to manually select a bit rate and buffer size that your sound card can actually handle, or you will encounter glitchy sounds. Also, the great flexibility means user may have to manually connect the source to the desired output.
-* So what should I change?
+* So what should I use?
 For a typical desktop user, PulseAudio should be a good-enough choice for most people. If you encounter any audio fidelity issues, it may just because PulseAudio failed to detect the optimal settings for the sound card, or simply because the sound card's driver implementation is buggy. Take a look at [[https://wiki.archlinux.org/index.php/PulseAudio/Troubleshooting#Audio_quality][PulseAudio/Troubleshooting]] on ArchWiki, and you should be good.
 
 If you want to do some music production, definitely check out JACK. You will need some settings (give JACK realtime privilege, find optimal setting for your sound card, etc.), but after that, JACK's flexibility and quality will impress you.
 
-For some special circumstance, like you are using an external USB DAC and you don't need any mixing, you can just directly use ALSA. The music player application can directly send the audio stream (even DSD stream, if you wish) to the sound card, and let the sound card do all the fancy job it promised.
+For some special circumstance, like you are using an external USB DAC and you don't need any mixing, you can just directly use ALSA. The music player application can directly send the audio stream (even DSD stream, if you are really into this) to the sound card, and let the sound card do all the fancy job it promised.
