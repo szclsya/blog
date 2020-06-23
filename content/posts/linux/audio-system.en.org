@@ -6,47 +6,50 @@
 #+LICENSE: cc-sa
 #+DRAFT: true
 
-You may never pay attention to the audio system in Linux. You install a desktop environment (or, just install the system that ships with a graphical user interface), and the sound just works. You may find the sound to be "good enough", and take it as granted.
+You may have never paid attention to the Linux audio system - you install a desktop environment (or, just install a system that ships with a graphical user interface), and the sound just works. Chances are, the sound would be "good enough," and you would take it as it is.
 
-Under the hood though, Linux has a quite complicated audio subsystem. If you are interested in how Linux turn your music file into some physical movement in the air, or if you encounter some issues about sound system and want a grand picture so that you can figure out which part went wrong, here's an introduction for you.
+Under the hood though, Linux has quite a complicated audio subsystem. If you are interested in how Linux turns your music file into some physical movement in the air or, if you ran into some trouble with the sound system, and wanted an overview so that you could figure out which part went wrong, here's an introduction for you.
 
-* A Grand Look
+* An overview
 So, you have a piece of music you want to play. What would you do?
 
-First, we ~decode~ the audio file into raw waveform. The music file may not directly contain the waveform of the sound (because that takes a lot of storage space). Audio files like =mp3= and =flac= use compression to help reduce the file size. So we have to turn this into a raw waveform so that our sound card can understand.
+First, we ~decode~ the audio file into raw waveform. The audio file may not contain raw waveforms, as it would take up a lot of storage. Audio files like =.mp3= and =.flac= use compression to help reduce file sizes. So by using a decoder, we convert compresed audio into raw waveforms, so that our sound card can understand.
 
-Then, we feed the waveform into an ~sound server~. You may want to watch a YouTube video while a Zoom meeting is happening simultaneously, so we will need a sound server that mix multiple audio sources together, and send them to the sound hardware.
+Then, we feed the waveforms into an ~sound server~. For instance, (for some reason) you may want to watch a YouTube video while a Zoom meeting is happening simultaneously, so we will need a sound server that mixes multiple audio streams together, and send them to the sound hardware.
 
-Finally, we put the mixed audio stream into the ~sound card driver~. Since it is already processed by the sound server, the driver can simply throw the audio stream to the sound card and let it do its job.
+Finally, we feed the mixed audio stream to the ~sound card driver~. Since it is already processed by the sound server, the driver can simply throw the audio stream to the sound card and let it do its job.
 
-* How Linux do it
-Sounds pretty simple. So how does Linux implement such architecture?
+* How Linux does it
+So how does Linux implement such architecture?
 
 ** ALSA: The sound card driver
 To be fair, ALSA is a complete audio architecture (it is called =Advanced Linux Sound Architecture= after all), but now in many cases, it is just used as a sound card driver. We will stick to the real world case here.
 
-ALSA is the guy who actually talk to the hardware. It provide an interface so that the applications can set the specification the audio card should use (bit rate, bit depth, all those nerdy stuff) and send the audio stream.
+ALSA talks to the hardware directly. It provides an interface so that applications can set specifications that the audio card should use (bit rate, bit depth, all those nerdy stuff) and send audio streams.
 
-The big downside of using ALSA directly is that it is somewhat tricky to let multiple applications play at the same time. It is surely possible, it is just a little tricky. Also, it is hard to control the volume for each application. So on most desktop environments, a sound server is used.
+A big downside of using ALSA directly is that it is somewhat tricky to let multiple applications play sounds at the same time. Also, it is hard to control volume on a per-application basis. So with most modern desktop environments, a sound server is used for these functionalities.
 
 ** PulseAudio: The de facto sound server
-If you using a Desktop Environment (KDE, GNOME, XFCE, you name it), you may be familiar with the volume control applet on the corner of the screen. That's a tiny but simple frontend for PulseAudio.
+If you using a Desktop Environment (KDE, GNOME, XFCE, you name it), you may be familiar with the volume control applet on the corner of your screen. This is a tiny but simple frontend for PulseAudio.
 
-PulseAudio has a internal software mixer, so that it can accept input from multiple software, mix them together with the configured volume and bit rate, then send it to the sound card driver (mostly ALSA). It also provide an API that is more friendly to GUI interface, so it can be integrated nicely into GUI applications. (Like the volume applet we mentioned above)
+PulseAudio has an internal audio mixer, so that it can accept input from multiple applications, mix them together with user-specified volume(s), then send it to the sound card driver (usually ALSA). It also provides an API that integrates nicely within GUI applications (like the volume applet we mentioned above).
 
-But since PulseAudio is aimed for the general desktop users who don't know hardware details, it uses an auto probe system to determine which configuration to use. The result is usually... not great. Also, to save power, the internal mixer is not great in audio quality either.
+But since PulseAudio is aimed for desktop users who don't know much detail about their hardware, it uses an automatic probe system to determine which configuration to use. The result is usually... not great. Also, to save power, the internal mixer usually does not provide the best audio quality.
+
+In short, PulseAudio should be enough for content consuming, as it provides adequate sound quality and doesn't require much knowledge to setup.
 
 ** JACK: The sound server for the professional
-PulseAudio should be enough for content consuming. It provide adequate sound quality, and doesn't require much knowledge to setup. But what if we want to do some audio editing, or we just not satisfied with PulseAuio's internal mixer quality?
+What if we want to do some audio editing, or we just not satisfied with PulseAuio's internal mixer quality?
 
-Well, JACK is for you! To be fair, JACK is NOT designed to be a general purpose "make the speaker sound" type of sound server. It is designed to be an "Audio Connection Kit", as the name implies. The ideal use case for JACK is, for example, you have a MIDI input, and want to use a synthesizer on your Linux computer, and then record what you played and send the audio to the headphone out for monitoring at the same time. JACK can connect arbitrary inputs to outputs without quality lose, essentially turn your computer into a giant digital mixer.
+Well, then JACK is for you! To be fair, JACK is NOT designed to be a general purpose "make the speaker sound" type of sound server. It is designed to be an "Audio Connection Kit," as its name implies. The ideal use case for JACK is, for example, you have a MIDI input, and want to use a software synthesizer on your Linux computer, and then record what you played and send the audio to the headphone out for monitoring at the same time. JACK can connect arbitrary inputs to outputs without quality lose and with very low latency, essentially turn your computer into a giant digital mixer.
 
-However, since the internal mixer of JACK is designed to be used in professional audio production works, it's quality is remarkable. Many people just use as an alternative to a more general purpose audio server but with greater flexibility and quality. You want to stream your music to your bud on a video conference? No issue! Just connect the output from the music player to the input of the video conferencing software, and that's it.
+Since JACK's internal mixer is designed for professional audio production, it's quality is remarkable. Outside the production community, many people just use JACK as an alternative to a more general purpose audio server, but with greater flexibility and quality. You want to stream your music to your buddies on a video conference? No problem! Just connect the output from the music player to the input of the video conferencing software, and that's it.
 
-Sounds great, eh? So why PulseAudio still takes over the Linux desktop scene? Well, JACK require additional work to be set up. You may need to manually select a bit rate and buffer size that your sound card can actually handle, or you will encounter glitchy sounds. Also, the great flexibility means user may have to manually connect the source to the desired output.
+Sounds great, eh? So why didn't JACK take over the Linux desktop scene? Well, JACK requires (a lot of) additional work to be set up. You may need to manually select an appropriate bit rate and buffer size that will not overwhelm your sound card, or you will encounter glitchy sounds. Also, its great flexibility could sometimes become its downfall, since it means that user may have to manually connect the source to the desired output.
+
 * So what should I use?
-For a typical desktop user, PulseAudio should be a good-enough choice for most people. If you encounter any audio fidelity issues, it may just because PulseAudio failed to detect the optimal settings for the sound card, or simply because the sound card's driver implementation is buggy. Take a look at [[https://wiki.archlinux.org/index.php/PulseAudio/Troubleshooting#Audio_quality][PulseAudio/Troubleshooting]] on ArchWiki, and you should be good.
+PulseAudio should be a good-enough choice for most people. If you encounter any issue with audio fidelity, it may just be due to the fact that PulseAudio failed to detect optimal settings for your sound card, or simply because the sound card's driver implementation is buggy. Take a look at [[https://wiki.archlinux.org/index.php/PulseAudio/Troubleshooting#Audio_quality][PulseAudio/Troubleshooting]] on ArchWiki, and you should be good.
 
-If you want to do some music production, definitely check out JACK. You will need some settings (give JACK realtime privilege, find optimal setting for your sound card, etc.), but after that, JACK's flexibility and quality will impress you.
+If you want to engage in music production, definitely check out JACK. You will need some settings (give JACK realtime privilege, find optimal setting for your sound card, etc.), but after that, JACK's flexibility and quality will impress you.
 
-For some special circumstance, like you are using an external USB DAC and you don't need any mixing, you can just directly use ALSA. The music player application can directly send the audio stream (even DSD stream, if you are really into this) to the sound card, and let the sound card do all the fancy job it promised.
+For some special circumstances, like using an external USB DAC and you don't need any mixing, you can just directly use ALSA. Music players can send audio streams directly (even DSD stream, if you are really into this) to the sound card, and let the sound card do all the fancy job.
