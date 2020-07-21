@@ -1,6 +1,7 @@
 #+TITLE: Links
 #+DATE: 2019-09-23T00:57:56
 #+MATH: true
+#+LEFTTITLE: true
 
 * Old friend
 + Chenyijia001 (a.k.a learningis1st) :: [[https://learningis1.st/]]. A long-term friend of mine. Active Wikipedian and PC enthusiast. 

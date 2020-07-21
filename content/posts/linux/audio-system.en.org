@@ -4,7 +4,6 @@
 #+DATE: 2020-06-21T11:18:23
 #+TAGS[]: linux, audio
 #+LICENSE: cc-sa
-#+DRAFT: true
 
 You may have never paid attention to the Linux audio system - you install a desktop environment (or, just install a system that ships with a graphical user interface), and the sound just works. Chances are, the sound would be "good enough," and you would take it as it is.
 
