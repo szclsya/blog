@@ -1,0 +1,24 @@
+#+TITLE: Fix incompatible bytes library for actix-web and tokio
+#+DATE: 2020-12-29T12:05:36
+#+DESCRIPTION: A rare cenario Cargo can't fix it for us.
+#+TAGS[]: rust
+#+LICENSE: cc-sa
+
+When attemping to build some web app with =actix-web=, I ran into this issue:
+
+#+BEGIN_SRC 
+error[E0271]: type mismatch resolving `<fn(bytes::BytesMut) -> bytes::Bytes {bytes::BytesMut::freeze} as FnOnce<(bytes::BytesMut,)>>::Output == actix_web::web::Bytes`
+  --> src/api/get.rs:35:47
+   |
+35 |                     return HttpResponse::Ok().streaming(s);
+   |                                               ^^^^^^^^^ expected struct `bytes::Bytes`, found struct `actix_web::web::Bytes`
+   |
+   = note: perhaps two different versions of crate `bytes` are being used?
+   = note: required because of the requirements on the impl of `futures_util::fns::FnOnce1<bytes::BytesMut>` for `fn(bytes::BytesMut) -> bytes::Bytes {bytes::BytesMut::freeze}`
+#+END_SRC
+
+This happens when I'm trying to utilize ~FramedRead~ in Tokio in order to stream the content while sending it in acitx-web (instead of reading them all into memory before sending it out). As it turned out, this is due to a mismatch in version of the crate =bytes=. 
+
+As the time of this writing, the latest version for =actix-web= is 3.3.2, and the latest version for =tokio= is 1.0. Naturally, I add the latest version of both in ~Cargo.toml~. However, since tokio 1.0 is released after actix-web 3.3.2, actix-web is still using an older version of tokio, resulting an older version of bytes. So, sadly there's a mismatch between the bytes crate used in the two components, and it happens to be the case that these two version are not compatible, and thus such error appears.
+
+Fixing this issue is trivial. Simply use a matching version of tokio (here, it should be tokio 0.2.23). ~cargo tree | grep -z $CRATE~ is very useful here.
