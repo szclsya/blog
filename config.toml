@@ -13,7 +13,7 @@ theme = "less"
 [params]
   description = "Honk honk!"
   author = "Leo Shen"
-  staticFileBaseUrl = "https://static.szclsya.me"
+#  staticFileBaseUrl = "https://static.szclsya.me"
 
 [taxonomies]
   tag = "tags"

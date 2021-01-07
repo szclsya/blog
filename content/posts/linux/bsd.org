@@ -1,3 +1,5 @@
+#+DRAFT: true
+
 * Install
 Brand new disk, create ZFS partition, will automatically ask you to create EFI partition. Select YES.
 
