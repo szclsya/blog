@@ -1,0 +1,81 @@
+#+TITLE: Homelab Project: 6 months in
+#+DATE: 2021-01-07T07:01:42
+#+DESCRIPTION: Sitting in the corner, serving the home
+#+TAGS[]: homelab freebsd
+#+LICENSE: cc-by-nc-nd
+#+TOC: true
+
+At the summer of 2020, I started the Homelab prject. Now, 6 months later, it's time to evaluate how the thing goes.
+
+* Hardware configuration
+Previously, I've been using an AMD Ryzen 2200g with a garden-variety A320 motherboard. However, there had been two incidents, of different reasons, which prevented the OS from booting, and I had to remotely instruct my parents to fix it using TTY. Needless to say, these didn't go well.
+
+So for this build, =IPMI= capability becomes one key feature to have. I happened to have an Intel Xeon E3-1230 v5 lying around, so it's just a matter of finding a suitable motherboard for it. Eventually I grabbed a brand new [[https://www.supermicro.com/en/products/motherboard/X11SAT-F][Supermicro X11SAT-F]] motherboard. (kinda surprising that you can still buy these brand new in 2020)
+
+Here's the final hardware configurations:
++ Motherboard: Supermicro X11SAT-F
++ CPU: Intel Xeon E3-1230 v5 (8) @ 3.408GHz
++ Memory: 1x Kingston /Gaming/ 16G DDR4 DIMM
+  - Also lying around. It would be cool to have ECC (especially with ZFS), but I don't want to spend the extra bucks on this for now
++ Graphics: On-board ASPEED Graphics
+  - No intense gaming here!
++ Storage
+  - 1x Intel 760p as system disk and caching
+  - 3x 6T HDD (from various brands) as main storage disks
++ NIC: 2x Intel GbE NIC, one shared with IPMI
++ PSU: Random 80PLUS Gold 650W
++ Case: Random ATX case (that can fit all those disks)
+  - I would love to use a rack-mounted case, but there's no room for rack for now
+
+* Software configuration
+I used to use =debian= on the last home server, but due to licensing issues, ZFS is not that smooth on Linux. Since FreeBSD has a great reputation in stability and have flawless ZFS integration, I chose FreeBSD this time.
+
+FreeBSD does not have the best installation experience (especially if you want ZFS as root). But after everything is set-up, it runs remarkably well. ZFS just works, and the whole OS just /feels/ well integrated (probably due to the development all happening in the same place, which is not the case for most GNU/Linux distros).
+
+One thing I do miss from GNU/Linux is (I think I will attract a lot of hate from this) =systemd=. =rc.d= just works in almost all situations (I never came into any issue during this period). But for me, =systemd='s service files are way easier to understand (and write!) compared to rc.d scripts. It's okay when you are using existing scripts from packages tho.
+
+As of the server software, it's mostly the same as most Linux servers. I'm using =nginx= as web server, =syncthing= for syncing my documents, and =samba= for serving files for Windows and Mac OS X (yes this is intentional) users.
+
+* NAS Stuff
+At the last build, since there's only one disk, I just use XFS and it works flawlessly. This time, since we are dealing with a multi disk setup, I decided to use ZFS.
+
+There're a lot of alternatives of ZFS on varies of platforms, but:
++ *BtrFS* poor stability on RAID5/6 setups (and generally poor reputation on its stability)
++ *BcacheFS* yet to be merged into the mainline Linux kernel, but looks promising
+
+So ZFS it is!
+
+Since I have 3 disks installed, it's natural to use =raidz1=. It's slower and is less secure than =raid= or =raidz2=, but since these are all enterprise grade disks and speed is not a priority (I only have GbE anyway), =raidz1= should be fine.
+
+{{% btw %}}
+=raidz1= means the array would allow one disk to fail before losing data (roughly RAID5), and =raidz2= allows 2 disks to fail (roughly RAID6). More on ZFS [[/posts/linux/zfs-intro/#headline-7][here]].
+{{%/ btw %}}
+
+Also, since ZFS is well-integrated into FreeBSD kernel, most of the memory is safely used as ARC (ZFS's page cache). This greatly improves performance (since RAM is fast).
+
+#+CAPTION: ZFS in action
+[[/posts/homelab/6-months-in-zfs-web.jpg]]
+
+{{% btw %}}
+At first only two disks arrived, so I just use truncate to create a disk image of the same size and create the pool with it (alongside the two disks). Then when the third disk arrived, I just make ZFS offline that disk and resilver the pool with the new disk. Kinda proves the reliability and maintainability of ZFS.
+
+(Since the data is still not deleted during the process, this process should be safe)
+{{%/ btw %}}
+
+** File-sharing Services 
+On UNIX-like systems, it's natural to use =NFS= due to its performance (especially at NFSv4) and simplicity. And it works really well on my Linux machines.
+
+For other devices, SMB is the most common protocol. I use =Samba= for this purpose. Just keep in mind to set minimal protocol to be ~SMB3_00~, since lower versions of SMB suffer in performance and have security vulnerabilities.
+
+** A Special Note: MPD
+It's really slow to scan big music library over NFS. So it's best to make the scanning happen on the exact machine that stores the music. This can be accomplished via setting up a dummy MPD instance on the server. You can read more about this on [[https://wiki.archlinux.org/index.php/Music_Player_Daemon/Tips_and_tricks#Music_streaming_with_the_satellite_setup][Music streaming with the satellite setup - MPD Tips and Tricks]] (ArchWiki).
+
+* Power Consumption
+At idle, the whole server consumes around 40 to 50 Watts of power. I assume it's mainly taken by the three spinning disks since they are not configured to spin down on idle (this may be even a bad thing for enterprise disks).
+
+* Epilogue
+Overall, it's been pretty successful project so far. It's one of the most reliable piece of hardware currently in service.
+
+The performance is absolutely overkill for NAS. Sometimes I can even throw some heavy job at it (compile Rust code, for example).
+
+The next step would be to introduce 10GbE, but that would require the whole family to upgrade to 10GbE, so it won't happen in the near future.
