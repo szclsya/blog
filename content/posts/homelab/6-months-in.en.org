@@ -18,7 +18,7 @@ Here's the final hardware configurations:
 + Memory: 1x Kingston /Gaming/ 16G DDR4 DIMM
   - Also lying around. It would be cool to have ECC (especially with ZFS), but I don't want to spend the extra bucks on this for now
 + Graphics: On-board ASPEED Graphics
-  - No intense gaming here!
+  - No extreme gaming here!
 + Storage
   - 1x Intel 760p as system disk and caching
   - 3x 6T HDD (from various brands) as main storage disks
@@ -45,10 +45,10 @@ There're a lot of alternatives of ZFS on varies of platforms, but:
 
 So ZFS it is!
 
-Since I have 3 disks installed, it's natural to use =raidz1=. It's slower and is less secure than =raid= or =raidz2=, but since these are all enterprise grade disks and speed is not a priority (I only have GbE anyway), =raidz1= should be fine.
+Since I have 3 disks installed, it's natural to use =raidz1=. It's slower and is less secure than =mirror= or =raidz2=, but since these are all enterprise grade disks and speed is not a priority (I only have GbE anyway), =raidz1= should be fine.
 
 {{% btw %}}
-=raidz1= means the array would allow one disk to fail before losing data (roughly RAID5), and =raidz2= allows 2 disks to fail (roughly RAID6). More on ZFS [[/posts/linux/zfs-intro/#headline-7][here]].
+=raidz1= means the array would allow one disk to fail before losing data (roughly RAID5), and =raidz2= allows 2 disks to fail (roughly RAID6). More on ZFS and raidz [[/posts/linux/zfs-intro/#headline-7][here]].
 {{%/ btw %}}
 
 Also, since ZFS is well-integrated into FreeBSD kernel, most of the memory is safely used as ARC (ZFS's page cache). This greatly improves performance (since RAM is fast).
@@ -76,6 +76,6 @@ At idle, the whole server consumes around 40 to 50 Watts of power. I assume it's
 * Epilogue
 Overall, it's been pretty successful project so far. It's one of the most reliable piece of hardware currently in service.
 
-The performance is absolutely overkill for NAS. Sometimes I can even throw some heavy job at it (compile Rust code, for example).
+The performance is absolutely overkill for a NAS. Sometimes I can even throw some heavy job to it (compile Rust code, for example).
 
 The next step would be to introduce 10GbE, but that would require the whole family to upgrade to 10GbE, so it won't happen in the near future.
