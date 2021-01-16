@@ -5,7 +5,7 @@
 #+LICENSE: cc-by-nc-nd
 #+TOC: true
 
-At the summer of 2020, I started the Homelab prject. Now, 6 months later, it's time to evaluate how the thing goes.
+At the summer of 2020, I started the Homelab project. Now, 6 months later, it's time to evaluate how the thing goes.
 
 * Hardware configuration
 Previously, I've been using an AMD Ryzen 2200g with a garden-variety A320 motherboard. However, there had been two incidents, of different reasons, which prevented the OS from booting, and I had to remotely instruct my parents to fix it using TTY. Needless to say, these didn't go well.
