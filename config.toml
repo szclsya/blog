@@ -1,8 +1,7 @@
-baseURL = "https://szclsya.me"
+baseURL = "https://demo.szclsya.me"
 languageCode = "en-us"
 DefaultContentLanguage = "en"
 title = "Leo's Field"
-theme = "less"
 
 [markup]
   [markup.highlight]
@@ -11,9 +10,8 @@ theme = "less"
     noClasses = false
 
 [params]
-  description = "Honk honk!"
+  description = "Was <i>that</i> life? Well then, once more!"
   author = "Leo Shen"
-#  staticFileBaseUrl = "https://static.szclsya.me"
 
 [taxonomies]
   tag = "tags"

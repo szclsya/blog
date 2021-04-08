@@ -1,0 +1,37 @@
+{{- define "title" -}}
+Page Not Found - {{ .Site.Title }}
+{{- end -}}
+
+{{ define "main" }}
+  <div id="center">
+    <header> 
+      <div id="poem-title">
+        <h1>404</h1>
+        <h2>Page Not Found</h2>
+      </div>
+    </header>
+
+    <main>
+      <article style="min-height: 60vh">
+        <p id="poem">
+          Tomorrow, and tomorrow, and tomorrow,<br>
+          Creeps in this petty pace from day to day,<br>
+          To the last syllable of recorded time;<br>
+          And all our yesterdays have lighted fools<br>
+          The way to dusty death. Out, out, brief candle!<br>
+          Life's but a walking shadow, a poor player,<br>
+          That struts and frets his hour upon the stage,<br>
+          And then is heard no more. It is a tale<br>
+          Told by an idiot, full of sound and fury,<br>
+          Signifying nothing.<br>
+        </p>
+      </article>
+    </main>
+
+    <p style="text-align: center">
+      <a href="/" alt="index">Return to Index</a>
+      <span> · </span>
+      <a href="/zh-cn" alt="index">返回主页</a>
+    </p>
+  </div>
+{{ end }}

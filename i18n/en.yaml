@@ -1,0 +1,23 @@
+# Site data
+date-format:
+  other: 'Jan 2, 2006'
+
+# slim-header
+posts:
+  other: 'Posts'
+about-me:
+  other: 'About Me'
+links:
+  other: 'Links'
+
+# single.html
+back:
+  other: 'Back'
+back-to-posts:
+  other: 'Back to Posts'
+view-in-other-lang:
+  other: '查看中文版本'
+
+# footnote
+footnote-msg:
+  other: '© 2019-2021 Leo Shen. More info in [About Me](/about/).'

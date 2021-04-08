@@ -1,0 +1,163 @@
+main
+  margin: 1em 0 0 0 
+  position: relative
+  .control
+    .button
+      height: 2em
+      padding: 0
+      display: flex
+      align-items: center
+      .icon
+        height: 1.2em
+        width: 1.2em
+        padding: .4em 0
+        margin-right: .5em
+  header
+    margin-bottom: 2.5em
+    h1
+      font-size: 1.8em
+      line-height: 1.15
+      padding-bottom: .4em
+      border-bottom: 1px solid
+      margin: .5em 0
+    h2
+      font-family: 'Vollkorn', $serifFonts
+      font-weight: 400
+      font-style: italic
+      margin: .5em 0
+
+  article
+    counter-reset: section
+    h2
+      counter-reset: subsection
+      &:before
+        opacity: .5
+        font-size: 90%
+        counter-increment: section
+        content: counter(section) ". "
+ 
+    h3
+      &:before
+        opacity: .5
+        font-size: 90%
+        counter-increment: subsection
+        content: counter(section) "." counter(subsection) " "
+
+  img
+    display: block
+    max-width: 100%
+  figure
+    margin: .5em 0
+    img
+      margin: 0 auto
+    figcaption
+      text-align: center
+      font-size: .8em
+  .footnotes
+    margin: 2.5em 0 1.5em 0
+    &:before
+      content: ''
+      display: block
+      max-width: 12em
+      padding-bottom: .5em
+      border-top: 1px solid
+    hr
+      display: none
+    .footnote-definition
+      margin: .3em 0
+    p
+      display: inline
+    dl
+      dt
+        font-family: $serifFonts
+        font-weight: 800
+  .footnote-body
+      display: inline
+
+
+  // Shortcode components
+  aside
+    padding: 0 1em
+    width: 13em
+
+    position: absolute
+    right: 100%
+    text-align: right
+    p
+      margin: 0
+    @media screen and (max-width: $singleColWidth)
+      font-size: .9em
+      position: relative
+      margin: 1em 0 1em auto
+      padding: 1em .5em
+      right: 0
+      text-align: left
+      width: initial
+      max-width: 75%
+      // Styling
+      border-top: 1px solid
+      border-bottom: 1px solid
+      &:after
+        content: "aside"
+        font-size: .7em
+        position: absolute
+        right: 0
+        bottom: .1em
+
+  .card
+    margin: 1em 0
+    padding: 0 1.5em
+    border-left: 2px solid
+    .header
+      margin-bottom: .25em
+      font-size: 1.1em
+      font-weight: 600
+      font-family: $sansSerifFonts
+      text-transform: capitalize
+      // To align them
+      display: flex
+      justify-items: center
+      .symbol
+        display: inline-block
+        height: 1em
+        width: 1em
+        margin-top: .18em
+        margin-right: .25em
+      .content
+        vertical-align: middle
+        display: inline-block
+    p
+      margin: .5em 0
+
+#toc
+  a
+    &:after
+      content: none
+  #TableOfContents
+    font-size: .85em
+    ul
+      margin: 0
+      padding-left: 1.4em
+  h3
+    margin: .3em 0
+    font-size: 1.05em
+    font-family: $sansSerifFonts
+    font-weight: 400
+  @media screen and (max-width: $singleColWidth)
+    width: calc(100% - 2.15em) !important
+    border: 1px solid
+    padding: .5em 1em !important
+    #TableOfContents
+      font-size: .9em
+      padding: 0
+
+.licence
+  margin: 2em 1em
+  padding: 1em
+  text-align: center
+  font-size: .9em
+  .icon
+    height: 2em
+    width: 2em
+  img
+    display: inline-block

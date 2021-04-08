@@ -1,0 +1,88 @@
+.list-item
+  margin: 1.3em 0
+  h1
+    font-family: $sansSerifFonts
+    font-weight: 400
+    margin: 0
+  .item-content
+    display: block
+    width: 100%
+    padding: 0 .5em
+    @media screen and (max-width: $singleColWidth)
+      padding: 0
+    .item-title
+      font-size: 1.2em
+      line-height: 1.5em
+      padding: .2em 0
+    .item-description
+      margin: 0
+      padding: .2em 0
+      font-size: .9em
+
+    position: relative
+    overflow: hidden
+    .badge
+      position: absolute
+      right: 0
+      bottom: .2em
+      font-size: 2em
+      opacity: 0
+      transition: opacity .2s
+      user-select: none
+      span
+        margin: 0 .1em
+    &:hover .badge
+      opacity: .15
+
+  display: flex
+  @media screen and (max-width: $singleColWidth)
+    display: block
+  .item-pre
+    font-family: $monospaceFonts
+    color: grey
+    display: block
+    min-width: 7em
+    @media screen and (max-width: $singleColWidth)
+      margin: 0
+      font-size: .8em
+    span
+      margin-right: .5em
+
+.pagination-navigation
+  display: flex
+  margin-top: 3em
+  height: 2.5em
+  a
+    padding: 0
+  .prev
+    width: 20%
+  .next
+    width: 20%
+    text-align: right
+  .navigate
+    font-size: 1.1em
+    display: block
+    height: 100%
+    width: 90%
+    padding: 0 5%
+    line-height: 2.2em
+  // Different states
+  .disabled
+    opacity: .3
+  // Page number section, vertical full fill boxes
+  .page-numbers
+    width: 60%
+    height: 100%
+    display: flex
+    justify-content: stretch
+    align-items: stretch
+    .page
+      display: block
+      padding: 0
+      flex-grow: 1
+      text-align: center
+      line-height: 2.5em
+      font-weight: 400
+    .current
+      font-weight: 500
+      

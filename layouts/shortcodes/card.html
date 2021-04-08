@@ -1,0 +1,22 @@
+{{ $_hugo_config := `{ "version": 1 }` }}
+
+{{- $type := (.Get 0) -}}
+{{- if eq $type "success" -}}
+  {{- .Scratch.Set "icon" "<svg xmlns='http://www.w3.org/2000/svg' class='ionicon' viewBox='0 0 512 512'><title>Checkmark Circle</title><path d='M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M352 176L217.6 336 160 272'/></svg>" -}}
+{{- else if eq $type "warning" -}}
+  {{- .Scratch.Set "icon" "<svg xmlns='http://www.w3.org/2000/svg' class='ionicon' viewBox='0 0 512 512'><title>Warning</title><path d='M85.57 446.25h340.86a32 32 0 0028.17-47.17L284.18 82.58c-12.09-22.44-44.27-22.44-56.36 0L57.4 399.08a32 32 0 0028.17 47.17z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><path d='M250.26 195.39l5.74 122 5.73-121.95a5.74 5.74 0 00-5.79-6h0a5.74 5.74 0 00-5.68 5.95z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><path d='M256 397.25a20 20 0 1120-20 20 20 0 01-20 20z'/></svg>" -}}
+{{- else if eq $type "danger" -}}
+  {{- .Scratch.Set "icon" "<svg xmlns='http://www.w3.org/2000/svg' class='ionicon' viewBox='0 0 512 512'><title>Nuclear</title><path d='M258.9 48C141.92 46.42 46.42 141.92 48 258.9c1.56 112.19 92.91 203.54 205.1 205.1 117 1.6 212.48-93.9 210.88-210.88C462.44 140.91 371.09 49.56 258.9 48zM429 239.92l-93.08-.1a2 2 0 01-1.95-1.57 80.08 80.08 0 00-27.44-44.17 2 2 0 01-.54-2.43l41.32-83.43a2 2 0 012.87-.81A176.2 176.2 0 01431 237.71a2 2 0 01-2 2.21zm-220.8 20.46a48 48 0 1143.42 43.42 48 48 0 01-43.42-43.42zm-43.55-152.16L206 191.65a2 2 0 01-.54 2.43A80.08 80.08 0 00178 238.25a2 2 0 01-2 1.57l-93.08.1a2 2 0 01-2-2.21 176.2 176.2 0 0180.82-130.3 2 2 0 012.91.81zm-.37 295.34l56.31-74.09a2 2 0 012.43-.6 79.84 79.84 0 0066 0 2 2 0 012.43.6l56.31 74.09a2 2 0 01-.54 2.92 175.65 175.65 0 01-182.36 0 2 2 0 01-.58-2.92z'/></svg>" -}}
+{{- else -}}
+  {{- .Scratch.Set "icon" "<svg xmlns='http://www.w3.org/2000/svg' class='ionicon' viewBox='0 0 512 512'><title>Information Circle</title><path d='M248 64C146.39 64 64 146.39 64 248s82.39 184 184 184 184-82.39 184-184S349.61 64 248 64z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M220 220h32v116'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-miterlimit='10' stroke-width='32' d='M208 340h88'/><path d='M248 130a26 26 0 1026 26 26 26 0 00-26-26z'/></svg>" -}}
+{{- end -}}
+
+<div class="card {{ .Get 0 }}">
+  <div class="header">
+    <div class="symbol">{{ .Scratch.Get "icon" | safeHTML }}</div>
+    <span>{{ (.Get 0) }}</span>
+  </div>
+  <div class="content">
+    {{ .Inner }}
+  </div>
+</div>

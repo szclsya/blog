@@ -1,0 +1,23 @@
+# Site data
+date-format:
+  other: '2006-01-02'
+
+# slim-header
+posts:
+  other: '文章'
+about-me:
+  other: '关于'
+links:
+  other: '链接'
+
+# single.html
+back:
+  other: '返回主页'
+back-to-posts:
+  other: '更多文章'
+view-in-other-lang:
+  other: 'View English Version'
+
+# footnote
+footnote-msg:
+  other: '© 2019-2021 Leo Shen. 更多信息请见 [关于](/zh-cn/about/).'

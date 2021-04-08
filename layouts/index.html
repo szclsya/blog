@@ -1,0 +1,23 @@
+{{ define "main" }}
+  <div id="center">
+    <header> 
+      <div id="nav" class="fat">
+        <div class="after">
+          {{ partial "slim-header.html" . }}
+        </div>
+      </div>
+      <div id="big-title">
+        <h1>{{ .Site.Title }}</h1>
+        <h2>{{ .Site.Params.Description | safeHTML }}</h2>
+      </div>
+    </header>
+
+    <main>
+      <article style="min-height: 50vh">
+        {{ .Content }}
+      </article>
+    </main>
+
+    {{ partial "footer" . }}
+  </div>
+{{ end }}
