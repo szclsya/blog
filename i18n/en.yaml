@@ -17,6 +17,8 @@ back-to-posts:
   other: 'Back to Posts'
 view-in-other-lang:
   other: '查看中文版本'
+tags:
+  other: 'Tags'
 
 # footnote
 footnote-msg:

@@ -17,6 +17,8 @@ back-to-posts:
   other: '更多文章'
 view-in-other-lang:
   other: 'View English Version'
+tags:
+  other: '标签'
 
 # footnote
 footnote-msg:
