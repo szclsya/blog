@@ -10,7 +10,7 @@ title = "Leo's Field"
     noClasses = false
 
 [params]
-  description = "Was <i>that</i> life? Well then, once more!"
+  description = "Was *that* life? Well then, once more!"
   author = "Leo Shen"
 
 [taxonomies]

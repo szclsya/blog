@@ -12,7 +12,7 @@
     <meta property="og:title" content="{{ .Site.Title }}" />
     <meta property="og:type" content="article" />
     <meta property="og:url" content="{{ .Permalink }}" />
-    <meta property="og:description" content="{{ .Site.Params.Description }}" />
+    <meta property="og:description" content="{{ .Site.Params.Description | markdownify | plainify }}" />
     <meta name="description" content="{{ .Site.Title }}">
     <meta name="author" content="{{ .Site.Params.Author }}">
     <meta name="theme-color" content="#2c2a2a">
