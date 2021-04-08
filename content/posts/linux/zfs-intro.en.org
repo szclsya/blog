@@ -16,15 +16,12 @@ But filesystems can actually be very powerful. With some special design principl
 In order to understand how ZFS achieves its features, we need to have a basic concept of how filesystems works.
 
 ** Early days
-Early file systems (like FAT and its friends) are simple. You have a disk, the file system specify a place to store the index, and that's generally it. When you add a file, the file system write a new record about where should it find the data in the index area, and write the data to the allocated area. And when you delete a file, just erase the record in the index. Simple.
+Early file systems (like FAT[fn:FAT] and its friends) are simple. You have a disk, the file system specify a place to store the index, and that's generally it. When you add a file, the file system write a new record about where should it find the data in the index area, and write the data to the allocated area. And when you delete a file, just erase the record in the index. Simple.[fn:Simple]
 
-{{% btw %}}
-I'm keeping it really simple here, there are much more things going on under the hood, but let's just don't worry about it.
-{{%/ btw %}}
+[fn:FAT] FAT file system got its name from =File Association Table=, not because it can use "fat" drives. (Well I thought it was for a period of time...)
 
-{{% btw %}}
-FAT file system got its name from =File Association Table=, not because it can use "fat" drives. (Well I thought it was for a period of time...)
-{{%/ btw %}}
+[fn:Simple] I'm keeping it really simple here, there are much more things going on under the hood, but let's just don't worry about it.
+
 
 But there is an issue: when subjecting to a power loss, such file systems are very fragile: if there is a power loss when a program is still writing data (and the on-disk structure has been changed to accommodate the change the size of the file), the new allocation table would not be updated. And now, you have a broken file system and any new write actions may cause data corruption (since the table and the actual data does not match any more).
 

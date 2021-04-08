@@ -1,6 +1,5 @@
 {{ $caption := (.Get "caption") }}
 {{ $src := (.Get "src") }}
-{{ $alt := (.Get "alt") }}
 
 {{ $Ext := (path.Ext $src) }}
 <figure>
@@ -42,7 +41,7 @@
 
     <img
       src="{{ $src }}"
-      alt="{{ $alt }}"
+      alt="{{ $caption }}"
       loading="lazy"
       decoding="async"
     />

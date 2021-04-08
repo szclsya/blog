@@ -68,13 +68,11 @@ options archisobasedir=arch archisodevice=/dev/disk/by-id/usb-SONY_WALKMAN_12345
 
 如果一切正常, 启动菜单上应该会多出两个选项. 一个是 =USB FDD: SONY WALKMAN=, 另一个是 =USB HDD: SONY WALKMAN=. 似乎 FDD 对应的是内部存储而 HDD 对应的是SD卡. 所以在这里选择 FDD.
 
-#+CAPTION: 启动菜单中的两个 Walkman USB 设备
-[[/img/walkman/0_boot_menu-web.jpg]]
+{{< img src="/img/walkman/0_boot_menu.jpg" caption="启动菜单中的两个 Walkman USB 设备" >}}
 
 然后就像往常一样选择从 Archiso 启动. 在内核加载后, Walkman 会自动关闭大容量存储模式, 因此系统无法挂载它所需的 ~/run/archiso/bootmnt~ 分区.
 
-#+CAPTION: 困惑的 Arch Linux 和顽皮的 Walkman
-[[/img/walkman/1_umount_after_kernel-web.jpg]]
+{{< img src="/img/walkman/1_umount_after_kernel.jpg" caption="困惑的 Arch Linux 和顽皮的 Walkman" >}}
 
 还好, 在挂载失败时会进入一个 fallback shell 环境. 我们只需手动挂载即可. 在 shell 中输入:
 
@@ -85,11 +83,9 @@ exit
 
 现在 archiso 已经有了一个正常的启动环境. 静待它启动完成即可.
 
-#+CAPTION: 正常启动中.
-[[/img/walkman/3_loading-web.jpg]]
+{{< img src="/img/walkman/3_loading.jpg" caption="正常启动中." >}}
 
-#+CAPTION: We are in!
-[[/img/walkman/4_done-web.jpg]]
+{{< img src="/img/walkman/4_done.jpg" caption="We are in!" >}}
 
 ** 然后呢?
 该干嘛干嘛. 现在和普通的 archiso 启动U盘没区别了.

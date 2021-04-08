@@ -11,8 +11,7 @@
 
 关于博客本身，2020年年内原本是有计划重构一下主题的，然而工程做到一半失去了激情，于是现在这套主题便继续用了下去。除此之外，存放着博客的地方也迁移了两次。除此以外，至少对于这个博客来说，2020是很常规的一年。
 
-#+CAPTION: V1, Rotate.
-[[/posts/life/site-statistics-2020-web.jpg]]
+{{< img src="/img/life/site-statistics-2020.png" caption="V1, Rotate." >}}
 
 * 我所做的
 + *在 [[https://aosc.io][AOSC OS]] 项目中做了一点微小的工作* 包括维护了一些软件包，重构了[[https://github.com/AOSC-Dev/wiki][社区 Wiki]]，以及还在进行中的维护自动化工程。
@@ -46,8 +45,7 @@
 总体来说，2020对于我的口味来说算是个游戏小年。期待一下明年 +大概会出+ 的旷野之息续作。
 
 * 我所听的
-#+CAPTION: 助我熬过 2020 的 Walkman
-[[/posts/life/walkman-2020-web.jpg]]
+{{< img src="/img/life/walkman-2020.png" caption="助我熬过 2020 的 Walkman" >}}
 
 我的语言在音乐面前显得十分无力，所以这里大多数只有列举。
 

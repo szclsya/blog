@@ -48,13 +48,11 @@ Arch Linux 提供了成吨的字体可供选择。完整的列表可以在 [[htt
 
 然而...
 
-#+CAPTION: 默认配置下的 Installation Guide
-[[/img/fonts/archwiki-wrongfont-web.jpg]]
+{{< img src="/img/fonts/archwiki-wrongfont.jpg" caption="默认配置下的 Installation Guide" >}}
 
 看上去不大对劲，不是么？
 
-#+CAPTION: 破 案 了
-[[/img/fonts/archwiki-fontsused-web.jpg]]
+{{< img src="/img/fonts/archwiki-fontsused.jpg" caption="破 案 了" >}}
 
 ...怎么默认到日语字形上去了.
 
@@ -105,16 +103,15 @@ Fontconfig 是一个用来 _配置_ 字体渲染的程序。也就是说，fontc
   <!-- 关于lcdfilter, 因为我们在使用 FreeType2 自带的 Harmony 子像素渲染, 应该是不需要设置的. -->
 #+END_SRC
 
-这只是一小部分，但是对于普通使用而言调整这些已经足够。如果还是不满意，可以继续查看 [[https://wiki.archlinux.org/index.php/Font_configuration][ArchWiki]].
-
 {{% btw %}}
 DPI 即为 Dots per inch (每英尺点数), 可简单理解为显示器的像素密度. 
 由于在较低的像素密度下, 字形无法严格对齐像素格, 我们必须通过 hinting 和 抗锯齿 让字形在较低DPI的屏幕上有较好的观感. 
-{{%/ btw %}}
 
-{{% btw %}}
 为了得到你的显示器的具体 DPI 数值, 可以使用 [[https://www.sven.de/dpi/][DPI Calculator]].
 {{%/ btw %}}
+
+这只是一小部分，但是对于普通使用而言调整这些已经足够。如果还是不满意，可以继续查看 [[https://wiki.archlinux.org/index.php/Font_configuration][ArchWiki]].
+
 ** 设置首选字体
 依照自己的选则替换即可.
 #+BEGIN_SRC xml

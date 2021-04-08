@@ -8,6 +8,8 @@
 #+MATH: true
 #+IMG: /img/blog-story/blog-v1-web.jpg
 
+[[/img/blog-story/blog-v1-web.jpg]]
+
 * A bit about the struggle
 I used =WordPress= for a long time, but am not satisfied for a few reasons:
 + WordPress is too heavy weight for a personal blog
@@ -39,8 +41,7 @@ I've been using Emacs and Org-mode for GTD and note-taking for a long time now, 
 
 Font matters! When reading an article, people are reading the text, but not the fancy background or animations.
 
-#+CAPTION: Font matters indeed. ([[https://www.reddit.com/r/funny/comments/977s8h/font_matters/][Source]])
-[[/img/blog-story/font-matters-web.jpg]]
+{{< img src="/img/blog-story/font-matters.jpg" caption="Font matters indeed." >}}
 
 For latin characters, I decided to intergrate webfonts to unify the look on platforms. Here the fonts I chose:
 + [[http://vollkorn-typeface.com/][Vollkorn]] - Serif

@@ -43,8 +43,7 @@
 
 字体很重要！毕竟在阅读一篇文章的时候，人们是在盯着那些字看，而不是华丽的背景或动画。
 
-#+CAPTION: Font matters indeed. ([[https://www.reddit.com/r/funny/comments/977s8h/font_matters/][Source]])
-[[/img/blog-story/font-matters-web.jpg]]
+{{< img src="/img/blog-story/font-matters.jpg" caption="Font matters indeed." >}}
 
 对于西文来说，我选择通过嵌入 webfont 的方式统一各平台之间的表现。下面是我选择的字体：
 + [[http://vollkorn-typeface.com/][Vollkorn]] - 衬线体

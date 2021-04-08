@@ -44,8 +44,7 @@ ThinkPad X220 是一个很不错的选择。它还算新，拥有很不错的 co
 
 主板被防静电膜覆盖着, 我们要找的芯片位于主板左下角, ExpressCard 卡槽附近. 把防静电膜的左下角掀起来应该就能看到了. 
 
-#+CAPTION: BIOS/UEFI 固件芯片
-[[/img/coreboot/bios_chip-web.jpg]]
+{{< img src="/img/coreboot/bios_chip.jpg" caption="BIOS/UEFI 固件芯片" >}}
 
 ** 绕接固件芯片
 把测试夹夹道芯片上. 引脚排列[fn:4]如下:
@@ -79,8 +78,7 @@ ThinkPad X220 是一个很不错的选择。它还算新，拥有很不错的 co
 
 (没错,我们只需要其中的6根针脚连接就够了.)
 
-#+CAPTION: 绕接完成的 X220 和 Raspberry Pi
-[[/img/coreboot/flashing_in_progress-web.jpg]]
+{{< img src="/img/coreboot/flashing_in_progress.jpg" caption="绕接完成的 X220 和 Raspberry Pi" >}}
 
 [fn:4] [[https://www.coreboot.org/Board:lenovo/x220#Flashing][Board:lenovo/x220 - coreboot]]
 
@@ -238,8 +236,7 @@ sudo flashrom -p linux_spi:dev=/dev/spidev0.0 -w coreboot.rom
 
 如果屏幕上出现了一只小兔子, 大功告成! 
 
-#+CAPTION: Coreboot Logo on Tianocore
-[[/img/coreboot/coreboot_bunny-web.jpg]]
+{{< img src="/img/coreboot/coreboot_bunny.jpg" caption="Coreboot Logo on Tianocore" >}}
 
 ** 如果没成呢?
 如果一直黑屏, 很有可能是 coreboot 遇到了错误. 试着检查你的配置. 实在不行的话, 你永远可以重新刷入官方固件.
