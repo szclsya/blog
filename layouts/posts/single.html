@@ -57,7 +57,23 @@
           {{- .Content -}}
         </article>
 
+        <!-- Tags -->
+        <div id="meta">
+          <div class="tags right">
+          {{- if isset .Params "tags" -}}
+
+            <span>{{ i18n "tags" }}: </span>
+            {{- range $i, $e := .Params.tags -}}
+              {{- if $i -}}<span>/</span>{{- end -}}
+              <a href="/tags/#{{ . }}">{{- . -}}</a>
+            {{- end -}}
+
+          {{- end -}}
+          </div>
+        </div>
+
         {{ partial "licence.html" . }}
+
       </main>
     </div>
 
