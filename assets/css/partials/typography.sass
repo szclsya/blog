@@ -1,0 +1,79 @@
+body
+  font-family: $sansSerifFonts
+  font-size: 17px
+  line-height: 1.45em
+  hyphens: auto
+  text-rendering: optimizelegibility
+  text-size-adjust: none
+
+a
+  text-decoration: none
+  padding: .15em .2em
+  transition: all 0.1s
+  &:after
+    content: "°"
+
+a.no-dot
+  &:after
+    content: none
+
+h1, h2, h3, h4, h5
+  font-family: $serifFonts
+  font-weight: 500
+h1
+  font-size: 1.6em
+h2
+  font-size: 1.35em
+h3
+  font-size: 1.15em
+
+strong
+  font-weight: 500
+
+ol, ul
+  p
+    margin: .2rem
+ul
+  list-style-type: square
+  padding-left: 1.2em
+
+dl
+  dt
+    font-family: $serifFonts
+    font-weight: 500
+
+blockquote
+  margin: 1em 0
+  padding: 0 1.5em
+  border-left: 2px solid
+
+code
+  font-family: $monospaceFonts
+  padding: 0 .1em
+  border-bottom: 2px solid 
+
+.verbatim
+  padding: 0 .1em
+  border-bottom: 2px solid
+
+// Code block
+.src
+  margin: 0
+  background-color: #1d1f21
+  .highlight
+    padding: .5em 0
+  // Overflow scroll
+  overflow-x: auto
+  pre
+    margin: 0
+  code
+    background-color: transparent
+    border-bottom: 0
+    padding: 0
+  // Line number
+  tr td:first-child
+    padding-left: .5em
+    min-width: 2em
+    opacity: .5
+    user-select: none
+

@@ -1,0 +1,53 @@
+#action-botton
+  $bottonSize : 2.5rem
+  position: fixed
+  height: $bottonSize
+  width: $bottonSize
+  right: 1rem
+  bottom: 1rem
+
+  font-family: $monospaceFonts
+
+  overflow: hidden
+  .action-wrapper
+    position: absolute
+    height: $bottonSize
+    width: $bottonSize
+    top: 0
+    transition: top .2s
+    &:hover
+      top: -$bottonSize
+    .action
+      height: $bottonSize
+      width: $bottonSize
+
+      display: flex
+      align-items: center
+      justify-content: center
+      span
+        text-decoration: line-through
+    .meter
+      user-select: none
+    .up
+      padding: 0
+      .icon
+        height: 1.5em
+        width: 1.5em
+        padding: .5em
+
+#poem-title
+  display: block
+  margin: 1em 0
+  padding: 3em 0
+  text-align: center
+  h1
+    font-family: $monospaceFonts
+    font-size: 2.2em
+  h2
+    //font-family: $sansSerifFonts
+    font-weight: 400
+    font-size: 1.2em
+#poem
+  text-align: center
+  line-height: 2em
+  font-family: $serifFonts

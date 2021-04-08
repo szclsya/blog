@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.Language.Lang }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+      {{- block "title" . -}}
+        {{ .Site.Title }}
+      {{- end -}}
+    </title>
+    {{- block "meta" . -}}
+    <meta property="og:title" content="{{ .Site.Title }}" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="{{ .Permalink }}" />
+    <meta property="og:description" content="{{ .Site.Params.Description }}" />
+    <meta name="description" content="{{ .Site.Title }}">
+    <meta name="author" content="{{ .Site.Params.Author }}">
+    <meta name="theme-color" content="#2c2a2a">
+    {{- end -}}
+
+    {{- $sass := resources.Get "css/main.sass" -}}
+    {{- $css := $sass | resources.ToCSS | resources.PostCSS (dict "use" "autoprefixer") | resources.Minify -}}
+    <link rel="stylesheet" href="{{ $css.Permalink }}">
+
+    {{- block "stylesheet" . -}}
+    {{- end -}}
+
+	{{- range .AlternativeOutputFormats -}}
+    {{ printf `<link rel="%s" type="%s" href="%s" title="%s" />` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}
+	{{- end -}}
+  </head>
+
+  <body>
+    {{- block "main" . -}}
+    {{- end -}}
+  </body>
+
+  <div id="action-botton">
+    <div class="action-wrapper">
+	  <div class="action meter">
+	    <span id="progress_meter">JS</span>
+	  </div>
+	  <a href="#top" class="action up no-dot">
+        <svg xmlns='http://www.w3.org/2000/svg' class='icon' viewBox='0 0 512 512'><title>Arrow Up</title><path fill='none' stroke='currentColor' stroke-linecap='square' stroke-miterlimit='10' stroke-width='48' d='M112 244l144-144 144 144M256 120v292'/></svg>
+	  </a>
+    </div>
+  </div>
+
+  {{- $mainJs := resources.Get "js/main.js" -}}
+  {{- $mainMinJs := $mainJs | resources.Minify -}}
+  <script type="text/javascript" src="{{ $mainMinJs.Permalink }}" defer></script>
+</html>

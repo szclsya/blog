@@ -1,0 +1,80 @@
+{{ define "title" }}
+{{ .Title }} - {{ .Site.Title }}
+{{ end }}
+
+{{ define "main" }}
+  <div id="offcenter">
+    <header> 
+      <div id="nav" class="slim">
+        <div class="location">
+          <a id="site-title" class="no-dot" href='{{ "/" | relLangURL }}'>Leo's Field</a>
+        </div>
+        <div class="after">
+          {{ partial "slim-header.html" . }}
+        </div>
+      </div>
+      <div id="big-title">
+      <h1>{{ .Title }}</h1>
+      </div>
+    </header>
+    <div class="content">
+      <main style="min-height: 45vh">
+      {{- range .Paginator.Pages -}}
+        <div class="list-item">
+          <div class="item-pre" style="margin-top: .45em">
+            <span class="item-preinfo">{{ .Date.Format (i18n "date-format") }}</span>
+            <div class="hide-on-big" style="display: inline">
+              {{- range .Params.tags -}}
+                <span>{{ . }}</span>
+              {{- end -}}
+            </div>
+          </div>
+          <a class="item-content no-dot" href="{{.Permalink}}">
+            <h1 class="item-title">{{.Title}}</h1>
+            <p class="item-description">{{ .Description }}</p>
+            <div class="badge hide-on-small">
+              {{- range .Params.tags -}}
+                <span>{{ . }}</span>
+              {{- end -}}
+            </div>
+          </a>
+        </div>
+      {{- end -}}
+      </main>
+
+
+      {{- with .Paginator -}}
+        <div class="pagination-navigation">
+          <div class="prev">
+            {{- if .HasPrev -}}
+              <a class="navigate backward no-dot" href="{{ .Prev.URL }}">Prev</a>
+            {{- else -}}
+              <span class="navigate disabled">Prev</span>
+            {{- end -}}
+          </div>
+          <div class="page-numbers">
+            {{- $current := .PageNumber -}}
+            {{- range .Pagers }}
+
+              {{- if eq $current .PageNumber -}}
+                <span class="current page" style="color: #616161">{{ .PageNumber }}</span>
+              {{- else -}}
+                <a class="page no-dot" href="{{ .URL }}">{{ .PageNumber }}</a>
+              {{- end -}}
+
+            {{- end -}}
+          </div>
+          <div class="next">
+            {{- if .HasNext -}}
+              <a class="navigate forward no-dot" href="{{ .Next.URL }}">Next</a>
+            {{- else -}}
+              <span class="navigate disabled">Next</span>
+            {{- end -}}
+          </div>
+        </div>
+      {{- end -}}
+    </div>
+
+    {{ partial "footer" }}
+  </div>
+{{ end }}

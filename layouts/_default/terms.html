@@ -1,0 +1,43 @@
+{{ define "title" }}
+{{ .Title }} - {{ .Site.Title }}
+{{ end }}
+
+{{ define "main" }}
+    <div id="offcenter">
+    <header> 
+      <div id="nav" class="slim">
+        <div class="location">
+          <a id="site-title" class="no-dot" href='{{ "/" | relLangURL }}'>Leo's Field</a>
+        </div>
+        <div class="after">
+          {{ partial "slim-header.html" . }}
+        </div>
+      </div>
+      <div id="big-title">
+      <h1>{{ .Title }}</h1>
+      </div>
+    </header>
+
+      <main style="min-height: 45vh">
+        {{- $plural := .Data.Plural -}}
+        {{- range .Data.Terms.ByCount -}}
+          <section class="list-item" id="{{ .Page.Title }}">
+            <div class="item-pre">
+              <h1 class=".item-title" style="padding: 0 .15em">{{ .Page.Title }}</h1>
+            </div>
+
+            <div class="pages" id="{{ .Term }}">
+              {{- range .Pages -}}
+                <div class="page">
+	              <a href="{{ .Permalink }}">{{ .Title }}</a>
+                </div>
+              {{- end -}}
+            </div>
+
+          </section>
+        {{- end -}}
+      </main>
+
+    {{ partial "footer" }}
+    </div>
+{{- end -}}

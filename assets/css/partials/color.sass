@@ -1,0 +1,87 @@
+a
+  color: $grey160
+  &:after
+    color: $blue
+  &:hover
+    background-color: $grey10
+.icon
+  color: $grey160
+  fill: $grey160
+ 
+footer
+  color: $grey130
+  fill: $grey130
+
+code
+  background-color: $blueBrighter
+  border-color: $blueBright
+.verbatim
+  background-color: $yellowLight
+  border-color: $yellow
+del
+  color: $grey130
+
+main
+  header
+    h1
+      border-color: $grey200
+  aside
+    color: $grey100
+    @media screen and (max-width: $singleColWidth)
+      p
+        color: black
+
+article
+  .footnotes
+    &:before
+      border-color: black
+
+.card.success
+  color: #498205
+  fill: #498205
+.card.info
+  color: $blue
+  fill: $blue
+.card.warning
+  color: $orange
+  fill: $orange
+.card.danger
+  color: $red
+  fill: $red
+
+.licence
+  background-color: $grey10
+
+.list-item
+  .item-title
+    color: $blueDark
+
+// components
+#action-botton
+  background-color: black
+  color: white
+  fill: white
+  .up
+    background-color: black
+    .icon
+      background-color: black
+      color: white
+
+// For list.html
+.pagination-navigation
+  .navigate
+    &:hover
+      background-color: $grey20
+  .page-numbers
+    .page
+      &:hover
+        background-color: $grey20
+    .current
+      background-color: $grey20
+// For single.html
+#toc
+  a
+    color: $blueDark !important
+  h3
+    @media screen and (max-width: $singleColWidth)
+      border-color: $grey150

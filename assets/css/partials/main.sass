@@ -1,0 +1,106 @@
+html
+  scroll-behavior: smooth
+
+.hide-on-small
+  @media screen and (max-width: $singleColWidth)
+    display: none !important
+.hide-on-big  
+  @media screen and (min-width: $singleColWidth)
+    display: none !important
+
+#offcenter
+  margin: 3em auto 0 auto
+  max-width: 60em
+  position: relative
+  .container-content
+    min-width: 40em
+    padding: 0 0 0 15em
+    .left
+      position: absolute
+      right: 100%
+      padding: 0 1em
+      width: 14em
+  @media screen and (max-width: $singleColWidth)
+    margin: 0 auto
+    padding: 0 1em
+    max-width: 50em
+    min-height: calc(100% - 2rem)
+    .container-content
+      min-width: 5em
+      padding: 0
+      .left
+        position: relative
+        right: 0
+        padding: 0
+        width: 100%
+
+#center
+  margin: 0 auto
+  padding: 0 1em
+  max-width: 38em
+  min-height: calc(100% - 4em)
+  position: relative
+  @media screen and (max-width: $singleColWidth)
+    max-width: 54em
+
+#nav
+  display: flex
+  height: 2em
+  a
+    line-height: 1em
+    padding: .3em
+  .icon
+    position: relative
+    top: .2em
+    height: 1.1em
+    width: 1.1em
+  .after
+    margin-left: auto
+
+#nav.fat
+  margin-top: 1.5em
+#nav.slim
+  margin-top: 1em
+
+// Blink animation
+@keyframes blink
+  50%
+    opacity: 0.0
+
+#site-title
+  font-family: $monospaceFonts
+  &:after
+    color: black
+    //animation: blink 1.2s step-start 0s infinite
+
+#big-title
+  margin: auto
+  padding: 5em 0
+  text-align: center
+  font-family: 'Vollkorn'
+  h1
+    font-size: 2em
+  h2
+    font-size: 1.25em
+    font-weight: 400
+    font-family: 'Vollkorn'
+    margin-top: 2em
+
+footer
+  margin: 3em 0 1em 0
+  font-size: .9em
+  display: flex
+  justify-items: center
+  .badges
+    margin-left: auto
+    // Go around back-to-top on small screens
+    @media screen and (max-width: $singleColWidth)
+      margin-right: 3em
+  .badge
+    display: inline-block
+    height: 1.2em
+    width: 1.2em
+    .icon
+      height: 1.1em
+      width: 1.1em
+      padding: .05em

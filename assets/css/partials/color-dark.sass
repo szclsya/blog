@@ -1,0 +1,87 @@
+@media (prefers-color-scheme: dark)
+  html
+    background-color: $grey220
+    color: white
+  a
+    color: $grey40
+    &:hover
+      background-color: $grey150
+  .icon
+    color: $grey40
+    fill: $grey40
+
+  footer
+    color: $grey60
+    fill: $grey60
+
+  code
+    background-color: $blueDarker
+    border-color: $blueDark
+  .verbatim
+    background-color: $yellowDarker
+    border-color: $yellowDark
+
+  del
+    color: $grey50
+
+  main
+    header
+      h1
+        border-color: $grey130
+    aside
+      color: $grey60
+      @media screen and (max-width: $singleColWidth)
+        p
+          color: white
+
+  article
+    .footnotes
+      &:before
+        border-color: white
+
+  .card.info
+    color: $blueLight
+    fill: $blueLight
+  .card.warning
+    color: $orangeLight
+    fill: $orangeLight
+  .card.danger
+    color: $redLight
+    fill: $redLight
+
+  .licence
+    background-color: $grey160
+
+  .list-item
+    .item-title
+        color: $blueLight
+
+  // components
+  #action-botton
+    background-color: $grey10
+    color: black
+    fill: black
+    .up
+      background-color: $grey10
+      .icon
+        background-color: $grey10
+        color: black !important
+        fill: black !important
+
+  // For list.html
+  .pagination-navigation
+    .navigate
+      &:hover
+        background-color: $grey160
+    .page-numbers
+      .page
+        &:hover
+          background-color: $grey160
+      .current
+        background-color: $grey160
+  // For single.html
+  #toc
+    border-color: $grey100
+    a
+      color: $blueLight !important
+
