@@ -31,21 +31,17 @@
 * 开工!
 所有的改动都在左发声单元上. 首先将左单元上的海绵耳垫取下来 (耳垫是套上去的, 应该很容易取下来). 取下来后, 你应该可以能看到四个螺丝.
 
-#+CAPTION: 固定左单元的螺丝 (已取下)
-[[/img/mdr-7506/0-driver-screws-web.jpg]]
+{{< img src="/img/mdr-7506/0-driver-screws.jpg" caption="固定左单元的螺丝 (已取下)" >}}
 
 把它们全部拧下来, 然后把单元轻轻提起来, 应该就可以看到耳机内部的接线了.
 
-#+CAPTION: 连接到发声单元的机内线
-[[/img/mdr-7506/1-cables-on-driver-web.jpg]]
+{{< img src="/img/mdr-7506/1-cables-on-driver.jpg" caption="连接到发声单元的机内线" >}}
 
 既然我们只是要换掉连接到播放设备的 3.5mm 线, 我们不需要碰连接到另一个发声单元的两根机内线. 将三根连接到外部的线解焊后, 将机外线从耳机中拖出来. 注意, 在 3.5mm 线离开耳机内部的地方有一个小橡胶件. 把那个也去掉.
 
 然后, 找一些新线并把它们焊到刚刚解焊的地方. 有条件的话, 最好使用与原来颜色一致的线, 这样对照图表会方便很多.
 
-#+CAPTION: 发声单元上焊好的新线
-[[/img/mdr-7506/2-soldered-driver-web.jpg]]
-
+{{< img src="/img/mdr-7506/2-soldered-driver.jpg" caption="发声单元上焊好的新线" >}}
 
 {{%btw%}}
 在这里你看到的额外的一根红 "线" 其实是一个热缩套管. 由于我在焊接的时候意外去除了机内线的一部分涂层, 我给一根机内线也套上了热缩套管以防乱碰.
@@ -55,8 +51,7 @@
 
 确定好对应关系后就可以开焊了. 首先在每一根线上都套一截热缩套管, 然后将对应的线绕到对应的桩头上面. 然后就可以使用焊锡把它们焊起来了.
 
-#+CAPTION: 插座后方焊好的桩头
-[[/img/mdr-7506/3-soldered-connector-web.jpg]]
+{{< img src="/img/mdr-7506/3-soldered-connector.jpg" caption="插座后方焊好的桩头" >}}
 
 现在我们可以试着把插座安装到耳机上面了. 由于自带的线比较细, 我们必须用电钻把那个孔弄得大一点. 先使用小一点的钻头, 逐步使用更大的钻头, 直到插座可以轻松地放入.
 
@@ -64,16 +59,14 @@
 
 现在可以试着把插座外部的螺丝拧上了. 应该会很简单.
 
-#+CAPTION: 安装好的插座
-[[/img/mdr-7506/4-completed-connector-web.jpg]]
+{{< img src="/img/mdr-7506/4-completed-connector.jpg" caption="安装好的插座" >}}
 
 我这里操作不慎稍微刮伤了耳机的外壳, 但几乎看不出来, 问题不大.
 
 * 完成!
 大功告成! 干掉那一根长到窒息的线后, 现在这副耳机变得惊人得便携. 当折叠时, 甚至投影面积比一台 Nintendo Switch 还要小!
 
-#+CAPTION: MDR-7506 vs Nintendo Switch
-[[/img/mdr-7506/5-size-comparasion-web.jpg]]
+{{< img src="/img/mdr-7506/5-size-comparasion.jpg" caption="MDR-7506 vs Nintendo Switch" >}}
 
 至于音质, 和原来相比, 我无法听出任何区别. 值得一提的是, 如果把单元拆开后听一段单声道音频, 在另一个声道也会有一点声音, 不知道是不是本来就有的问题. 但是在正常佩戴时却完全没有感觉, 所以 nah, 问题不大.
 

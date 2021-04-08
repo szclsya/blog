@@ -1,9 +1,10 @@
 #+TITLE: About
+#+DESCRIPTION: More about me
 #+DATE: 2019-09-20
 
 Hi.
 
-This is Leo Shen. But if you see a guy called =szclsya= somewhere, that should be me.
+This is Leo Shen. If you see a guy called =szclsya= somewhere, that should be me.
 
 * ~/me~
 + Undergraduate Mathematics student at University of Waterloo.
@@ -27,5 +28,5 @@ If possible, please contact me via PGP.
 
 PGP KeyID: =A8A24328D9D4EEE5A50DD9E196F7202214647A8B=. Or directly download the public key [[http://szclsya.me/public.asc][here]].
 * This blog
-This blog is built with [[https://gohugo.io/][Hugo]]. The theme is written by me and source code can be found at [[https://github.com/szclsya/hugo-theme-less][github]]. The source code of the articles is also open source at [[https://github.com/szclsya/blog][github]]. Feel free to share and remix my work, as long as the license under the article is followed.
+This blog is built with [[https://gohugo.io/][Hugo]]. The theme is written by me and source code can be found at [[https://github.com/szclsya/hugo-theme-less][GitHub]]. The source code of the articles is also open source at [[https://github.com/szclsya/blog][GitHub]]. Feel free to share and remix my work, as long as the license under the article is followed.
 

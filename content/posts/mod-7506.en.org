@@ -31,21 +31,17 @@ So, I ordered some 3.5mm panel mount, and get to work.
 * Get to work
 All the modification happens on the left driver. Remove the left ear pad and this should reveal four screws.
 
-#+CAPTION: Screws of the left drivers (already removed)
-[[/img/mdr-7506/0-driver-screws-web.jpg]]
+{{< img src="/img/mdr-7506/0-driver-screws.jpg" caption="Screws of the left drivers (already removed)" >}}
 
 Remove all of them, and now you should be able to see the wires to the driver unit.
 
-#+CAPTION: Cables to the driver
-[[/img/mdr-7506/1-cables-on-driver-web.jpg]]
+{{< img src="/img/mdr-7506/1-cables-on-driver.jpg" caption="Cables to the driver" >}}
 
 Since we just need to replace the long cable with a mount, we won't touch the wires coming from the other driver. Just desolder the three wires which comes from the 3.5mm cable and then pull the cable out. Notice there is a little rubber tube at where the cable come out of the headphone. Remove that too.
 
 Then, pick some fresh wires and solder them onto the solder joints we just desoldered. If possible, use wires of original color since it would make life much easier.
 
-#+CAPTION: Soldered cables on the driver unit
-[[/img/mdr-7506/2-soldered-driver-web.jpg]]
-
+{{< img src="/img/mdr-7506/2-soldered-driver.jpg" caption="Soldered cables on the driver unit" >}}
 
 {{%btw%}}
 The additional red "wire" is actually just a shrink wrap. I put it there to prevent it touching with other stuff because I screw up its coating.
@@ -55,8 +51,7 @@ Now, grab a 3.5mm mount. My mount has three ends: one longer lead for the ground
 
 After figuring out the lead order, put a head shrink on the cable and solder the wires to the connector so that they won't touch each other by accident. Then solder the wires to the corresbonding leads.
 
-#+CAPTION: Soldered cables on the back of the connector
-[[/img/mdr-7506/3-soldered-connector-web.jpg]]
+{{< img src="/img/mdr-7506/3-soldered-connector.jpg" caption="Soldered cables on the back of the connector" >}}
 
 Now we can try to fit the connector into the hole. Unfortunately the connector is a bit wider than the original cable, so a drill is needed to enlarge the hole. Gradually use larger drills and eventually the connector should be able to fit in the hole without any effort.
 
@@ -64,16 +59,14 @@ Also, there is a little piece of plastic that guides the cable on the outer side
 
 Now we can try to screw the nut onto the connector. Should be really easy.
 
-#+CAPTION: Nut installed.
-[[/img/mdr-7506/4-completed-connector-web.jpg]]
+{{< img src="/img/mdr-7506/4-completed-connector.jpg" caption="Nut installed." >}}
 
 As you can see, I screw up a little bit and accidentally scratch off some surface on the headphone. No huge deal, though.
 
 * Complete!
 We are finished! Without the annoying cable, now the headphone is surprisingly compact. When folded, it is even smaller than a Nintendo Switch! (the headphone is significantly thicker though)
 
-#+CAPTION: Quite small indeed
-[[/img/mdr-7506/5-size-comparasion-web.jpg]]
+{{< img src="/img/mdr-7506/5-size-comparasion.jpg" caption="Quite small indeed" >}}
 
 Ah, the sound quality. I noticed some crosstalk on the modified headphone. However, I never did the same test on the original headphone, so I cannot (until I grab another pair of these, maybe) if it is a problem of the electrical design. Also, since I cannot notice any difference when hearing some familiar music with it, it's not an issue for me.
 

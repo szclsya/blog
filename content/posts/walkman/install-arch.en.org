@@ -68,13 +68,11 @@ Start the desired computer, (quickly) enable the USB Mass Storage mode on Walkma
 
 There should be two options appear at the Boot Menu. One is =USB FDD: SONY WALKMAN= and the other one is =USB HDD: SONY WALKMAN=. It seems that the FDD drive corresponds to the internal memory and the HDD drive corresponds to the SD card. So use the FDD one.
 
-#+CAPTION: Two Walkman USB devices in the boot menu
-[[/img/walkman/0_boot_menu-web.jpg]]
+{{< img src="/img/walkman/0_boot_menu.jpg" caption="Two Walkman USB devices in the boot menu" >}}
 
 Then choose to boot from archiso. After the kernel is loaded, the Walkman disables the Mass Storage mode so the kernel cannot find the ~/run/archiso/bootmnt~ partition. Nasty little Walkman.
 
-#+CAPTION: Confused Arch Linux and naughty Walkman
-[[/img/walkman/1_umount_after_kernel-web.jpg]]
+{{< img src="/img/walkman/1_umount_after_kernel.jpg" caption="Confused Arch Linux and naughty Walkman" >}}
 
 So we have to do it manually. After the Walkman finishes refreshing database, turn on Mass Storage once again. Then in the interactive fallback shell, type
 
@@ -85,11 +83,9 @@ exit
 
 Now archiso has everything it needs to boot and it should go through the boot process flawlessly and take you to the shell. Hooray!
 
-#+CAPTION: Going through the normal boot process
-[[/img/walkman/3_loading-web.jpg]]
+{{< img src="/img/walkman/3_loading.jpg" caption="Going through the normal boot process" >}}
 
-#+CAPTION: We have access to the archiso environment!
-[[/img/walkman/4_done-web.jpg]]
+{{< img src="/img/walkman/4_done.jpg" caption="We have access to the archiso environment!" >}}
 
 ** Then what?
 Then? You can just use your archiso as normal. Repair broken Linux, install Arch Linux, whatever you want. It's just archiso, after all.

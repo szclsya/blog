@@ -1,13 +1,16 @@
 #+TITLE: Index page
 #+DATE: 2019-09-22T22:56:41
 
-/中文版呢? 请使用左上角的翻译按钮./
+{{< card info >}}
+使用右上角的翻译按钮切换到中文站点.
+{{< /card >}}
 
-* Hello there
+Hello there!
+
 This is a little field of Leo on the magical Internet. 
 
 I will try to write down some interesting and unique aspects of my life here. As of the boring part, well, I believe you've seen enough of them.
 
-If you want to see something I write, [[/posts][here]] is all my articles. If you wish, you can also browse them in [[https://szclsya.me/tags/][tags]]. Or if you are really boring, why not try to find some non-existing pages? Just in case there's something interesting. ;)
+If you wish to see something I write, you can view them in [[/posts/][Posts]]. Or, you can also browse them in [[/tags/][Tags]]. If you are really boring, why not try to find some non-existing pages? Just in case there's something interesting. ;)
 
 Note that due to my laziness, many articles are not translated (so, some only in Chinese, and some only in English). If you understand both languages, you may want to see article list of both languages to see all I wrote.
