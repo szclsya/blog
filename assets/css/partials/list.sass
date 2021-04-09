@@ -4,6 +4,9 @@
     font-family: $sansSerifFonts
     font-weight: 400
     margin: 0
+  a
+    // To align with titles
+    padding: 0
   .item-content
     display: block
     width: 100%
@@ -42,11 +45,18 @@
     color: grey
     display: block
     min-width: 7em
+    margin-right: .5em
+    margin-top: .3em
+    text-align: right
     @media screen and (max-width: $singleColWidth)
       margin: 0
       font-size: .8em
-    span
-      margin-right: .5em
+      text-align: left
+    .section-info
+      text-transform: uppercase
+      font-size: 1.2em
+      border-top: 2px solid
+      padding: 0
 
 .pagination-navigation
   display: flex
