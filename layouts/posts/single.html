@@ -59,16 +59,15 @@
 
         <!-- Tags -->
         <div id="meta">
-          <div class="tags right">
-          {{- if isset .Params "tags" -}}
-
-            <span>{{ i18n "tags" }}: </span>
-            {{- range $i, $e := .Params.tags -}}
-              {{- if $i -}}<span>/</span>{{- end -}}
-              <a href="/tags/#{{ . }}">{{- . -}}</a>
+          <div class="tags">
+            {{- if isset .Params "tags" -}}
+              {{- range $i, $e := .Params.tags -}}
+                <a href="{{ "/tags" | relLangURL }}/#{{ . }}">#{{- . -}}</a>
+              {{- end -}}
             {{- end -}}
-
-          {{- end -}}
+          </div>
+          <div class="right">
+            <span>{{ i18n "published-on" }} {{ .Date.Format (i18n "date-format") }}</span>
           </div>
         </div>
 

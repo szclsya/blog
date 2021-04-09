@@ -19,6 +19,8 @@ view-in-other-lang:
   other: '查看中文版本'
 tags:
   other: 'Tags'
+published-on:
+  other: 'Published on'
 
 # footnote
 footnote-msg:
