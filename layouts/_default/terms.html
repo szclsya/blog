@@ -2,6 +2,17 @@
 {{ .Title }} - {{ .Site.Title }}
 {{ end }}
 
+{{- define "meta" -}}
+<meta name="description" content="{{ .Page.Description }}">
+<meta name="author" content="{{ .Site.Params.Author }}">
+<meta name="theme-color" content="#2c2a2a">
+
+<meta property="og:title" content="{{ .Title }} - {{ .Site.Title }}" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="{{ .Permalink }}" />
+<meta property="og:description" content="{{ .Page.Description }}" />
+{{- end -}}
+
 {{ define "main" }}
     <div id="offcenter">
     <header> 
@@ -18,25 +29,25 @@
       </div>
     </header>
 
-      <main style="min-height: 45vh">
-        {{- $plural := .Data.Plural -}}
-        {{- range .Data.Terms.ByCount -}}
-          <section class="list-item" id="{{ .Page.Title }}">
-            <div class="item-pre">
-              <h1 class=".item-title" style="padding: 0 .15em">{{ .Page.Title }}</h1>
-            </div>
+    <main style="min-height: 45vh">
+      {{- $plural := .Data.Plural -}}
+      {{- range .Data.Terms.ByCount -}}
+        <section class="list-item" id="{{ .Page.Title }}" style="min-height: 3em">
+          <div class="item-pre">
+            <h1 class="item-preinfo section-info">{{ .Page.Title }}</h1>
+          </div>
 
-            <div class="pages" id="{{ .Term }}">
-              {{- range .Pages -}}
-                <div class="page">
-	              <a href="{{ .Permalink }}">{{ .Title }}</a>
-                </div>
-              {{- end -}}
-            </div>
+          <div class="pages" id="{{ .Term }}">
+            {{- range .Pages -}}
+              <div class="page">
+	            <a href="{{ .Permalink }}">{{ .Title }}</a>
+              </div>
+            {{- end -}}
+          </div>
 
-          </section>
-        {{- end -}}
-      </main>
+        </section>
+      {{- end -}}
+    </main>
 
     {{ partial "footer" }}
     </div>
