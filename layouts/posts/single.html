@@ -11,9 +11,12 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="{{ .Permalink }}" />
 <meta property="og:description" content="{{ .Page.Description }}" />
-<meta property="og:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z0700" }}" />
+<meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z0700" }}" />
+{{- if not (eq .Lastmod .Date) -}}
+  <meta property="article:modified_time" content="{{ .Lastmod.Format "2006-01-02T15:04:05Z0700" }}" />
+{{- end -}}
 {{- if isset .Params "tags" -}}
-  <meta property="og:tags" content="{{ delimit .Params.tags " " }}" />
+  <meta property="article:tags" content="{{ delimit .Params.tags " " }}" />
 {{- end -}}
 {{- end -}}
 
