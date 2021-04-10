@@ -19,27 +19,28 @@
     </header>
     <div class="content">
       <main style="min-height: 45vh">
-      {{- range .Paginator.Pages -}}
-        <div class="list-item">
-          <div class="item-pre" style="margin-top: .45em">
-            <span class="item-preinfo">{{ .Date.Format (i18n "date-format") }}</span>
-            <div class="hide-on-big" style="display: inline">
-              {{- range .Params.tags -}}
-                <span>{{ . }}</span>
-              {{- end -}}
+        {{ .Content }}
+        {{- range .Paginator.Pages -}}
+          <div class="list-item">
+            <div class="item-pre" style="margin-top: .45em">
+              <span class="item-preinfo">{{ .Date.Format (i18n "date-format") }}</span>
+              <div class="hide-on-big" style="display: inline">
+                {{- range .Params.tags -}}
+                  <span>{{ . }}</span>
+                {{- end -}}
+              </div>
             </div>
+            <a class="item-content no-dot" href="{{.Permalink}}">
+              <h1 class="item-title">{{.Title}}</h1>
+              <p class="item-description">{{ .Description }}</p>
+              <div class="badge hide-on-small">
+                {{- range .Params.tags -}}
+                  <span>{{ . }}</span>
+                {{- end -}}
+              </div>
+            </a>
           </div>
-          <a class="item-content no-dot" href="{{.Permalink}}">
-            <h1 class="item-title">{{.Title}}</h1>
-            <p class="item-description">{{ .Description }}</p>
-            <div class="badge hide-on-small">
-              {{- range .Params.tags -}}
-                <span>{{ . }}</span>
-              {{- end -}}
-            </div>
-          </a>
-        </div>
-      {{- end -}}
+        {{- end -}}
       </main>
 
 
