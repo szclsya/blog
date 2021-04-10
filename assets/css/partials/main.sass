@@ -1,10 +1,13 @@
 html
   scroll-behavior: smooth
 
-.hide-on-small
+.hide-on-narrowest
+  @media screen and (max-width: $smallScreenWidth)
+    display: none !important
+.hide-on-narrow
   @media screen and (max-width: $singleColWidth)
     display: none !important
-.hide-on-big  
+.hide-on-wide
   @media screen and (min-width: $singleColWidth)
     display: none !important
 

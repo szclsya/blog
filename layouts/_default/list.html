@@ -24,7 +24,7 @@
           <div class="list-item">
             <div class="item-pre" style="margin-top: .45em">
               <span class="item-preinfo">{{ .Date.Format (i18n "date-format") }}</span>
-              <div class="hide-on-big" style="display: inline">
+              <div class="hide-on-wide" style="display: inline">
                 {{- range .Params.tags -}}
                   <span>{{ . }}</span>
                 {{- end -}}
@@ -33,7 +33,7 @@
             <a class="item-content no-dot" href="{{.Permalink}}">
               <h1 class="item-title">{{.Title}}</h1>
               <p class="item-description">{{ .Description }}</p>
-              <div class="badge hide-on-small">
+              <div class="badge hide-on-narrowest">
                 {{- range .Params.tags -}}
                   <span>{{ . }}</span>
                 {{- end -}}
