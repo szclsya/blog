@@ -1,3 +1,10 @@
+{{ define "meta" }}
+  <meta property="og:title" content="{{ .Site.Title }}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:description" content="{{ .Site.Params.Description | markdownify | plainify }}" />
+  <meta name="description" content="{{ .Site.Title }}" />
+{{ end }}
+
 {{ define "main" }}
   <div id="center">
     <header> 

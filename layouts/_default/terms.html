@@ -2,17 +2,6 @@
 {{ .Title }} - {{ .Site.Title }}
 {{ end }}
 
-{{- define "meta" -}}
-<meta name="description" content="{{ .Page.Description }}">
-<meta name="author" content="{{ .Site.Params.Author }}">
-<meta name="theme-color" content="#2c2a2a">
-
-<meta property="og:title" content="{{ .Title }} - {{ .Site.Title }}" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="{{ .Permalink }}" />
-<meta property="og:description" content="{{ .Page.Description }}" />
-{{- end -}}
-
 {{ define "main" }}
     <div id="offcenter">
     <header> 
