@@ -145,9 +145,26 @@ main
     font-family: $sansSerifFonts
     font-weight: 400
   @media screen and (max-width: $singleColWidth)
+    // Reset the layout for wide screen
+    position: relative
+    top: 0
+    left: 0
+
+    float: right
+    margin: 0 1rem .5rem 1rem
+    max-width: 15em
+    h3
+      margin-top: 0
+  @media screen and (max-width: $smallScreenWidth)
+    position: relative
+    float: none
+    max-width: initial
+    margin: 0
     width: calc(100% - 2.15em) !important
     border: 1px solid
     padding: .5em 1em !important
+    h3
+      margin-top: .3em 0
     #TableOfContents
       font-size: .9em
       padding: 0
