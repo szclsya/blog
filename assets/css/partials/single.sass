@@ -114,6 +114,7 @@ main
       font-weight: 600
       font-family: $sansSerifFonts
       text-transform: capitalize
+      user-select: none
       // To align them
       display: flex
       justify-items: center
@@ -121,7 +122,7 @@ main
         display: inline-block
         height: 1em
         width: 1em
-        margin-top: .18em
+        margin-top: .15em
         margin-right: .25em
       .content
         vertical-align: middle
@@ -155,6 +156,9 @@ main
   margin-top: 2em
   font-size: .85em
   display: flex
+  flex-wrap: wrap
+  a
+    flex-shrink: 0
   .right
     margin-left: auto
 

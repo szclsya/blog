@@ -1,5 +1,6 @@
 #+TITLE: Fix clipboard permission on Android 10
 #+DATE: 2020-01-23T12:05:36
+#+LASTMOD: 2020-03-29T12:05:36
 #+DESCRIPTION: Clipboard sync is awesome, let's bring it back.
 #+TAGS[]: android
 #+LICENSE: cc-sa

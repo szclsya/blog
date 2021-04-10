@@ -11,6 +11,10 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="{{ .Permalink }}" />
 <meta property="og:description" content="{{ .Page.Description }}" />
+<meta property="og:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z0700" }}" />
+{{- if isset .Params "tags" -}}
+  <meta property="og:tags" content="{{ delimit .Params.tags " " }}" />
+{{- end -}}
 {{- end -}}
 
 
@@ -37,7 +41,6 @@
               <span>{{ i18n "view-in-other-lang" }}</span>
             </a>
           {{- end -}}
-
         </div>
 
         <header>
@@ -68,6 +71,11 @@
           </div>
           <div class="right">
             <span>{{ i18n "published-on" }} {{ .Date.Format (i18n "date-format") }}</span>
+            {{- if not (eq .Lastmod .Date) -}}
+              <span style="margin-left: .5em">
+                {{ i18n "last-modified-on" }} {{ .Lastmod.Format (i18n "date-format") }}
+              </span>
+            {{- end -}}
           </div>
         </div>
 

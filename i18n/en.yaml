@@ -21,6 +21,8 @@ tags:
   other: 'Tags'
 published-on:
   other: 'Published on'
+last-modified-on:
+  other: 'Last modified on'
 
 # footnote
 footnote-msg:
