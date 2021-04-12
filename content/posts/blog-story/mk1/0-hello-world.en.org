@@ -5,6 +5,7 @@
 #+SERIES: Hugo
 #+LICENSE: cc-sa
 #+IMG: /img/blog-story/blog-v1-web.jpg
+#+aliases[]: ../0-hello-world/
 
 Finally, it is finished!
 

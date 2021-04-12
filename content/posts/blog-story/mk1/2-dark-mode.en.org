@@ -5,6 +5,7 @@
 #+SERIES: Hugo
 #+LICENSE: cc-sa
 #+IMG: /img/blog-story/blog-v1-dark.jpg
+#+aliases[]: ../2-dark-mode/
 
 Add dark mode support to [[https://github.com/szclsya/hugo-theme-less][less]] theme used by this blog!
 
