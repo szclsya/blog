@@ -1,0 +1,89 @@
+#+TITLE: Rewriting this blog's theme
+#+DATE: 2021-04-12T11:00:00
+#+DESCRIPTION: Leo's Field, mkII.
+#+TAGS[]: blog
+#+LICENSE: cc-sa
+#+TOC: true
+
+On September 2019, I wrote the first version of this blog. It has been a pretty successful run, but it's time to improve it.
+
+{{< img src="/img/blog-story/mk2/index.png" >}}
+
+To see some context, view [[../mk1/1-some-notes/][release notes]] for the previous version.
+
+* What didn't change
+Many things stays the same. For example, this version of the site is still written with [[https://gohugo.io][Hugo]]. I have the idea to switch to [[https://www.getzola.org][Zola]], which is written in Rust and has cleaner template language, but Hugo still has the best support for Org-mode.
+
+The lack of JavaScript also remains the same. Actually, there's even less JS code on this site—only 35 lines! All other effects you see is created using CSS magics.
+
+Of course, the little percentage/back-to-top button remains. I think it's pretty cool.
+
+* Make it Fast
+Since we're still dealing with [[https://gohugo.io][Hugo]], which is a static site generator, we have a pretty good starting point. The web server don't have to render pages whenever someone requests; rather, everything is rendered beforehand, and the web server just need to serve the static files. Thus, the main area to improve is to reduce the size of the files that are needed to show pages correctly.
+
+** WebP and AVIF
+Before, I'm simply using =JPG= with some compression to keep the image low. However, JPG is not particularly efficient in today's view. =WebP= has been widely adopted to be the next big web image format. =AVIF=, which is based on the latest royalty-free =AV1= video codec, provides even better compression rate and image quality but is just starting to see browser support.
+
+So, this rewrite introduces support to both =WebP= and =AVIF=. Since Hugo [[https://github.com/gohugoio/hugo/issues/5924][doesn't support either of these formats]], I have to write a [[https://github.com/szclsya/blog/blob/dev/layouts/shortcodes/del.html][special shortcode]] to detect if these versions of the image exists.
+
+Since many older browsers doesn't support these formats (expecially =AVIF=), the aforementioned shortcode encapsulate the image in a ~<figure>~ HTML tag, where it can specify multiple versions (for example, one in JPG, one in WebP, and one in AVIF) of the same image and let the browser decide which version to use.
+
+Also, since we are using a shortcode already, I also add /lazy loading/ and /async decoding/ to defer the image downloading and decoding process, further improving the page loading speed.
+
+The only issue is that since images live inside a shortcode now, I cannot use native Org-mode syntax to include an image anymore. But considering the benefit, I think it's well worth the effort.
+
+** Shrink the fonts
+I've been using webfonts since the very beginning of this blog. It's a key part of the visual design, and I'm very happy about how they looks. However, it also adds a lot of data to transfer and increases page loading time. Actually, fonts takes up most of the bandwidth during the first load.
+
+{{< img src="/img/blog-story/mk2/old-theme-font-sizes.png" caption="Fonts requires a lot of data to be transferred." >}}
+
+Although thanks to caching, browsers only downloads these fonts on the first visit, it would still be nice to have smaller font files.
+
+And it is possible! Since I mainly write in English, we only need English characters and some symbols to display the articles correctly. So, I build a list of the characters that I need, and use [[https://github.com/fonttools/fonttools][pyftsubset]] to remove everything else.
+
+#+BEGIN_SRC fish
+for i in *.ttf; pyftsubset $i --name-IDs+=0,4,6 --text-file=../../glyphs.txt ; end
+# And replace the original files, since pyftsubset will add .subset to the filename
+for f in *; mv $f (string replace '.subset' '' $f) ; end
+#+END_SRC
+
+Then, we just need to compress them for use in browsers.
+
+#+BEGIN_SRC fish
+for i in *.ttf; woff2_compress $i; end
+#+END_SRC
+
+After this process, now the fonts only takes up around 15~20KiB per font, which is only around 10% of the original size.
+
+** Increase cache coverage on CloudFlare
+I've been using =CloudFlare= since the beginning of this blog. CloudFlare is a CDN service that caches resources on the website and delivers the resources in their datacenter, so that the users can access them in their nearst datacenter, thus reducing latency. However, by default, CloudFlare doesn't cache ~html~ files (since they are contents of the website and may subject to change). However, since this is just a static site, we can safely let CloudFlare cache everything. And if we do have a modification, we can just purge cache on CloudFlare's dashboard.
+
+{{% btw %}}
+There's also another option: deploy the site directly on CloudFlare's datacenter! This can be done via using [[https://developers.cloudflare.com/workers/platform/sites][Workers Site]]. But since the free plan only allows 100,000 requests per month, I will not use it here.
+{{% /btw %}}
+
+In order to make CloudFlare cache everything, Go to =Page Rules= and add a rule:
+
+#+BEGIN_SRC markdown
+Match: szclsya.me/*
+Then the settings are: Cache Level, Cache Everything
+#+END_SRC
+
+Now, the first response time when loading the page should be greatly reduced, since CloudFlare now don't have to go back to the orginal server to get the page.
+
+* Aesthetics Improvements
+The most obvious change in the aesthetics department is the introduction of double column design.
+
+Typographically, it's favorable to have less than 100 characters per line, so readers can track the line effortlessly. So that's what I did in the first version. However, this also means there's a lot of wasted space around the text. Thus, in this version, a second column is introduced.
+
+The extra space provides some interesting possibilities. If you have a wide screen, you may have seen the text floating on the left of the text and the image caption on the left side of the image. But there's more! On [[/tags][Tags]] page, the left column is used to (stylistically) show the tag name, and on [[/posts][Posts]] list, the left column is used to show the time.
+
+{{< img src="/img/blog-story/mk2/tags.png" caption="Left column showing tag names on Tags page." >}}
+
+** Font Selections
+Fonts generally stay the same on this revision; it's still [[http://vollkorn-typeface.com/][Vollkorn]] for Serif, [[https://www.ibm.com/plex/][IBM Plex Sans]] for Sans Serif, and [[https://typeof.net/Iosevka/][Iosevka]] for Monospace. There's one addition though: [[https://github.com/cyrealtype/Lora-Cyrillic][Lora]]. It will be used for general Serif uses now, while Vollkorn will be reserved for some special purposes.
+
+* Epilogue
+And... That's about it! This upgrade is mostly a revision from the last one—a new take based on the same idea: to provide freedom in writing and pleasure during reading. Thus, you may be able to spot a lot of familiar elements from the last revision.
+
+Happy hacking!
