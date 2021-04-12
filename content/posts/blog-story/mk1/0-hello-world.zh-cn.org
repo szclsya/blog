@@ -5,6 +5,7 @@
 #+SERIES: Hugo
 #+LICENSE: cc-sa
 #+IMG: /img/blog-story/blog-v1-web.jpg
+#+aliases[]: ../0-hello-world/
 
 噫，好，终于弄完了。这本不是什么大事，但也值得纪念一下（我居然咕完了一个项目！），那就写点什么吧。
 
