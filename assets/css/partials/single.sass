@@ -48,11 +48,24 @@ main
     max-width: 100%
   figure
     margin: .5em 0
+    position: relative
     img
       margin: 0 auto
     figcaption
       text-align: center
       font-size: .8em
+      padding-top: .2em
+      @media screen and (min-width: $singleColWidth)
+        text-align: right
+        position: absolute
+        right: 100%
+        top: 0
+        width: 15em
+        margin: 0 1em
+        font-size: 1rem
+        border-top: 2px solid
+        text-align: right
+        max-width: 13.5em
   .footnotes
     margin: 2.5em 0 1.5em 0
     &:before

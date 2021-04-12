@@ -46,5 +46,9 @@
       decoding="async"
     />
   </picture>
-  <figcaption>{{ $caption }}</figcaption>
+  {{- if $caption -}}
+  <figcaption>
+    {{ $caption }}
+  </figcaption>
+  {{- end -}}
 </figure>
