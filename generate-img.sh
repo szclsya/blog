@@ -2,7 +2,7 @@
 
 SIZE="2500x2500"
 
-for img in ./img/*/*.jpg; do
+for img in $(find ./img | grep "jpg$"); do
     echo "Converting $img..."
     new_path=${img/'./img/'/'./static/img/'}
     mkdir -p "$(dirname $new_path)"
@@ -14,12 +14,12 @@ for img in ./img/*/*.jpg; do
     convert $img -resize $SIZE -quality 80 ${new_path/'.jpg'/'.avif'}
 done
 
-for img in ./img/*/*.png; do
+for img in $(find ./img | grep "png$"); do
     echo "Converting $img..."
     new_path=${img/'./img/'/'./static/img/'}
     mkdir -p "$(dirname $new_path)"
     # Copy original PNG
-    cp $img $new_path
+    convert $img -resize $SIZE -strip $new_path
     # Generate AVIF
     convert $img -resize $SIZE -strip ${new_path/'.png'/'.avif'}
 done
