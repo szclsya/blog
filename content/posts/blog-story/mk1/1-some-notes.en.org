@@ -9,7 +9,7 @@
 #+IMG: /img/blog-story/blog-v1-web.jpg
 #+aliases[]: ../1-some-notes/
 
-[[/img/blog-story/blog-v1-web.jpg]]
+[[/img/blog-story/blog-v1.jpg]]
 
 * A bit about the struggle
 I used =WordPress= for a long time, but am not satisfied for a few reasons:
