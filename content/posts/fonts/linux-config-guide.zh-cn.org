@@ -43,8 +43,9 @@ Arch Linux 提供了成吨的字体可供选择。完整的列表可以在 [[htt
 + ~ttf-sarasa-gothic~ ^{AUR} Sarasa Term SC
 
 * 配置
-现在，什么也不用做，打开一个中文页面，应该已经不会存在豆腐块了。
-{{< btw >}} Noto 字体家族正是得名于此. Noto -> No Toufu -> 没有豆腐块. {{</ btw >}}
+现在，什么也不用做，打开一个中文页面，应该已经不会存在豆腐块了[fn:noto]。
+[fn:noto] Noto 字体家族正是得名于此. Noto -> No Toufu -> 没有豆腐块.
+
 
 然而...
 
