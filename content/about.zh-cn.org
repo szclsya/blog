@@ -7,18 +7,17 @@ Hi.
 
 * ~/me~
 + Undergraduate Mathematics student at University of Waterloo.
-+ 热爱音乐, 有一个 Walkman 并[[{{< ref "/posts/walkman/install-arch.zh-cn.org" >}}][用它做奇怪的事情]].
++ 热爱音乐, 有几个 Walkman 并[[/zh-cn/tags/#walkman][用它们做奇怪的事情]].
 + 用 [[https://www.archlinux.org][Arch Linux]] 和 [[https://aosc.io][AOSC OS]], 在 AOSC OS 那里有一点微小的贡献.
 + 使用 [[https://github.com/szclsya/.emacs.d][Emacs]] & vim, Emacs 多一点.
 + 使用 +SinkPad+ ThinkPad
 + 有一台 Nintendo Switch, 最喜欢的游戏是 Xenoblade 2.
 
 * 联系我
-+ Email: me^{at}szclsya_{dot}me
++ Email: i^{at}szclsya_{dot}me
 + Email: szclsya^{at}gmail_{dot}com
 + Github: [[https://github.com/szclsya][szclsya]]
 + Steam: [[https://steamcommunity.com/id/szclsya/][szclsya]]
-
 
 ** PGP
 如果可能的话，用PGP联系我吧.
@@ -26,5 +25,6 @@ Hi.
 +PGP KeyID: =91351F513F67552E1ECAAB60498CB4BB3F4A10A2= 已停止使用.+
 
 PGP KeyID: =A8A24328D9D4EEE5A50DD9E196F7202214647A8B=. 或者直接从 [[http://szclsya.me/public.asc][这里]] 下载公钥.
+
 * 关于这博客
-这个博客是由 [[https://gohugo.io/][Hugo]] 生成的. 主题由本人撰写并开源于 Github. 博文使用 [[https://orgmode.org/][Org-mode]] 撰写, 亦开源于 [[https://github.com/szclsya/blog][Github]]. 在遵循文章中注明的协议(通常是 署名-相同方式共享 4.0 国际)的前提下, 请随意转载.
+这个博客是由 [[https://gohugo.io/][Hugo]] 生成的. 这个博客的源代码（包括主题与文章）皆开源于 [[https://github.com/szclsya/blog][Github]]. 在不违反注明的协议的前提下, 请随意使用.
