@@ -2,22 +2,15 @@
 #+DATE: 2019-09-23T00:57:56
 
 * 老相识
-+ Chenyijia001 (a.k.a learningis1st) :: [[https://learningis1.st/]]. 活跃的 Wikipedian 和 PC爱好者. 
++ Chenyijia001 (a.k.a learningis1st) :: [[https://learningis1.st/]]. 活跃的 Wikipedian 和 PC 爱好者. 
 + PeterCxy :: [[https://en.typeblog.net/][TypeBlog]] Android 大佬! ~(PeterCxy android-device?) → rom?~
 
 * 透过神奇的光纤...
 也有可能是铜缆, 不要在意这些细节.
-+ ヨイツの賢狼ホロ :: [[https://blog.yoitsu.moe][约伊兹的萌狼乡手札]]. 丰收之神! 在 #archlinux-cn 很活跃, 对新人非常耐心. 把我拉入了 [[/posts/coreboot/x220/][coreboot]] 和 静态页面生成器 的大坑.
-+ Le Code d'Origine as Force0x1 :: [[https://originco.de][OriginCode 札記]]. 似乎还是个高中生, 不过已经是一个熟练的软件包维护者了. +长江后浪推前浪啊...+
++ ヨイツの賢狼ホロ :: [[https://blog.yoitsu.moe][约伊兹的萌狼乡手札]]. 丰收之神 (至少在小说里是这么说的), 把我拉入了 [[/zh-cn/posts/coreboot/x220/][coreboot]] 和 静态页面生成器 的大坑.
++ Le Code d'Origine as Force0x1 :: [[https://originco.de][OriginCode 札記]]. 似乎还是个高中生, 不过已经是一个熟练的软件包维护者了.
 + Mingcong Bai :: [[https://mingcongbai.wtf][POWER to the People]]. 历史系的 AOSC主要维护者, 厉害了... 顺便, 他“对计算机的品味独到”.
-#+BEGIN_QUOTE
-那叫强迫症.
--- Mingcong Bai
-
-(此处为意译)
-#+END_QUOTE
-
-+ Farseerfc :: [[https://farseerfc.me/][Farseerfc 的小窝]]. Arch Linux TU. 开发了 [[https://github.com/farseerfc/pacvis][pacvis]]. 解决依赖问题从未如此酷炫! 同样对文件系统实现有极大兴趣.
++ Farseerfc :: [[https://farseerfc.me/][Farseerfc 的小窝]]. Arch Linux TU. 开发了 [[https://github.com/farseerfc/pacvis][pacvis]]. 同样对文件系统实现有极大兴趣.
 + felixonmars :: [[https://felixc.at/][Felix's Blog]]. 另一位 Arch Linux TU. 维护了 [[https://www.archlinux.org/packages/?sort=&q=&maintainer=felixonmars&flagged=][数量恐怖]] 的软件包. "Makes Arch Linux not only up to date, but bleeding edge."
-+ Alynx Zhou :: [[https://sh.alynx.one/][喵's StackHarbor - Whisper to the World]]. 似乎是一只很善于表达的猫? 似乎经常在B站上直播. 还是个炮姐厨! +不喜 C\plus\plus, 会炸毛的程度+
++ Alynx Zhou :: [[https://sh.alynx.one/][喵's StackHarbor - Whisper to the World]]. 似乎经常在B站上直播.
 + VOID001 :: [[https://void-shana.moe/][VOID001's wowo]]. 创作了[[https://www.bilibili.com/video/av12169693/][ 一系列]] 很棒的内核开发视频!

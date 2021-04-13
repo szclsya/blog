@@ -37,6 +37,8 @@ One thing I do miss from GNU/Linux is (I think I will attract a lot of hate from
 As of the server software, it's mostly the same as most Linux servers. I'm using =nginx= as web server, =syncthing= for syncing my documents, and =samba= for serving files for Windows and Mac OS X (yes this is intentional) users.
 
 * NAS Stuff
+{{< img src="/img/homelab/6-months-in-zfs.png" caption="ZFS in action" >}}
+
 At the last build, since there's only one disk, I just use XFS and it works flawlessly. This time, since we are dealing with a multi disk setup, I decided to use ZFS.
 
 There're a lot of alternatives of ZFS on varies of platforms, but:
@@ -44,6 +46,7 @@ There're a lot of alternatives of ZFS on varies of platforms, but:
 + *BcacheFS* yet to be merged into the mainline Linux kernel, but looks promising
 
 So ZFS it is!
+
 
 Since I have 3 disks installed, it's natural to use =raidz1=. It's slower and is less secure than =mirror= or =raidz2=, but since these are all enterprise grade disks and speed is not a priority (I only have GbE anyway), =raidz1= should be fine.
 
@@ -53,13 +56,9 @@ Since I have 3 disks installed, it's natural to use =raidz1=. It's slower and is
 
 Also, since ZFS is well-integrated into FreeBSD kernel, most of the memory is safely used as ARC (ZFS's page cache). This greatly improves performance (since RAM is fast).
 
-{{< img src="/img/homelab/6-months-in-zfs.png" caption="ZFS in action" >}}
-
-{{% btw %}}
 At first only two disks arrived, so I just use truncate to create a disk image of the same size and create the pool with it (alongside the two disks). Then when the third disk arrived, I just make ZFS offline that disk and resilver the pool with the new disk. Kinda proves the reliability and maintainability of ZFS.
 
 (Since the data is still not deleted during the process, this process should be safe)
-{{%/ btw %}}
 
 ** File-sharing Services 
 On UNIX-like systems, it's natural to use =NFS= due to its performance (especially at NFSv4) and simplicity. And it works really well on my Linux machines.
