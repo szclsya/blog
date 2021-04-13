@@ -24,7 +24,7 @@
       <meta name="description" content="{{ .Description }}" />
     {{- end -}}
 
-    {{- $sass := resources.Get "css/main.sass" -}}
+    {{- $sass := resources.Get "css/mk2.sass" -}}
     {{- $css := $sass | resources.ToCSS | resources.PostCSS (dict "use" "autoprefixer") | resources.Minify -}}
     <link rel="stylesheet" href="{{ $css.Permalink }}">
 
@@ -52,7 +52,7 @@
     </div>
   </div>
 
-  {{- $mainJs := resources.Get "js/main.js" -}}
+  {{- $mainJs := resources.Get "js/mk2.js" -}}
   {{- $mainMinJs := $mainJs | resources.Minify -}}
   <script type="text/javascript" src="{{ $mainMinJs.Permalink }}" defer></script>
 </html>
