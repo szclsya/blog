@@ -1,6 +1,3 @@
 public
 resources
 *\~ 
-
-# Exclude converted images
-static/img/*
