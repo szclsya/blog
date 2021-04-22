@@ -1,3 +1,0 @@
-[submodule "themes/less"]
-	path = themes/less
-	url = git@github.com:szclsya/hugo-theme-less.git
