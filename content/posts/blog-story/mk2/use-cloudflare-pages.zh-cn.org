@@ -1,0 +1,46 @@
+#+TITLE: 将博客部署于 CloudFlare Pages 上
+#+DATE: 2021-04-25T01:00:00
+#+DESCRIPTION: Leo's Field, now hosted on CloudFlare data centers.
+#+TAGS[]: blog
+#+LICENSE: cc-sa
+#+TOC: true
+
+之前，这个博客一直部署在我的 VPS 上面。无疑，这样做意味着我对博客有着完全的掌控，但这也意味着 CDN 在承载页面访问时经常需要回源。在上次重写的时候，我试着通过 [[../notes/#headline-5][对所有内容启用缓存]] 的方式来缓解这一问题，不过按照目前的结果来看仍然不是很理想。使用自己的服务器的另一个问题是 TLS 证书的维护。我使用的是 [[https://letsencrypt.org][Let's Encrypt]]，由于该服务提供的证书过期时间比较短（只有 90 天），如果配置不得当的话很容易出现证书过期的情况。事实上，这个博客就出现过不止一次的由于证书过期导致的无法访问情况。
+
+因此，当我发现 CloudFlare 推出了不限流量，支持从 GitHub 仓库自动部署的 [[https://pages.cloudflare.com/][CloudFlare Pages]] 服务时，我毫不犹豫地就切换了过去。之前一直不使用类似服务（i.e: GitHub Pages）的主要原因就是速度。现在既然有了 CloudFlare 的全球数据中心做支持，速度方面应该就不用担心了。
+
+{{% btw %}}
+CloudFlare Pages 免费版主要的限制是每个月最多能构建 500 次，而且同时只能构建一个项目。但是对于个人网站来说，这完全足够了。
+{{% /btw %}}
+
+* 更新仓库配置
+前阶段重新设计博客的时候，我用一个 [[https://github.com/szclsya/blog/blob/master/generate-img.sh][图像转换脚本]] 实现了 [[../notes/#headline-3][对 AVIF 和 WebP 图像格式的支持]]。按照设计，git 仓库中不应该包含任何转换好的图片，这些图片应该在 Hugo 构建之前通过脚本来生成 (+absolutely functional+)。不过由于 CloudFlare 的构建服务器速度并不快且构建环境中的 ImageMagick 不支持 WebP，现在仓库中将会包含转换好的图片。因此，转换过程现在提前到了在创作阶段。
+
+* 使用 CloudFlare Pages 创建站点
+CloudFlare Pages 用起来还是很符合逻辑的。简单来说，就是授权 CloudFlare 操作你想用的 GitHub 仓库，填写构建参数，CloudFlare 就会试着构建你的网站了！
+
+{{% btw %}}
+更多细节上的问题请参阅 [[https://developers.cloudflare.com/pages/][CloudFlare Pages 官方文档]]。
+{{% /btw %}}
+
+不过我也遇上了几个坑。如果你和我一样用 [[https://gohugo.io][Hugo]] 的话，你会发现默认构建环境下的 Hugo 版本非常老旧。不过，我们可以通过自定义构建环境的环境参数手动指定更新的 Hugo 版本。大概长这样：
+
+#+BEGIN_SRC 
+Variable name: HUGO_VERSION
+Value: 0.82.0
+#+END_SRC
+
+由于我还是用了 =postcss= 和 =autoprefixer= ，我在编译命令中加入了安装这些组建的命令。因此，我的编译命令如下：
+
+#+BEGIN_SRC bash
+npm install -g autoprefixer postcss postcss-cli && hugo
+#+END_SRC
+
+如果一切正常的话，CloudFlare 应该能够成功构建站点并发布在在默认分配的 ~pages.dev~ URL 上了。如果满意的话，添加一条指向默认分配的 ~pages.dev~ 地址的 CNAME 记录，你的站点就运行在 CloudFlare 数据中心上了！
+
+* 后记
+看看 CloudFlare Analytics 收集的访问数据。对于访问速度而言，我们主要关心是 Web Vitals 中的 [[https://web.dev/lcp/][最大内容绘制 (Largest Contentful Paint, LCP)]] 指标。这个指标测量了从开始加载到主要内容块显示的时间，对估计用户感受到的页面加载速度非常有效。
+
+{{< img src="/img/blog-story/mk2/cloudflare-pages-web-vitals.png" caption="CloudFlare 测量的 LCP 数据" >}}
+
+之前在使用 VPS 的时候，平均下来 LCP 为 Good (<= 2.5s) 的访问大概占到了 80%。现在，基本上 Good 的概率能到 95% 左右，Nice！

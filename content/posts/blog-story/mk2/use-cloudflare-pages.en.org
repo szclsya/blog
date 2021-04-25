@@ -1,0 +1,42 @@
+#+TITLE: Deploying this site on CloudFlare Pages
+#+DATE: 2021-04-25T01:00:00
+#+DESCRIPTION: Leo's Field, now hosted on CloudFlare data centers.
+#+TAGS[]: blog
+#+LICENSE: cc-sa
+#+TOC: true
+
+Historically I've been using my own server to host this site. This leads to very good versatility, but this also means CloudFlare will have to reach the original server every HTML request, and that significantly increases the first request latency. I tried to mitigate that via [[../notes/#headline-5][enabling cache on everything]] with CloudFlare, but the CDN still has to check periodically that if the cache has expired, which is not ideal. Also, there's a few incidents in the part that the TLS certificate expired on the original server and makes the site unavailable without compromising the security model.
+
+So, when I discovered CloudFlare launches the [[https://pages.cloudflare.com/][CloudFlare Pages]] service, which builds and hosts your site on CloudFlare's edge servers and allows unlimited requests and bandwidth on your sites for free, it's a no brainier to switch to it. The major reason I didn't use services like GitHub Pages is that it's slow in some regions, but since CloudFlare has excellent infrastructures around the globe, speed should not be a problem with this service.
+
+{{% btw %}}
+The catch here is that free plan users are limited to 500 builds per month, and there could only be one concurrent build. Probably not enough for some serious projects, but that's more than enough for personal blog.
+{{% /btw %}}
+
+* Adapting the repository for CloudFlare Pages
+During the last redesign, I [[../notes/#headline-3][introduced AVIF and WebP support]] to this blog via adding an [[https://github.com/szclsya/blog/blob/master/generate-img.sh][image conversion script]]. By design, this script should be run before any production build, thus the result won't be included in the repository. However, since such conversion takes a lot of computing power (especially when converting to AVIF) and CloudFlare's build server isn't super fast, now the build process is handled beforehand, and the repository of this blog will contain converted images.
+
+* Creating a site on CloudFlare Pages
+Generally it's pretty easy for static site generator users (see the [[https://developers.cloudflare.com/pages/][official CloudFlare Pages doc]]!). Just authorize CloudFlare to your GitHub repository, fill in the build options, and let them deploy your site!
+
+There's a few caveats though. Specifically, if you are using [[https://gohugo.io][Hugo]] like me, the default version of Hugo in the build environment is pretty old and lacks a ton of features and bug fixes. So, you may want to specify a newer Hugo version by setting an environment variable. It should look like this:
+
+#+BEGIN_SRC 
+Variable name: HUGO_VERSION
+Value: 0.82.0
+#+END_SRC
+
+Also, since I use =postcss= and =autoprefixer=, I also add the installation command for these to the build command. My build command looks like this:
+
+#+BEGIN_SRC bash
+npm install -g autoprefixer postcss postcss-cli && hugo
+#+END_SRC
+
+If everything goes well, you should be able to see your site at the default ~pages.dev~ URL. Now, if you are satisfied with the result, just add a =CNAME= record that points to the site and Voilà! Your site should now be hosted on CloudFlare's global data centers.
+
+* Epilogue
+Here's some results from CloudFlare Analytics. Regarding speed for a site, we mainly focus on [[https://web.dev/lcp/][Largest Contentful Paint (LCP)]] (which basically measures how fast the page shows meaningful content when loading).
+
+{{< img src="/img/blog-story/mk2/cloudflare-pages-web-vitals.png" caption="LCP measured by CloudFlare" >}}
+
+Previously, when this blog is hosted on a VPS, there're around 80% Goods (<= 2.5 sec). Now, there're generally more than 95% Goods even in regions that CloudFlare's free plan doesn't have good coverage. Nice!
