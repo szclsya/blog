@@ -14,7 +14,7 @@ CloudFlare Pages 免费版主要的限制是每个月最多能构建 500 次，�
 {{% /btw %}}
 
 * 更新仓库配置
-前阶段重新设计博客的时候，我用一个 [[https://github.com/szclsya/blog/blob/master/generate-img.sh][图像转换脚本]] 实现了 [[../notes/#headline-3][对 AVIF 和 WebP 图像格式的支持]]。按照设计，git 仓库中不应该包含任何转换好的图片，这些图片应该在 Hugo 构建之前通过脚本来生成 (+absolutely functional+)。不过由于 CloudFlare 的构建服务器速度并不快且构建环境中的 ImageMagick 不支持 WebP，现在仓库中将会包含转换好的图片。因此，转换过程现在提前到了在创作阶段。
+前阶段重新设计博客的时候，我用一个 [[https://github.com/szclsya/blog/blob/master/generate-img.sh][图像转换脚本]] 实现了 [[../notes/#headline-3][对 AVIF 和 WebP 图像格式的支持]]。按照设计，git 仓库中不应该包含任何转换好的图片，这些图片应该在 Hugo 构建之前通过脚本来生成 (+absolutely functional+)。不过由于 CloudFlare 的构建服务器速度并不快且构建环境中的 ImageMagick 不支持 WebP，现在仓库中将会包含转换好的图片。因此，转换过程现在提前到了创作阶段。
 
 * 使用 CloudFlare Pages 创建站点
 CloudFlare Pages 用起来还是很符合逻辑的。简单来说，就是授权 CloudFlare 操作你想用的 GitHub 仓库，填写构建参数，CloudFlare 就会试着构建你的网站了！
@@ -43,4 +43,4 @@ npm install -g autoprefixer postcss postcss-cli && hugo
 
 {{< img src="/img/blog-story/mk2/cloudflare-pages-web-vitals.png" caption="CloudFlare 测量的 LCP 数据" >}}
 
-之前在使用 VPS 的时候，平均下来 LCP 为 Good (<= 2.5s) 的访问大概占到了 80%。现在，基本上 Good 的概率能到 95% 左右，Nice！
+之前在使用 VPS 的时候，平均下来 LCP 为 Good (<= 2.5s) 的访问大概占到了 80%。现在，基本上 Good 的概率能到 95% 左右。即使在 CloudFlare 免费版覆盖度相对糟糕的大陆地区，大部分访问也能在 2.5 秒之内加载大部分内容。Nice！
