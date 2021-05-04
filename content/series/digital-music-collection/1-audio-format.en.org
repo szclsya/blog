@@ -1,0 +1,44 @@
+#+TITLE: 1. Audio Formats
+#+DATE: 2021-04-03T07:01:42
+#+DESCRIPTION: Choose audio formats to fit your need
+#+TAGS[]: music
+#+LICENSE: cc-sa
+#+TOC: true
+#+DRAFT: true
+
+* Audio Formats
+{{% card `tl;dr` %}}
+Use ~FLAC~ and ~DSF~. If you are low on storage space, ~Ogg(Vorbis)~ and ~AAC~ works too and you won't lose much.
+{{% /card %}}
+
+Audio format defines how your music is saved digitally. There're two types of audio formats: lossless and lossy. Lossless formats stores the original sound as-is (potentially with compression to save space), while lossy formats try to get rid some details that humans are not likely to hear in order to save space. Examples of lossless audio format includes ~WAV~, ~ALAC~ and ~FLAC~, and lossy format includes ~mp3~, ~AAC~ and ~Ogg(Vorbis)~.
+
+Since we are here to build a collection, we would want lossless music. Fortunately, lossless music is not that space-hungry in today's standard. 75 minutes of raw lossless audio takes up around 700MB, and we can easily reduce it by half via using a compressed lossless audio format (like ~FLAC~ and ~ALAC~). Among the compressed lossless formats, ~FLAC~ is the most desirable one, since it's a completely free format (that is, it's non-proprietary and unencumbered by patents) and is widely supported by varies software and hardware (~ALAC~ is mostly used by Apple products).
+
+But if you don't have much space to spare, lossy formats should work too. Among them, ~Ogg(Vorbis)~ is the most desirable, since it provide the same freedom as ~FLAC~ and it also has very good compression rate and audio quality (when highest quality preset is used). ~AAC~ is also a good lossy format, but it has a lot of patents around it, so you may not see support AAC support on some devices and software. ~mp3~ has the best software and hardware support due to its unparalleled popularity, but since it is the oldest among the formats and audio compression technology is not quite advanced when mp3 was born, it provides the worst audio quality among the lossy formats we mentioned. But generally, it sounds fine when you use the highest quality (320Kbps).
+
+** Note on DSD
+There's also another format called ~Direct Stream Digital~ (DSD). It uses completely different way to record the audio and claims to provide a better sound quality than other audio formats (although that is debatable). Anyway, it should provide /at least/ similar quality of other lossless audio formats. One big issue for DSD is that since there's no good compressed DSD-based format, the file size tends to be quite big; and due to the nature of DSD, they cannot be converted to other formats like ~FLAC~ without significant size increase. So, if your storage space is sufficient, go ahead and collect some DSD-encoded music.
+
+There's a few DSD-based audio formats, and I recommend ~DSF~[fn:2]. This format allows tags and cover art to be embedded to the audio file, which is convenient for library management (more on that later).
+
+[fn:2] To be specific, DSD is the name of the type of encoding, and ~DSF~ is one of the file format that can encapsulate DSD-encoded audio stream.
+
+** Note on Hi-Res Audio
+{{% card `tl;dr` %}}
+For collection purposes, sure. For audio quality purposes, not gain here.
+{{% /card %}}
+
+
+Hi-Res Audio claims to have superior audio fidelity by increasing the sampling rate and bit depth of the audio. For example, Compact Disc samples 44.1K per second and use 16 bits to measure the amplitude per sample, while a typical Hi-Res audio file uses 96K samples per second and 24 bits per sample.
+
+This may sound beneficial, but thanks to mathematics, we know that in order to perfectly (without any loss) sample a signal that is =x= Hz, we just need =2x= the sample points[fn:3]. Since human can only hear sounds within 20 to 20K Hz, CD quality is completely enough, and Hi-Res audio just have some additional ultrasonic sound that we can't hear (unless you are a dolphin or bat).
+
+The increased bit depth also doesn't make much sense. Without getting too deep into how digital recording works, all we need to know is that increased bit depth /only/ contribute to one thing when recording analog audio: noise floor (that is, how load the noise would be). And 16 bit can already provide around -100db noise level, which is more than sufficient for playback purposes. Many audio components cannot reach such low noise level, and even they do, the noise of the world would easily surpass the noise caused by the original audio file. [fn:4]
+
+So, Hi-Res Audio is mostly pointless for hearing purposes. However, it is advantages in the recording industries. Since it provides more data (although we may not be able to hear them directly), it means it leaves more room for editing. So, if you wish to edit your music (somehow), Hi-Res Audio may be beneficial.
+
+
+[fn:3] In order to see how this is derived,
+
+[fn:4] https://www.youtube.com/watch?v=cIQ9IXSUzuM&t=0s

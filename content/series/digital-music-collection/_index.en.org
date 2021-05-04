@@ -1,0 +1,18 @@
+#+TITLE: How to build your Digital Music Collection
+#+DATE: 2021-04-03T07:01:42
+#+DESCRIPTION: A shelf of music in your pocket.
+#+TAGS[]: music
+#+LICENSE: cc-sa
+#+TOC: true
+#+DRAFT: true
+
+Streaming music is all the rage today. Sure, the idea behind music streaming is pretty attractive: you pay a small fee every month, and get access to all the music they have to offer. However, users of streaming music services never "own" the music: they just get access to the music library such services provide for a given period of time.
+
+So, if you don't want to pay the monthly fee anymore, or the service no longer have the right to some music, you no longer have access to them.
+
+That's when locally-stored music becomes desirable again. Although you have to manage your music manually and pay full price for the music[fn:1], it means you gain complete control of your music. Put them in your computer's hard drive and use your sick amp? No problem. Put them in your network-attached storage and listen anywhere in your home? No problem. Go old-school and put them modded iPod Classic and listen for days without draining your phone's battery? No problem. Or even [[/posts/walkman/record-to-minidisc][put them on a MiniDisc with a shell script]], because why not.
+
+If you like the idea of personal digital music collection but don't know where to start, this post is for you!
+
+[fn:1] Or not, if you choose the pirate hat. I would not recommend this since it hurts the musician, but as always, it's up to you.
+
