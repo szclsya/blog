@@ -48,7 +48,8 @@
   </picture>
   {{- if $caption -}}
   <figcaption>
-    {{ $caption }}
+    {{- $optOrg := dict "markup" "org" -}}
+    {{ $caption | .Page.RenderString $optOrg }}
   </figcaption>
   {{- end -}}
 </figure>
