@@ -22,9 +22,9 @@ Hi.
 ** PGP
 如果可能的话，用PGP联系我吧.
 
-+PGP KeyID: =91351F513F67552E1ECAAB60498CB4BB3F4A10A2= 已停止使用.+
+PGP KeyID: =7AFA625869F5F54C009E34BF182F45943F57E31D=. (最后一次密钥轮替发生在 2021-05-22)
 
-PGP KeyID: =A8A24328D9D4EEE5A50DD9E196F7202214647A8B=. 或者直接从 [[http://szclsya.me/public.asc][这里]] 下载公钥.
+你可以使用 [[https://keys.openpgp.org][keys.openpgp.org]] 来获得公钥, 或者直接从 [[http://szclsya.me/public.asc][这里]] 下载.
 
 * 关于这博客
 这个博客是由 [[https://gohugo.io/][Hugo]] 生成的. 这个博客的源代码（包括主题与文章）皆开源于 [[https://github.com/szclsya/blog][Github]]. 在不违反注明的协议的前提下, 请随意使用.

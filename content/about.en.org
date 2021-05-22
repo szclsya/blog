@@ -23,9 +23,9 @@ This is Leo Shen. If you see a guy called =szclsya= somewhere, that should be me
 ** PGP
 If possible, please contact me via PGP.
 
-+PGP KeyID: =91351F513F67552E1ECAAB60498CB4BB3F4A10A2= Already revoked+
+PGP KeyID: =7AFA625869F5F54C009E34BF182F45943F57E31D=. (Last key rotation on Mar 22, 2021)
 
-PGP KeyID: =A8A24328D9D4EEE5A50DD9E196F7202214647A8B=. Or directly download the public key [[http://szclsya.me/public.asc][here]].
+You can use [[https://keys.openpgp.org][keys.openpgp.org]] to get the public key, or directly download it from [[http://szclsya.me/public.asc][here]]. 
 
 * This blog
 This blog is built with [[https://gohugo.io/][Hugo]]. The source code of this blog (including theme and articles) is open source at [[https://github.com/szclsya/blog][GitHub]]. Feel free to share and remix my work, as long as the license under the article is followed.
