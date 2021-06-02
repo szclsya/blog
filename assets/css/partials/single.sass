@@ -43,9 +43,11 @@ main
         counter-increment: subsection
         content: counter(section) "." counter(subsection) " "
 
-  img
-    display: block
-    max-width: 100%
+    img
+      display: block
+      width: 100%
+      height: 100%
+      object-fit: contain
   figure
     margin: .5em 0
     position: relative
@@ -163,7 +165,7 @@ main
     left: 0
 
     float: right
-    margin: 0 1rem .5rem 1rem
+    margin: 0 1rem 1rem 1rem
     max-width: 15em
     h3
       margin-top: 0
