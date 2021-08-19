@@ -9,6 +9,8 @@
 #+IMG: /img/blog-story/blog-v1-web.jpg
 #+aliases[]: ../1-some-notes/
 
+{{< img src="/img/blog-story/blog-v1.jpg" >}}
+
 * 折腾的过程
 算下来我写博客也不短了（现在看来内容简直没营养...），但后期皆因缺乏动力断更了，甚至原文都全部流失了。
 [fn::也许 Wayback Machine 上还有？但反正没啥有意义的内容，管它呢。]
