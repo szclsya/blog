@@ -10,7 +10,7 @@
 * From a magical fishing wire
 Or a copper wire, whatever.
 + ヨイツの賢狼ホロ :: [[https://blog.yoitsu.moe][约伊兹的萌狼乡手札]]. The Goddess of Harvest (according to the novel anyway). The guy who lead me into the [[/posts/coreboot/x220/][coreboot]] thing and static site generator thing.
-+ Le Code d'Origine as Force0x1 :: [[https://originco.de][OriginCode 札記]]. Still at high school, but already an expert at package maintenance on Arch Linux/AOSC OS. Good job!
++ Le Code d'Origine as Force0x1 :: [[https://blog.origincode.me][OriginCode Base]] Still at high school, but already an expert at package maintenance on Arch Linux/AOSC OS. Good job!
 + Mingcong Bai :: [[https://mingcongbai.wtf][POWER to the People]]. History and Russian student who is also the mainstay of the AOSC distro. I mean, wow. Also, "have a distinct taste on computers".
 + Farseerfc :: [[https://farseerfc.me/][Farseerfc's Nest]]. Arch Linux TU. Developed the awesome [[https://github.com/farseerfc/pacvis][pacvis]] tool. Also have a great interest in filesystem implementation.
 + felixonmars :: [[https://felixc.at/][Felix's Blog]]. Also Arch Linux TU. Maintain a [[https://www.archlinux.org/packages/?sort=&q=&maintainer=felixonmars&flagged=][crazy amount]] of packages. "Makes Arch Linux not only up to date, but bleeding edge."
