@@ -9,7 +9,7 @@ On September 2019, I wrote the first version of this blog. It has been a pretty 
 
 {{< img src="/img/blog-story/mk2/index.png" >}}
 
-To see some context, view [[../mk1/1-some-notes/][release notes]] for the previous version.
+To see some context, view [[/posts/blog-story/mk1/1-some-notes/][release notes]] for the previous version.
 
 * What didn't change
 Many things stays the same. For example, this version of the site is still written with [[https://gohugo.io][Hugo]]. I have the idea to switch to [[https://www.getzola.org][Zola]], which is written in Rust and has cleaner template language, but Hugo still has the best support for Org-mode.

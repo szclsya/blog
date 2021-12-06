@@ -12,7 +12,7 @@
 
 {{< img src="/img/blog-story/mk2/index.png" >}}
 
-由于新主题和旧主题一脉相承，也许可以先浏览一下之前的 [[../mk1/1-some-notes/][诞生记录]]。
+由于新主题和旧主题一脉相承，也许可以先浏览一下之前的 [[/zh-cn/posts/blog-story/mk1/1-some-notes/][诞生记录]]。
 
 * 传承
 由于之前的主题还算满意，有很多用下来还不错的部分都留了下来。比如，新主题还是基于 [[https://gohugo.io][Hugo]] 撰写的。我原来想切换到 [[https://www.getzola.org][Zola]] 上去的，毕竟 Zola 是用 +文明的+ Rust 写成的，而且 Zola 的模板系统的坑少得多，不过由于 Hugo 的 Org-mode 支持更加完善 +Org-mode真香!+ ，这次还是用 Hugo。
