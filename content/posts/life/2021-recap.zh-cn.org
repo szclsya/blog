@@ -1,0 +1,80 @@
+#+TITLE: 回望 2021：寻道
+#+DATE: 2021-12-31T11:59:59
+#+DESCRIPTION: Меня мое сердце В тревожную даль зовёт
+
+2021 也快过去了，写点什么吧。
+
+* 我所写的
+2021年诞生了3篇英语文章与2篇中文文章，相对2020年显著降低（笑）。
+
+其实这一年里面有好多想写的点子，其中甚至有一两篇都基本写完了。然而由于各种原因（不够有趣，有人写过了，等等）要么没写完，要么写完不满意而没有发表。这么想想的话写博客真是一个累人的工作，又得有合适的内容，还得准确清晰地组织起来，最好还要有点幽默感…… 也许我应该稍微降低点标准（）
+
+关于博客本身，2021年早些时候我 [[/zh-cn/posts/blog-story/mk2/notes/][重新设计了博客的主题]]。现在看来对这个新主题我还是挺满意的。我对排版学和平面艺术一窍不通，因此没办法弄一个特别惊艳的主题出来。但至少（我个人认为）这个新主题做到了优雅，清晰和迅捷，这就足够了。
+
+{{< img src="/img/life/site-statistics-2021.png" caption="鉴于今年就没写几篇新博客，还可以。" >}}
+
+* 我所做的
++ *AOSC OS* 做了不少基础设施方面的工作。
+  - ~apml~ 用以描述软件包的 Bash 语法子集。用 Rust 写了一个此语言的解析器。
+  - ~Omakase~ 用 Rust 实现的基于布尔可满足性问题的声明式包管理器。已经搞了半年了，希望明年能成熟并取代 ~apt~ 成为 默认包管理器。
++ *实习* 暑期给自己找了点事做，顺便去了一个新城市。
++ +摄影+  *按快门* 入手了我的第一台全画幅相机。主要还是用来记录生活中的点滴。
+  - 全画幅的暗光表现太强了！
+
+* 我所玩的
+今年的游戏阵容不怎么合我的胃口，新游戏玩得挺少的。
++ 塞尔达传说：天空之剑 HD /(4/5)/
+  - 这个 HD 就毫无诚意（笑）
+  - 传统塞尔达体验，迷宫管饱
+  - 体感体验不怎么样，大概还是 Wiimote Plus 最适合这个游戏
++ 破晓传说 /(3/5)/
+  - 及格的 JRPG。画面不错，但是剧情和地图设计都乏善可陈
+  - 后半段赶工明显
++ 幽灵行动：断点 /(?/5)/
+  - 由于喜爱前作决定买来试试，然而玩起来非常坐牢，弃
+
+以及今年玩的一些老游戏：
++ VA-11 Hall-A
+  - 每年都要拿出来重温一下，很适合玩的时候搞点啤酒
++ 幽灵行动：荒野
+  - 比断点玩起来流畅多了，开最高难度甚至有点 MilSim 的味道
+
+* 我所听的
+今年曲库里加了不少新玩意。这些是其中比较有意思的：
++ Beethoven, *Wiener Philharmoniker, Carlos Kleiber – Symphonies Nos. 5 & 7*
+  - 也许是最好的贝5与贝7
++ Prokofiev - *Romeo and Juliet*
++ Shostakovich - *Piano Trio No. 2*, *Cello Concerto No. 1*
+  - 一堆不和谐和声放一起却如此带感，老肖有毒
++ *Mario Kart 8 Original Soundtrack*
+  - 开场的爵士乐超赞
++ *The 30th Anniversary The Legend of Zelda Game Music Collection*
+  - 朋友送的实体 CD，你知道你是谁 :)
++ *The Legend of Zelda: Link's Awakening Original Soundtrack*
+  - 其中最赞的是达达山脉的配乐
+
+以及一些常听的老玩意：
++ Berliner Philharmoniker, Herbert von Karajan – *Beethoven Symphony No. 9* (1976)
+  - 目前我最喜欢的贝9录音
++ Bach, Glenn Gould – *The Goldberg Variations* (1981)
+  - It just never gets old.
++ Bach, Glenn Gould – *Art of Fugue*, *The Well-Tempered Clavier*
+  - 睡午觉时听效果很好（逃
++ Sviatoslav Richter - *Rachmaninoff Piano Concerto No.2 in C minor, Op.18*
++ *VA​-​11 HALL​-​A - Second Round*
++ *Xenoblade 1&2 Original Soundtrack*
+
+* 我所读的
+主要是哲学课作业（）
++ Albert Camus - *The Strangers*, *The Myth of Sisyphus*
++ Friedrich Nietzsche - *Thus Spoke Zarathustra*
+
+* 尾声
+2021年有更好么？大概没有，搞不好还更糟了，毕竟似乎很多人都想试试倒档到底能开多快。不过，这大概并不重要。
+
+2021年，无论好坏，我去了一些之前从没想过会去的地方，做了一些之前从未想过会做的事。无论好坏，至少这一年过得挺新鲜的。
+
+致该死的 2021，it's been fun.
+
+* 致 2022
+Monolith Soft！Xenoblade 3 搞快点！

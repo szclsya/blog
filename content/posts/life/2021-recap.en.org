@@ -1,0 +1,74 @@
+#+TITLE: 2021 Recap: Seek
+#+DATE: 2021-12-31T11:59:59
+#+DESCRIPTION: Меня мое сердце В тревожную даль зовёт
+
+And here goes 2021. Here's a snippet.
+
+* What I Wrote
+In 2021 I wrote 3 English articles and 2 Chinese articles.
+
+I actually had a lot of blog ideas during this year, but the vast majority of them failed to become a full blog post. It's so hard to write something that is interesting and unique at the same time. Maybe I should lower my standard a little bit.
+
+Oh, and there's a facelift to this blog. I feel pretty content at the current aesthetics of this blog. I'm by no means good at graphic design and typography, so I cannot make a theme that is truly groundbreaking; but at least the current theme is elegant and fast, which is good enough.
+
+{{< img src="/img/life/site-statistics-2021.png" caption="Considering how little I wrote this year, not bad." >}}
+
+* What I Did
++ *AOSC OS* A ton of infrastructure work.
+  - ~apml~ Reduced Bash syntax for describing packages. Comes with a Rust parser implementation.
+  - ~Omakase~ A declarative package manager designed to replace ~apt~ in AOSC OS. Took most of my hobby time during the second half of the year. It is mostly usable now, but still need some polish.
++ *Internship* Spend my summer time doing intern.
++ *Photography* Bought my first full frame camera. Mostly used to record moments of my life.
+
+* What I Played 
+This year's new games aren't super exciting. Hopefully next year we will see some interesting releases.
++ The Legend of Zelda: Skyward Sword HD /(4/5)/
+  - The classical Zelda experience.
+  - Motion control is awkward though. Maybe Wiimote Plus would work better.
++ Tales of Arise /(3/5)/
+  - An okay JRPG experience. Nice graphics, but story and map design aren't great.
++ Tom Clancy's Ghost Recon Breakpoint /(?/5)/
+  - Didn't finish it. Feels super boring for some reason.
+
+And some old games I revisited:
++ VA-11 Hall-A
+  - I'm feeling like I'll play this once per year. Such a cozy experience.
++ Tom Clancy's Ghost Recon Wildlands
+  - Don't know why, this game feels much better than Breakpoint.
+
+* What I Listened
+New additions to my music library:
++ Beethoven, *Wiener Philharmoniker, Carlos Kleiber – Symphonies Nos. 5 & 7*
++ Prokofiev - *Romeo and Juliet*
++ Shostakovich - *Piano Trio No. 2*, *Cello Concerto No. 1*
+  - Oh our boy Shosty. Super weird but super addicting.
++ *Mario Kart 8 Original Soundtrack*
+  - Intro music is surprisingly jazzy and awesome.
++ *The 30th Anniversary The Legend of Zelda Game Music Collection*
+  - A gift from a friend. You know who you are. :)
++ *The Legend of Zelda: Link's Awakening Original Soundtrack*
+  - *Tal Tal Heights* is crazy good.
+
+And some old albums I listen frequently:
++ Berliner Philharmoniker, Herbert von Karajan – *Beethoven Symphony No. 9* (1976)
+  - Currently my favorite interpretation of Beethoven's Symphony No. 9.
++ Bach, Glenn Gould – *The Goldberg Variations* (1981)
+  - It just never gets old.
++ Bach, Glenn Gould – *Art of Fugue*, *The Well-Tempered Clavier*
+  - I use them as nap music
++ Sviatoslav Richter - *Rachmaninoff Piano Concerto No.2 in C minor, Op.18*
++ *VA​-​11 HALL​-​A - Second Round*
++ *Xenoblade 1&2 Original Soundtrack*
+
+* What I Read
+Mostly philosophy homework.
++ Albert Camus - *The Strangers*, *The Myth of Sisyphus*
++ Friedrich Nietzsche - *Thus Spoke Zarathustra*
+
+* Epilogue
+Has 2021 turned out to be better? Not necessarily. Hell, it might be even worse. But does that really matter?
+
+No matter how the world is, I traveled to places I would never imagine one year ago. I experienced events I would never guessed one year ago. No matter how painful it is, it's been fresh and fun, and that's the only thing that matters.
+
+* To 2022
+Monolith Soft! Please! Xenoblade Chronicles 3! Faster!
