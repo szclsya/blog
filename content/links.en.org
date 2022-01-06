@@ -1,9 +1,7 @@
 #+TITLE: Links
 #+DATE: 2019-09-23T00:57:56
-#+MATH: true
-#+LEFTTITLE: true
 
-* Old friend
+* Old friends
 + Chenyijia001 (a.k.a learningis1st) :: [[https://learningis1.st/]]. A long-term friend of mine. Active Wikipedian and PC enthusiast. 
 + PeterCxy :: [[https://en.typeblog.net/][TypeBlog]] Android porting expert! ~(PeterCxy android-device?) → rom?~
 
@@ -16,3 +14,4 @@ Or a copper wire, whatever.
 + felixonmars :: [[https://felixc.at/][Felix's Blog]]. Also Arch Linux TU. Maintain a [[https://www.archlinux.org/packages/?sort=&q=&maintainer=felixonmars&flagged=][crazy amount]] of packages. "Makes Arch Linux not only up to date, but bleeding edge."
 + Alynx Zhou :: [[https://sh.alynx.one/][喵's StackHarbor - Whisper to the World]]. Streams CS:GO and Dota quite a lot on Bilibili.
 + VOID001 :: [[https://void-shana.moe][VOID001's wowo]]. Produced a [[https://www.bilibili.com/video/av12169693/][great series]] on kernel development!
++ Frantic1048 :: [[https://pyonpyon.today][Pyon Pyon Today]]. Seasoned frontend developer.
