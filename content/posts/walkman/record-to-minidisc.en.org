@@ -1,10 +1,12 @@
 #+TITLE: Record to MiniDisc with correct Track Marker on Linux
 #+DATE: 2020-03-26T00:19:12
-#+DESCRIPTION: "It still feels good to pick songs to fit on a physical thing."
+#+DESCRIPTION: It still feels good to pick songs to fit on a physical thing.
 #+TAGS[]: walkman linux
 #+LICENSE: cc-sa
 #+TOC: true
 #+STARTUP: indent
+
+{{< img src="/img/walkman/minidisc_and_walkman.jpg" >}}
 
 Recently I got my first MiniDisc Walkman at a local Goodwill. It's a Sony MZ-R37, and it is an absolutely gorgeous machine. Most of the recorder is built with aluminum, and the disc loading mechanism is simply too fun to play with.
 
