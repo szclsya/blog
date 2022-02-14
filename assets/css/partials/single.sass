@@ -145,14 +145,21 @@ main
       margin: .5em 0
 
 #toc
-  a
-    &:after
-      content: none
   #TableOfContents
-    font-size: .85em
+    font-size: .9em
     ul
       margin: 0
-      padding-left: 1.4em
+      padding-left: 1em
+    li
+      margin-top: 0.2em
+  a
+    // Link will have full width
+    display: block
+    width: 100%
+
+    // Disable little dot for links
+    &:after
+      content: none
   h3
     margin: .3em 0
     font-size: 1.05em
