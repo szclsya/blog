@@ -3,28 +3,28 @@
 
 Hi.
 
-我是 Leo. 如果你在哪看到了一个叫 =szclsya= 的家伙，那大概率就是我.
+我是 Leo，常用的 ID 是 =szclsya=。如果你在哪看到了一个叫 =szclsya= 的家伙，那大概率就是我。
 
 * ~/me~
-+ Undergraduate Mathematics student at University of Waterloo.
-+ 热爱音乐, 有几个 Walkman 并[[/zh-cn/tags/#walkman][用它们做奇怪的事情]].
-+ 用 [[https://www.archlinux.org][Arch Linux]] 和 [[https://aosc.io][AOSC OS]], 在 AOSC OS 那里有一点微小的贡献.
-+ 使用 [[https://github.com/szclsya/.emacs.d][Emacs]] & vim, Emacs 多一点.
++ Undergraduate Mathematics student at University of Waterloo
++ 热爱音乐, 有几个 Walkman 并[[/zh-cn/tags/#walkman][用它们做奇怪的事情]]
++ 用 [[https://www.archlinux.org][Arch Linux]] 和 [[https://aosc.io][AOSC OS]]，在 AOSC OS 那里有一点微小的贡献
++ 使用 [[https://github.com/szclsya/.emacs.d][Emacs]] & vim，Emacs 多一点
 + 使用 +SinkPad+ ThinkPad
-+ 有一台 Nintendo Switch, 最喜欢的游戏是 Xenoblade 2.
++ 有一台 Nintendo Switch，最喜欢的游戏是 Xenoblade 2
 
-* 联系我
+* 联系方式
 + Email: i^{at}szclsya_{dot}me
 + Email: szclsya^{at}gmail_{dot}com
 + Github: [[https://github.com/szclsya][szclsya]]
 + Steam: [[https://steamcommunity.com/id/szclsya/][szclsya]]
 
 ** PGP
-如果可能的话，用PGP联系我吧.
+如果可能的话，用 PGP 联系我吧。
 
-PGP KeyID: =7AFA625869F5F54C009E34BF182F45943F57E31D=. (最后一次密钥轮替发生在 2021-05-22)
+PGP KeyID: =7AFA625869F5F54C009E34BF182F45943F57E31D= (最后一次密钥轮替发生在 2021-05-22)
 
-你可以使用 [[https://keys.openpgp.org][keys.openpgp.org]] 来获得公钥, 或者直接从 [[http://szclsya.me/public.asc][这里]] 下载.
+你可以使用 [[https://keys.openpgp.org/search?q=7AFA625869F5F54C009E34BF182F45943F57E31D][keys.openpgp.org]] 来获得公钥，或者直接从 [[http://szclsya.me/public.asc][这里]] 下载。
 
 * 关于这博客
-这个博客是由 [[https://gohugo.io/][Hugo]] 生成的. 这个博客的源代码（包括主题与文章）皆开源于 [[https://github.com/szclsya/blog][Github]]. 在不违反注明的协议的前提下, 请随意使用.
+此博客使用 [[https://gohugo.io/][Hugo]] 构建，使用了我自己构建的主题。文章与主题的相关源代码公开于 [[https://github.com/szclsya/blog][szclsya/blog - GitHub]]。每篇文章的许可协议或分享要求可以在文章页面的底部找到。请在不违反注明的条款与要求的前提下分享或演绎。

@@ -28,5 +28,4 @@ PGP KeyID: =7AFA625869F5F54C009E34BF182F45943F57E31D=. (Last key rotation on Mar
 You can use [[https://keys.openpgp.org][keys.openpgp.org]] to get the public key, or directly download it from [[http://szclsya.me/public.asc][here]]. 
 
 * This blog
-This blog is built with [[https://gohugo.io/][Hugo]]. The source code of this blog (including theme and articles) is open source at [[https://github.com/szclsya/blog][GitHub]]. Feel free to share and remix my work, as long as the license under the article is followed.
-
+This blog is built with [[https://gohugo.io/][Hugo]] with a customized theme designed by myself. The source code of this blog (including theme and articles) is open source at [[https://github.com/szclsya/blog][szclsya/blog - GitHub]]. The license of articles can be found at the bottom of the corresponding article pages. Feel free to share and remix my work, as long as the license under the article is followed.
