@@ -10,7 +10,9 @@ function update_progress_meter () {
 
   progress = Math.ceil((current_position / height) * 100);
   // Makes it looks better...
-  if (progress < 0) {
+  if (height == 0) {
+    progress = 100;
+  } else if (progress < 0) {
     progress = 0;
   } else if (progress > 100) {
     progress = 100;
