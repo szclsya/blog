@@ -5,6 +5,10 @@
 #+TAGS[]: linux audio
 #+LICENSE: cc-sa
 
+{{% card info %}}
+This article is updated on Feb 25, 2022 to add information about PipeWire.
+{{%/ card %}}
+
 You may have never paid attention to the Linux audio system - you install a desktop environment (or, just install a system that ships with a graphical user interface), and the sound just works. Chances are, the sound would be "good enough," and you would take it as it is.
 
 Under the hood though, Linux has quite a complicated audio subsystem. If you are interested in how Linux turns your music file into some physical movement in the air or, if you ran into some trouble with the sound system, and wanted an overview so that you could figure out which part went wrong, here's an introduction for you.
@@ -33,7 +37,7 @@ If you using a Desktop Environment (KDE, GNOME, XFCE, you name it), you may be f
 
 PulseAudio has an internal audio mixer, so that it can accept input from multiple applications, mix them together with user-specified volume(s), then send it to the sound card driver (usually ALSA). It also provides an API that integrates nicely within GUI applications (like the volume applet we mentioned above).
 
-But since PulseAudio is aimed for desktop users who don't know much detail about their hardware, it uses an automatic probe system to determine which configuration to use. The result is usually... not great. Also, to save power, the internal mixer usually does not provide the best audio quality.
+But since PulseAudio is aimed for desktop users who don't know much detail about their hardware, it uses an automatic probe system to determine which configuration to use. The result is usually... not great. Also, to save power, the internal mixer usually does not provide the best audio quality. Moreover, PulseAudio sometimes introduces noticeable latency, which is undesirable for professional audio work latency-sensitive games.
 
 In short, PulseAudio should be enough for content consuming, as it provides adequate sound quality and doesn't require much knowledge to setup.
 
@@ -46,9 +50,20 @@ Since JACK's internal mixer is designed for professional audio production, it's 
 
 Sounds great, eh? So why didn't JACK take over the Linux desktop scene? Well, JACK requires (a lot of) additional work to be set up. You may need to manually select an appropriate bit rate and buffer size that will not overwhelm your sound card, or you will encounter glitchy sounds. Also, its great flexibility could sometimes become its downfall, since it means that user may have to manually connect the source to the desired output.
 
+** PipeWire: A New Hope
+Strictly speaking, PipeWire is not just an audio server. But its audio handling capability has been so impressive that it is on its way to replace PulseAudio. Compared to PulseAudio, PipeWire could provide lower CPU usage, higher resampling quality, lower latency and better Bluetooth integration. PipeWire's latency performance is so good that it is comparable to JACK, which makes PipeWire viable for both desktop and pro audio uses.
+
+{{% btw %}}
+PipeWire initially started as a video stream handler, but later gained the ability to handle audio streams as well. In fact, most Wayland compositors now use PipeWire to share desktop video stream to client applications, like video conference applications.
+{{%/ btw %}}
+
+Even better, PipeWire is designed to be fully compatible with all of PulseAudio's API. This means you can just install PipeWire (your package manager should remove PulseAudio automatically) and everything just works. PipeWire should be pretty stable now (as of Feb 2022, version 0.3 onward), but there may still be some glitches and bugs, so use with caution.
+
 * So what should I use?
 PulseAudio should be a good-enough choice for most people. If you encounter any issue with audio fidelity, it may just be due to the fact that PulseAudio failed to detect optimal settings for your sound card, or simply because the sound card's driver implementation is buggy. Take a look at [[https://wiki.archlinux.org/index.php/PulseAudio/Troubleshooting#Audio_quality][PulseAudio/Troubleshooting]] on ArchWiki, and you should be good.
 
 If you want to engage in music production, definitely check out JACK. You will need some settings (give JACK realtime privilege, find optimal setting for your sound card, etc.), but after that, JACK's flexibility and quality will impress you.
+
+If you can benefit from PipeWire's improvements over PulseAudio and feels adventurous, definitely give PipeWire a try. I've been using it for more than a year now and it's been flawless. Also, using Bluetooth audio devices generally feels much more reliable with PipeWire.
 
 For some special circumstances, like using an external USB DAC and you don't need any mixing, you can just directly use ALSA. Music players can send audio streams directly (even DSD stream, if you are really into this) to the sound card, and let the sound card do all the fancy job.
