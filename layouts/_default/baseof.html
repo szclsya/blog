@@ -31,6 +31,10 @@
     {{- block "stylesheet" . -}}
     {{- end -}}
 
+    {{/* Preload commonly used fonts */}}
+    <link rel="preload" href="/fonts/IBM_Plex_Sans/IBMPlexSans-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/Lora/Lora-VariableFont_wght.woff2" as="font" type="font/woff2" crossorigin />
+
 	{{- range .AlternativeOutputFormats -}}
     {{ printf `<link rel="%s" type="%s" href="%s" title="%s" />` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}
 	{{- end -}}
