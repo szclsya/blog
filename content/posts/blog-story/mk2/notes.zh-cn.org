@@ -64,7 +64,7 @@ for i in *.ttf; woff2_compress $i; end
 我们也可以直接将网页部署到 CloudFlare 的数据中心里面！我们可以用 [[https://developers.cloudflare.com/workers/platform/sites][Workers Site]] 将整个网站部署到 CloudFlare Workers 的 Key-Value 存储中，然后用一个简单的 Workers 来将网页显示出来。然而 Workers 的免费额度只允许 100,000 次访问，所以这里最终并没有选择这个方案。
 {{% /btw %}}
 
-不过既然这是个纯静态页面，我们完全可以让 CloudFlare 同样缓存所有的 HTML 页面。只需在域名的控制面板 - =Page Rules= 里面天下如下规则即可：
+不过既然这是个纯静态页面，我们完全可以让 CloudFlare 同样缓存所有的 HTML 页面。只需在域名的控制面板 - =Page Rules= 里面添加如下规则即可：
 
 #+BEGIN_SRC markdown
 Match: szclsya.me/*
