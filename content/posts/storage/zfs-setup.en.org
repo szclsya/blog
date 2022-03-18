@@ -1,0 +1,136 @@
+#+TITLE: Have fun with ZFS: Setting up storage pool
+#+DESCRIPTION: Put theory into practice!
+#+DATE: 2022-03-18T15:49:04
+#+TOC: true
+#+MATH: true
+#+LICENSE: cc-sa
+#+STARTUP: indent
+
+Now we've explored the benefits and limitations of ZFS, let's create a pool and try it out!
+
+{{% card info %}}
+This guide will not explore how to use ZFS as root, as it is very distro/OS-dependent. View guides about this topic on your distro/OS's own Wiki or Handbook.
+{{% /card %}}
+
+* Concepts
+Unlike filesystems that operates on a single disk or partition (i.e. ext4 and NTFS), ZFS can span across multiple storage volumes. In ZFS, we call the storage pool we can actually store stuff ~zpool~. Inside a zpool, there are a series of ~VDEV (Virtual DEVices)~. Data written to the ~zpool~ will be separated on all of the ~VDEVs~, similar to RAID0[fn:zfs-is-not-raid0].
+
+[fn:zfs-is-not-raid0] Although it is intuitive to consider zpool to be a glorified RAID0 (that is, striping the data across VDEVs), ZFS doesn't simply segment the data and record them across the VDEVs. Rather, ZFS has a pretty complex allocator to determine when and where to write those data.
+
+
+If you are familiar with RAID, this may sound like a pretty bad idea, since failure of a single VDEV would bring down the whole pool. However, ZFS allows redundancy inside a VDEV to make sure they don't fail easily. There are quite a few types of VDEV:
+
++ single: just a single disk, no parity
++ *mirror*: multiple volumes with the same data, VDEV won't fail as far as any single volume is good
+  - similar to RAID 1
++ *RAIDz1, RAIDz2, RAIDz3*: multiple volumes with parity data, allows 1/2/3 bad volumes before VDEV fails
+  - similar to RAID 5
+
+{{% btw %}}
+There're actually some other types of VDEVs, but they are either used for caching or used internally by ZFS. So these are all we need to know to store actual data.
+{{%/ btw %}}
+
+Building redundancy on VDEV level makes ~zpool~ very versatile. You can expand a storage pool via simply adding a new VDEV with any redundancy setup you wish, rather than reconstructing the whole array of volumes. Doing data parity in software also means that the [[https://en.wikipedia.org/wiki/RAID#WRITE-HOLE][Write hole]] issue that plagued other RAID5 systems can be mitigated.
+
+* Planning
+{{% card warning %}}
+Once a volume is added to a ZFS pool, there's no way to shrink it (unlike ext3/4 or NTFS). Also, if you've assembled a VDEV with redundancy (mirror or RAIDz), there's *no safe way* to convert to other types of VDEV. So take your time and plan ahead!
+{{% /card %}}
+
+For ~mirror~, it is rather simple: you would need at least two volumes. For 2 volumes, you get 50% space efficiency; for 3 volumes, you get 33.3% efficiency. As far as any of the drives inside a mirror VDEV is still alive, the VDEV is good.
+
+For ~RAIDz~, you will need at least \( 2+p \) volumes, where p is the number of parity volumes (1 for RAIDz, 2 for RAIDz2, 3 for RAIDz3). Generally, it is recommended to use \( 2^n + p \) drives to balance performance and space efficiency. For example, assuming all volumes has the same capacity:
++ 2 (n=1) storage volumes + 1 parity volume (RAIDz1)
+  - \( \frac{2}{2+1} \approx 66.7\% \) space efficiency, allow 1 in 3 volumes to fail before data loss
++ 4 (n=2) storage volumes + 1 parity volume (RAIDz1)
+  - \( \frac{4}{4+1} = 80\% \) space efficiency, allow 1 in 5 volumes to fail before data loss
++ 4 (n=2) storage volumes + 2 parity volume (RAIDz2)
+  - \( \frac{4}{4+2} \approx 66.7\% \) space efficiency, allow 2 in 6 volumes to fail before data loss
+
+Keep in mind that if you are mixing volumes with different capacity in a VDEV, ZFS would check the smallest size and assume all volumes has the same size (the minimum).
+
+* Create the pool
+Different distro/OS has different method to install ZFS, so we won't cover it here.
+
+{{% card info %}}
+Steps shown here assumes you are using ZFS on Linux. Although the general steps should be the same, FreeBSD may require different flags in the command, so check its manual and documentations before proceeding.
+{{% /card %}}
+
+For storage pool creation and maintenance, we use the ~zpool~ command. This command accepts subcommands, similar to ~git~. To create a ZFS pool, we use the =create= subcommand:
+#+BEGIN_SRC bash
+zpool create -f -o ashift=12 -m <mountpoint> <pool_name> [raidz|raidz2|raidz3|mirror] <volumes>
+#+END_SRC
++ ~-f~ in order to mitigate [[https://wiki.archlinux.org/title/ZFS#Does_not_contain_an_EFI_label][Does not contain an EFI label]] error.
+  - This may be ZFS on Linux specific. Check your manual.
++ ~-o ashift=12~ use AF (Advanced Format) 4k sector size to improve performance. If your pool is made up of SSDs, use ~-o ashift=13~ since SSD uses 8k sector size.
+  - See more detail about this topic on [[https://openzfs.github.io/openzfs-docs/Project%20and%20Community/FAQ.html#advanced-format-disks][OpenZFS docs]].
++ ~-m <mountpoint>~ specify where the pool would be mounted.
++ ~<pool_name>~ the name of the new pool.
++ ~[raidz|raidz2|raidz3|mirror] <volumes>~ specify the type of VDEV to create and volumes to use
+
+Note that generally, you should use volume ID rather than non-persistent volume location like ~sdX~ since volume IDs are invariant among reboots and hardware changes. You can find volume IDs by checking symlink in ~/dev/disk/by-id/~.
+
+** Example: Create a simple pool with only one volume
+Creating pool with only one volume is rather straightforward:
+#+BEGIN_SRC
+# zpool create -f -o ashift=12 -m /mnt/data data ata-VOLUME-ID
+#+END_SRC
+
+Here, we create a pool with ~/dev/disk/by-id/ata-VOLUME-ID~ and mount it to ~/mnt/data~.
+
+** Example: Create a pool with mirror VDEVs
+#+BEGIN_SRC
+# zpool create -f -o ashift=12 -m /mnt/data data \
+      mirror ata-VOLUME-1 ata-VOLUME-2
+#+END_SRC
+
+This creates a pool with a single mirror VDEV consists of ~ata-VOLUME-1~ and ~ata-VOLUME-2~.
+
+You can also create multiple VDEVs:
+#+BEGIN_SRC
+# zpool create -f -o ashift=12 -m /mnt/data data \
+      mirror ata-VOLUME-1 ata-VOLUME-2 \
+      mirror ata-VOLUME-3 ata-VOLUME-4
+#+END_SRC
+
+** Example: Create a pool with RAIDz1 VDEVs
+#+BEGIN_SRC
+# zpool create -f -o ashift=12 -m /mnt/data data \
+      raidz ata-VOLUME-1 ata-VOLUME-2 ata-VOLUME-3 [...even more volumes]
+#+END_SRC
+
+* Checking pool status
+Now, our pool has been created and we can check its status:
+#+BEGIN_SRC 
+# zpool status data
+  pool: data
+ state: ONLINE
+  scan: none requested
+config:
+
+        NAME                      STATE     READ WRITE CKSUM
+        data                      ONLINE       0     0     0
+          mirror-0                ONLINE       0     0     0
+            ata-VOLUME-1          ONLINE       0     0     0
+            ata-VOLUME-2          ONLINE       0     0     0
+
+errors: No known data errors
+#+END_SRC
+
+Although there's not much going on here right now, this would be a very useful command later. We will check pool scrub/rebuild progress, check volume state and, if we are unlucky, check which files are affected by a data loss.
+
+* Importing and Exporting zpool
+If you want to use the pool on other devices, you will need to export the pool:
+
+#+BEGIN_SRC 
+# zpool export <pool_name>
+#+END_SRC
+
+Be caution when importing the pool. By default, ZFS would use the non-persistent volume naming, which will cause issue when disk arrangement changes. Instead, you should use:
+
+#+BEGIN_SRC 
+# zpool import -d /dev/disk/by-id <pool_name>
+#+END_SRC
+
+* Epilogue
+We've now have a ZFS storage pool up and running. In the next section, we will discuss how to tune ZFS so it would perform better.
