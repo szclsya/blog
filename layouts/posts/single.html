@@ -49,13 +49,35 @@
           <h2>{{ .Description }}</h2>
         </header>
 
-        <!-- Table of Contents -->
-        {{- if .Params.toc -}}
-          <div id="toc" class="left">
+        <div id="page-nav" class="left">
+          <!-- Table of Contents -->
+          {{- if .Params.toc -}}
             <h3 class="hide-on-wide">On This Page:</h3>
             {{ .TableOfContents }}
+          {{- end -}}
+
+          <!-- Other articles in the same series -->
+          <div id="series">
+            {{- $thisLink := .Permalink -}}
+            {{- if isset .Params "series" -}}
+              <h3 class="series-title">{{- i18n "other-articles-in-this-series" -}}</h3>
+              {{- $series := index .Site.Taxonomies "series" -}}
+              
+              <ul>
+                {{- range (index $series (lower .Params.series)).Pages.ByDate -}}
+                  <li>
+                    {{- if eq .Permalink $thisLink -}}
+                      <p>{{ .Title }} <span class="this-article-indicator">(Self)</span></p>
+                    {{- else -}}
+                      <a href="{{ .Permalink }}">{{ .Title }}</a>
+                    {{- end -}}
+                {{- end -}}
+                  </li>
+              </ul>
+
+            {{- end -}}
           </div>
-        {{- end -}}
+        </div>
 
         <article>
           {{- .Content -}}

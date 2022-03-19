@@ -23,6 +23,8 @@ published-on:
   other: '发表于'
 last-modified-on:
   other: 'Last modified on'
+other-articles-in-this-series:
+  other: '其他同系列的文章：'
 
 # footnote
 footnote-msg:

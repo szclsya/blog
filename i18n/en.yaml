@@ -23,6 +23,8 @@ published-on:
   other: 'Published on'
 last-modified-on:
   other: 'Last modified on'
+other-articles-in-this-series:
+  other: 'Other articles in this series:'
 
 # footnote
 footnote-msg:

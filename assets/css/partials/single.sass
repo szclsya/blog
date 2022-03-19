@@ -144,14 +144,12 @@ main
     p
       margin: .5em 0
 
-#toc
-  #TableOfContents
+#page-nav
+  & > *
     font-size: .9em
-    ul
-      margin: 0
-      padding-left: 1em
-    li
-      margin-top: 0.2em
+    margin-bottom: 1.2em
+  & > div:last-child
+    margin-bottom: 0
   a
     // Link will have full width
     display: block
@@ -160,6 +158,13 @@ main
     // Disable little dot for links
     &:after
       content: none
+
+  #TableOfContents
+    ul
+      margin: 0
+      padding-left: 1em
+    li
+      margin-top: 0.2em
   h3
     margin: .3em 0
     font-size: 1.05em
@@ -187,8 +192,14 @@ main
     h3
       margin-top: .3em 0
     #TableOfContents
-      font-size: .9em
       padding: 0
+
+#series
+  .this-article-indicator
+    opacity: 0.6
+    font-size: 80%
+  ul
+    margin: .2em 0
 
 #meta
   margin-top: 2em
