@@ -1,6 +1,8 @@
 #+TITLE: Have fun with ZFS: Setting up storage pool
 #+DESCRIPTION: Put theory into practice!
 #+DATE: 2022-03-18T15:49:04
+#+TAGS[]: linux filesystem
+#+SERIES: zfs
 #+TOC: true
 #+MATH: true
 #+LICENSE: cc-sa

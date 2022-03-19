@@ -2,6 +2,7 @@
 #+DATE: 2020-02-09T18:09:54
 #+DESCRIPTION: File system can be fun!
 #+TAGS[]: linux filesystem
+#+SERIES: zfs
 #+LICENSE: cc-sa
 #+TOC: true
 
