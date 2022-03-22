@@ -1,6 +1,6 @@
 #+TITLE: ZFS 入门指北：规划与创建存储池
 #+DESCRIPTION: Put theory into practice!
-#+DATE: 2022-03-18T15:49:04
+#+DATE: 2022-03-21T15:49:04
 #+TAGS[]: linux filesystem
 #+SERIES: zfs
 #+TOC: true
@@ -20,7 +20,7 @@
 [fn:zfs-is-not-raid0] 虽然 zpool 和 RAID0 看上去的确很相似，ZFS 并不会简单地将要写的数据平均写到各个盘。实际上，ZFS 有一套很复杂的分配及调度机制来决定何时写数据，以及数据将写到何处。
 
 
-如果你曾经配过 RAID 阵列的话，这样做也许听上去蠢极了，毕竟只要一个 VDEV 失效，整个阵列就完蛋了。不过 ZFS 允许在 VDEV 级别上创建冗余，这样就可以保证 VDEV 在合理的冗余配置下不会轻易失效。这样做也使扩展和收缩存储池极为灵活：只需增减 VDEV 即可。集成的逻辑卷及 RAID 也意味着硬件 RAID 系统中常见的 [[https://en.wikipedia.org/wiki/RAID#WRITE-HOLE][Write hole]] 问题也可以避免。
+如果你曾经配过 RAID 阵列的话，这样做也许听上去蠢极了，毕竟只要一个 VDEV 失效，整个阵列就完蛋了。不过 ZFS 允许在 VDEV 级别上创建冗余，这样就可以保证 VDEV 在合理的冗余配置下不会轻易失效。这样做也使扩展和收缩存储池极为灵活：只需增减 VDEV 即可。集成逻辑卷管理及 RAID 也意味着硬件 RAID 系统中常见的 [[https://en.wikipedia.org/wiki/RAID#WRITE-HOLE][Write hole]] 问题不会影响到 ZFS。
 
 为了适应不同的可靠性要求，存储数据的 VDEV 分为以下几种：
 + single: 简单的单盘 VDEV，无冗余
@@ -81,13 +81,13 @@ zpool create -f -o ashift=12 -m <mountpoint> <pool_name> [raidz|raidz2|raidz3|mi
 #+END_SRC
 + ~-f~ 用于避免 [[https://wiki.archlinux.org/title/ZFS#Does_not_contain_an_EFI_label][Does not contain an EFI label]] 错误。
   - 这个可能是 Linux 上的特定问题，在别的系统上可能不需要。无论怎么说，请参阅手册与文档。
-+ ~-o ashift=12~ 使用 AF (Advanced Format，现金格式化) 中的 4K 块大小以增进性能。如果你的存储池全部使用 SSD 的话，应使用 ~-o ashift=13~ (因为 SSD 一般使用 8K 块)
++ ~-o ashift=12~ 使用现代硬盘原生支持的 AF (Advanced Format，先进格式化) 中的 4K 块大小以增进性能。如果你的存储池全部使用 SSD 的话，应使用 ~-o ashift=13~ (因为 SSD 一般使用 8K 块)
   - [[https://openzfs.github.io/openzfs-docs/Project%20and%20Community/FAQ.html#advanced-format-disks][OpenZFS docs]] 上有更多有关这个问题的信息。
 + ~-m <mountpoint>~ 指定默认挂载点。
 + ~<pool_name>~ 指定存储池名。
 + ~[raidz|raidz2|raidz3|mirror] <volumes>~ 指定 VDEV 类型。不使用冗余则省略 VDEV 类型标识。注意这段可重复多次以创建拥有多个 VDEV 的阵列。
   
-在指定存储盘时注意使用盘的持久标识（如 ~/dev/disks/by-id~ ），而不是非持久标识（如 ~sdX~ 或 ~nvmeX~ ）。这样的话重启时就不会由于标识改变造成无法找到存储盘。
+在指定存储盘时注意使用盘的持久标识（如 ~/dev/disks/by-id~ 内标注的），而不是非持久标识（如 ~sdX~ 或 ~nvmeX~ ）。一旦硬盘排布发生变化（例如增减了硬盘），使用非持久标识的阵列在开机时可能会找不到或使用了错误的存储盘，而导致挂载失败。使用持久标识则可避免这个问题。
 
 ** 例子：创建无冗余的单盘存储池
 #+BEGIN_SRC
@@ -135,7 +135,7 @@ config:
 errors: No known data errors
 #+END_SRC
 
-由于是新创建的存储池，现在这里还没什么可看的。不过在后续的运营中我们在这里可以看到 scrub/阵列重建进度，检查存储盘状态，及检查哪些文件被数据丢失事件波及了。
+由于是新创建的存储池，现在这里还没什么可看的。不过在后续的运营中我们会在这里检查 scrub/阵列重建进度，检查存储盘状态，及检查哪些文件被数据丢失事件波及。
 
 * 添加及移除存储盘
 对于创建完成的存储池，我们也可以调整它的结构。
@@ -145,7 +145,7 @@ errors: No known data errors
 # zpool add [pool_name] [raidz|raidz2|raidz3|mirror] <volumes>
 #+END_SRC
 
-需要注意的是如果新 VDEV 有不同的冗余等级（例如，mirror 或 RAIDz 中数据盘的数量和存储池中其他 mirror 或 RAIDz 中的不同），ZFS 就会警告。但一般来说，只要负载没有非常严重，这带来的性能损失是可以忽略不计的。
+需要注意的是如果新 VDEV 有不同的冗余等级（例如，mirror 或 RAIDz 中数据盘的数量和存储池中其他 mirror 或 RAIDz 中的不同），ZFS 就会警告冗余等级不匹配。但一般来说，只要负载没有非常严重，这带来的性能损失是可以忽略不计的。
 
 {{% btw %}}
 如果系统对性能的要求 \ast真的* 很高的话，应规划时就使用一个较为统一的 VDEV 格式。
@@ -178,7 +178,7 @@ errors: No known data errors
 # zpool export <pool_name>
 #+END_SRC
 
-导入存储池时需注意，ZFS on Linux 默认会使用非持久命名导入数据盘。这样，如果磁盘排列发生变化，重启后可能会无法自动挂载存储池。因此，导入时应注明从哪个位置搜索磁盘：
+导入存储池时需注意，ZFS on Linux 默认会使用非持久命名导入数据盘。为了避免磁盘排布变化造成无法开机时载入存储池，导入时应注明从哪个位置搜索磁盘：
 
 #+BEGIN_SRC 
 # zpool import -d /dev/disk/by-id <pool_name>
