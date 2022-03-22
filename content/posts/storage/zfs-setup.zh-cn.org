@@ -1,0 +1,185 @@
+#+TITLE: ZFS 入门指北：规划与创建存储池
+#+DESCRIPTION: Put theory into practice!
+#+DATE: 2022-03-18T15:49:04
+#+TAGS[]: linux filesystem
+#+SERIES: zfs
+#+TOC: true
+#+MATH: true
+#+LICENSE: cc-sa
+#+STARTUP: indent
+
+上文中，我们了解了 ZFS 的各种优势以及缺陷。现在，我们将规划并创建一个真正的 ZFS 存储池。
+
+{{% card info %}}
+由于将 ZFS 作为根文件系统需要内核在启动极早期就载入相关内核模块，各个发行版/OS 的相应配置方法都不太一样。因此，本文只会涉及仅用于存储用途的 ZFS 存储池。如果你想把整个系统装在 ZFS 上，请参阅你所使用的发行版/OS 的 Wiki 或用户手册。
+{{% /card %}}
+
+* 相关概念
+许多常见的文件系统都被设计用在一个单独的分区或者逻辑卷上（例如 ext3/4 及 NTFS）。ZFS 则整合了逻辑卷管理功能，因此一个存储池可以被部署在许多块存储盘之上。存储池在 ZFS 中被称为 ~zpool~ 。在一个 zpool 里面可以存在多个 ~VDEV (Virtual DEVices, 虚拟设备)~ 。写入 zpool 的数据将被分散到各个 VDEV 上，有点类似于 RAID0[fn:zfs-is-not-raid0]。
+
+[fn:zfs-is-not-raid0] 虽然 zpool 和 RAID0 看上去的确很相似，ZFS 并不会简单地将要写的数据平均写到各个盘。实际上，ZFS 有一套很复杂的分配及调度机制来决定何时写数据，以及数据将写到何处。
+
+
+如果你曾经配过 RAID 阵列的话，这样做也许听上去蠢极了，毕竟只要一个 VDEV 失效，整个阵列就完蛋了。不过 ZFS 允许在 VDEV 级别上创建冗余，这样就可以保证 VDEV 在合理的冗余配置下不会轻易失效。这样做也使扩展和收缩存储池极为灵活：只需增减 VDEV 即可。集成的逻辑卷及 RAID 也意味着硬件 RAID 系统中常见的 [[https://en.wikipedia.org/wiki/RAID#WRITE-HOLE][Write hole]] 问题也可以避免。
+
+为了适应不同的可靠性要求，存储数据的 VDEV 分为以下几种：
++ single: 简单的单盘 VDEV，无冗余
++ *mirror*: 镜像 VDEV，允许多块存储盘，只要一块可用就可以保证数据安全，性能最高
+  - 类似于 RAID 1
++ *RAIDz1, RAIDz2, RAIDz3*: 允许多块存储盘，各自在数据丢失前允许 1/2/3 块盘失效
+  - 相应的，最少需要 3/4/5 块存储盘
+  - 使用校验信息块，类似于 RAID 5/6
+
+{{% btw %}} 
+这里只介绍了实际存储数据的几种 VDEV。我们会在之后的章节中提到其他几种用于性能优化的 VDEV。
+{{% /btw %}} 
+
+** 空间效率及容错率
+~mirror~ 计算起来很简单：你将获得单盘的空间大小。只要阵列中有一块盘还活着，数据就不会丢失。
+
+~RAIDz~ 阵列需要至少 \( 2 + p \) 块存储盘（\( p \) 代表 RAIDz 冗余等级，RAIDz 中 p 为 1，RAIDz2 中为 2，RAIDz3 中为 3）。举个例子，假设所有盘都是相同容量：
++ 2 存储盘 + 1 冗余盘 (RAIDz1)
+  - \( \frac{2}{2+1} \approx 66.7\% \) 空间效率，允许 3 块盘中损失 1 块
++ 4 存储盘 + 1 冗余盘 (RAIDz1)
+  - \( \frac{4}{4+1} = 80\% \) 空间效率，允许 5 块盘中损失 1 块
++ 4 存储盘 + 2 冗余盘 (RAIDz2)
+  - \( \frac{4}{4+2} \approx 66.7\% \) 空间效率，允许 6 块盘中损失 2 块
+
+需要注意的是如果混用不同容量的盘，则 ZFS 将把所有盘视作最小盘的大小。
+
+* 规划
+{{% card warning %}}
+ZFS 不允许缩小一块盘上的分区尺寸，且不能轻易转换 VDEV 的冗余类型。因此，请在将存储池投入使用前确保规划得当，否则后期调整将会相当麻烦。
+{{% /card %}}
+
+对于任何存储系统来说，规划都是至关重要的。合理的存储结构能让你的硬件发挥最大效能，且在故障发生时能降低恢复难度。对于一个存储系统来说，规划时应该考虑到这几点：
+1. 性能
+2. 空间效率
+3. 容错空间
+
+我们之前已经提过空间效率与容错了，因此这里主要介绍性能相关考量。一般而言，只需要在负载较大的系统上考虑性能问题即可（例如，zpool 上会承载数据库等），如果只是 NAS 用途的话无需过于担心。性能方面有这些常见的经验法则：
++ 如果预算允许，用 ~mirror~
++ 如果用 ~RAIDz~ 的话，一般会使用 \( 2^n + p \) 块存储盘以平衡性能与空间效率
+  
+针对负载类型调整 ZFS 的运行参数也是很有效的做法，但这就超出本文讨论的范围了。
+
+* 创建阵列
+现在你应该已经想好存储池的大体结构了，现在是时候创建存储池了。
+
+{{% card info %}}
+这里列出的步骤主要针对 ZFS on Linux。在其他系统上虽然大体上是一样的，但有些参数可能需要修改（例如 FreeBSD）。具体请查阅相关手册与文档。
+{{% /card %}}
+
+{{% btw %}}
+不同的发行版/OS 有不同的安装步骤，因此这里掠过安装 ZFS 相关步骤。
+{{% /btw %}}
+
+
+在 ZFS 中，存储池创建与维护相关工作是由 ~zpool~ 这个工具完成的。这个工具使用与 ~git~ 类似的子命令结构。这里，我们使用 =create= 子命令创建存储池：
+#+BEGIN_SRC bash
+zpool create -f -o ashift=12 -m <mountpoint> <pool_name> [raidz|raidz2|raidz3|mirror] <volumes>
+#+END_SRC
++ ~-f~ 用于避免 [[https://wiki.archlinux.org/title/ZFS#Does_not_contain_an_EFI_label][Does not contain an EFI label]] 错误。
+  - 这个可能是 Linux 上的特定问题，在别的系统上可能不需要。无论怎么说，请参阅手册与文档。
++ ~-o ashift=12~ 使用 AF (Advanced Format，现金格式化) 中的 4K 块大小以增进性能。如果你的存储池全部使用 SSD 的话，应使用 ~-o ashift=13~ (因为 SSD 一般使用 8K 块)
+  - [[https://openzfs.github.io/openzfs-docs/Project%20and%20Community/FAQ.html#advanced-format-disks][OpenZFS docs]] 上有更多有关这个问题的信息。
++ ~-m <mountpoint>~ 指定默认挂载点。
++ ~<pool_name>~ 指定存储池名。
++ ~[raidz|raidz2|raidz3|mirror] <volumes>~ 指定 VDEV 类型。不使用冗余则省略 VDEV 类型标识。注意这段可重复多次以创建拥有多个 VDEV 的阵列。
+  
+在指定存储盘时注意使用盘的持久标识（如 ~/dev/disks/by-id~ ），而不是非持久标识（如 ~sdX~ 或 ~nvmeX~ ）。这样的话重启时就不会由于标识改变造成无法找到存储盘。
+
+** 例子：创建无冗余的单盘存储池
+#+BEGIN_SRC
+# zpool create -f -o ashift=12 -m /mnt/data data ata-VOLUME-ID
+#+END_SRC
+
+这里，我们在一块机械硬盘（ ~/dev/disk/by-id/ata-VOLUME-ID~ ）上创建了一个存储池，并挂载到了 ~/mnt/data~ 上。
+
+** 例子：创建由镜像 VDEV 组成的存储池
+#+BEGIN_SRC
+# zpool create -f -o ashift=12 -m /mnt/data data \
+      mirror ata-VOLUME-1 ata-VOLUME-2
+#+END_SRC
+
+这样就创建了一个拥有一个镜像 VDEV （由 ~ata-VOLUME-1~ 和 ~ata-VOLUME-2~ 组成）的存储池。
+
+也可以在创建时指定多个 VDEV:
+#+BEGIN_SRC
+# zpool create -f -o ashift=12 -m /mnt/data data \
+      mirror ata-VOLUME-1 ata-VOLUME-2 \
+      mirror ata-VOLUME-3 ata-VOLUME-4
+#+END_SRC
+
+** 例子：创建由 RAIDz1 VDEV 组成的存储池
+#+BEGIN_SRC
+# zpool create -f -o ashift=12 -m /mnt/data data \
+      raidz ata-VOLUME-1 ata-VOLUME-2 ata-VOLUME-3 [...even more volumes]
+#+END_SRC
+
+* 检查存储池状态
+创建完成后，我们就可以检查存储池的状态了:
+#+BEGIN_SRC 
+# zpool status data
+  pool: data
+ state: ONLINE
+  scan: none requested
+config:
+
+        NAME                      STATE     READ WRITE CKSUM
+        data                      ONLINE       0     0     0
+          mirror-0                ONLINE       0     0     0
+            ata-VOLUME-1          ONLINE       0     0     0
+            ata-VOLUME-2          ONLINE       0     0     0
+
+errors: No known data errors
+#+END_SRC
+
+由于是新创建的存储池，现在这里还没什么可看的。不过在后续的运营中我们在这里可以看到 scrub/阵列重建进度，检查存储盘状态，及检查哪些文件被数据丢失事件波及了。
+
+* 添加及移除存储盘
+对于创建完成的存储池，我们也可以调整它的结构。
+** 添加新 VDEV
+我们可以通过添加一个新的 VDEV （可以是 single, mirror 和 RAIDz）的方式扩展存储池：
+#+BEGIN_SRC
+# zpool add [pool_name] [raidz|raidz2|raidz3|mirror] <volumes>
+#+END_SRC
+
+需要注意的是如果新 VDEV 有不同的冗余等级（例如，mirror 或 RAIDz 中数据盘的数量和存储池中其他 mirror 或 RAIDz 中的不同），ZFS 就会警告。但一般来说，只要负载没有非常严重，这带来的性能损失是可以忽略不计的。
+
+{{% btw %}}
+如果系统对性能的要求 \ast真的* 很高的话，应规划时就使用一个较为统一的 VDEV 格式。
+{{% /btw %}}
+
+[[https://openzfs.github.io/openzfs-docs/man/8/zpool-add.8.html][zpool-add.8]] 上有更多有关这个操作的信息。
+
+** 将简单盘转为 mirror VDEV
+这个操作也可以被用来扩展已有的 mirror VDEV。
+
+#+BEGIN_SRC 
+# zpool attach [pool_name] <exisitng_volume/VDEV_name> <new_volumes>
+#+END_SRC
+
+[[https://openzfs.github.io/openzfs-docs/man/8/zpool-attach.8.html][zpool-attach.8]] 上有更多有关这个操作的信息。
+
+** 从存储池中去除设备
+目前，OpenZFS 只支持从不包含 RAIDz 的存储池中移除 single 和 mirror 类型的 VDEV。这个操作会把数据迁移至剩下的存储盘上，并相应地降低存储池的大小。
+
+#+BEGIN_SRC
+# zpool remove [pool_name] [devices]
+#+END_SRC
+
+[[https://openzfs.github.io/openzfs-docs/man/8/zpool-remove.8.html][zpool-remove.8]] 上有更多有关这个操作的信息。
+
+* 导入和导出存储池
+如果要在别的设备/操作系统上使用存储池，首先需要将存储池导出。
+
+#+BEGIN_SRC 
+# zpool export <pool_name>
+#+END_SRC
+
+导入存储池时需注意，ZFS on Linux 默认会使用非持久命名导入数据盘。这样，如果磁盘排列发生变化，重启后可能会无法自动挂载存储池。因此，导入时应注明从哪个位置搜索磁盘：
+
+#+BEGIN_SRC 
+# zpool import -d /dev/disk/by-id <pool_name>
+#+END_SRC
