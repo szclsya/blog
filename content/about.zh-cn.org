@@ -22,7 +22,7 @@ Hi.
 ** PGP
 如果可能的话，用 PGP 联系我吧。
 
-PGP KeyID: =7AFA625869F5F54C009E34BF182F45943F57E31D= (最后一次密钥轮替发生在 2021-05-22)
+PGP KeyID: =7AFA625869F5F54C009E34BF182F45943F57E31D= (公钥更新于 2022-03-22)
 
 你可以使用 [[https://keys.openpgp.org/search?q=7AFA625869F5F54C009E34BF182F45943F57E31D][keys.openpgp.org]] 来获得公钥，或者直接从 [[http://szclsya.me/public.asc][这里]] 下载。
 

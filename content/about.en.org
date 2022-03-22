@@ -23,7 +23,7 @@ This is Leo Shen. If you see a guy called =szclsya= somewhere, that should be me
 ** PGP
 If possible, please contact me via PGP.
 
-PGP KeyID: =7AFA625869F5F54C009E34BF182F45943F57E31D=. (Last key rotation on Mar 22, 2021)
+PGP KeyID: =7AFA625869F5F54C009E34BF182F45943F57E31D=. (Last key rotation on Mar 22, 2022)
 
 You can use [[https://keys.openpgp.org][keys.openpgp.org]] to get the public key, or directly download it from [[http://szclsya.me/public.asc][here]]. 
 
