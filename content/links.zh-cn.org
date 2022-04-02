@@ -6,6 +6,9 @@
 + Chenyijia001 (a.k.a learningis1st) :: [[https://learningis1.st/]] 活跃的 Wikipedian 和 PC 爱好者。
 + PeterCxy :: [[https://en.typeblog.net/][TypeBlog]] Android 大佬! ~(PeterCxy android-device?) → rom?~
 
+* [[https://garoad.bandcamp.com/track/friendly-conversation][Friendly Conversation]]
++ PoiScript :: [[https://blog.poi.cat][Solomon PoiScript's Blog]] 难得的也用 Org-mode 写博客的同好。
+
 * 透过神奇的光纤...
 也有可能是铜缆, 不要在意这些细节。
 + ヨイツの賢狼ホロ :: [[https://blog.yoitsu.moe][约伊兹的萌狼乡手札]] 丰收之神 (至少在小说里是这么说的)，把我拉入了 [[/zh-cn/posts/coreboot/x220/][coreboot]] 和 静态页面生成器 的大坑。

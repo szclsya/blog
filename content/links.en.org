@@ -5,6 +5,9 @@
 + Chenyijia001 (a.k.a learningis1st) :: [[https://learningis1.st/]]. A long-term friend of mine. Active Wikipedian and PC enthusiast. 
 + PeterCxy :: [[https://en.typeblog.net/][TypeBlog]] Android porting expert! ~(PeterCxy android-device?) → rom?~
 
+* [[https://garoad.bandcamp.com/track/friendly-conversation][Friendly Conversation]]
++ PoiScript :: [[https://blog.poi.cat][Solomon PoiScript's Blog]] Also use Org-mode in his blog!
+
 * From a magical fishing wire
 Or a copper wire, whatever.
 + ヨイツの賢狼ホロ :: [[https://blog.yoitsu.moe][约伊兹的萌狼乡手札]]. The Goddess of Harvest (according to the novel anyway). The guy who lead me into the [[/posts/coreboot/x220/][coreboot]] thing and static site generator thing.
