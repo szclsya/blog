@@ -1,7 +1,7 @@
 #+TITLE: Have fun with ZFS: Tuning
 #+DESCRIPTION: Sequeeze even more performance out of it!
 #+DATE: 2022-04-09T18:25:24
-#+TAGS: linux filesystem
+#+TAGS[]: linux filesystem
 #+SERIES: zfs
 #+TOC: ture
 #+LICENSE: cc-sa
