@@ -1,0 +1,115 @@
+#+TITLE: Have fun with ZFS: Tuning
+#+DESCRIPTION: Sequeeze even more performance out of it!
+#+DATE: 2022-04-09T18:25:24
+#+TAGS: linux filesystem
+#+SERIES: zfs
+#+TOC: ture
+#+LICENSE: cc-sa
+#+STARTUP: indent
+
+We now have a working ZFS pool. Now, we will do some tweaking so that our pool can perform as good as possible.
+
+* Disable ~atime~ (access time)
+By default, ZFS records the latest access time of a file. In many circumstances, this isn't actually useful and negatively impact performance. If you're not using applications that rely on access time (notable example being some mail clients, which use atime to see if mail has been read), we can turn it off to reduce disk writes.[fn:atime-criticism]
+
+[fn:atime-criticism] See [[https://en.wikipedia.org/wiki/Stat_(system_call)#Criticism_of_atime][Wikipedia: Stat(system call)#Criticism of atime]] on more about atime and its criticisms.
+
+
+This operation will disable atime for the whole pool:
+#+BEGIN_SRC 
+# zfs set atime=off <pool_name>
+#+END_SRC
+
+* Enable TRIM
+SSD requires regular TRIM operations to maintain optimal performance and improve longevity[fn:trim]. ZFS supports auto trimming:
+
+[fn:trim] See [[https://en.wikipedia.org/wiki/Trim_(computing)][Wikipedia: Trim (computing)]] on more about what TRIM is and why it's important for SSDs.
+
+
+#+BEGIN_SRC 
+# zpool set autotrim=on <pool_name>
+#+END_SRC
+
+You can also trigger TRIM manually:
+#+BEGIN_SRC 
+# zpool trim <pool_name>
+#+END_SRC
+
+Note that because of how TRIM works in ZFS, it may be desirable to still trigger TRIM periodically even if ~autotrim~ is on. See more on this topic on [[https://wiki.archlinux.org/title/ZFS#Enabling_TRIM][ArchWiki: ZFS#Enabling_TRIM]].
+
+* SSD Caching
+Other than these storage VDEVs, there are also some special VDEV types that don't actually store data:
+
++ *cache*: a.k.a. *L2ARC*, caches data read to speed up read speed
+  - note that ZFS already use RAM as cache (RAM cache is called ARC, so SSD cache would be Level 2 ARC, hence L2ARC), so if your active data isn't that big, adding L2ARC might not help much
++ *log*: a.k.a. *SLOG*, caches synchronous writes to speed up sync write speed
+  - only affects synchronous writes, which means asynchronous writes will not see any performance boost
++ *special*: a faster volume to write internal data compared to other storage VDEVs, not commonly used
+
+If you have an SSD, you may want to use it to create *cache* and *log* VDEVs to speed up the spinning drives.
+
+#+BEGIN_SRC 
+# zpool add <pool_name> cache <volume>
+#+END_SRC
+
+#+BEGIN_SRC 
+Single log volume, not secure, will lose sync write data if this volume fails
+# zpool add <pool_name> log <volume>
+Mirrored log volume, recommended
+# zpool add <pool_name> log mirror <volumes>
+#+END_SRC
+
+* Upgrade pool features
+The OpenZFS project gradually adds new features to ZFS. For example, support of compression with the ZSTD algorithm is added with a feature called =zstd_compress=. In order to use these new features, you will need to enable them. A simple way to do so is to run a pool upgrade, which enables all available features on this pool.
+
+{{% card warning %}}
+Since enabling features might change how data is recorded on the pool, sometimes upgrading may make this pool incompatible with older ZFS releases.
+{{% /card %}}
+
+#+BEGIN_SRC bash
+# Show features that can be enabled
+zpool upgrade
+# Enable all new features for a specific pool
+zpool upgrade $POOL_NAME
+#+END_SRC
+
+* Using Datasets
+ZFS provides a lot of options on how a pool should operate. This allows tuning the storage pool to achieve higher performance in a certain workload. A common example would be disabled RAM caching for databases, as they already have more sophisticated caching policies built-in. However, for a mixed-usage pool, tuning for a specific workload may cripple performance for other workloads. This problem can be solved by creating =datasets= for each job and tweak options on specific datasets, rather than the whole pool.
+
+Moreover, a dataset can act like a standalone volume. This means you can mount it to anywhere you wish. Also, you can take snapshots on datasets. And when you need to retrive some data in a snapshot, you can mount the snapshot just like a dataset.
+
+In order to create a dataset:
+
+#+BEGIN_SRC 
+# zfs create <pool_name>/<dataset_name>
+#+END_SRC
+
+Then, you can set options on this dataset without affecting other data in the pool. For example, you can disable =atime= in a dataset in order to improve performance:
+
+#+BEGIN_SRC 
+# zfs set atime=off <pool_name>/<dataset_name>
+#+END_SRC
+
+* Transparent compression
+ZFS can automatically compress new data written to the pool. This not only saves spaces, but in many cases can actually improve performance as fewer data are written to the disk, reducing disk I/O.
+
+ZFS currently supports multiple compression algorithms, including =lz4= (default), =Gzip= and =zstd=. Unless the data is already highly compressed (for example, a dataset full of already-compressed videos), enable =lz4= compression is recommended since it requires very little CPU usage and can improve both storage space and throughput, as in many cases =lz4= can decompress faster than the disks can read.
+
+For datasets that doesn't require throughput (like backup), you can use algorithms like =Gzip= and =zstd=. These algorithms are slower than =lz4=, but they provide higher compression rate and save a lot more space.
+
+#+BEGIN_SRC 
+For most use cases, just set compression to on. This will enable lz4 compression.
+# zfs set compression=on <pool_name>/<dataset_name>
+For cold data, we can use zstd to save up even more space.
+# zfs set compression=zstd <pool_name>/<dataset_name>
+For data that are already highly compressed, we can disable compression.
+# zfs set compression=off <pool_name>/<dataset_name>
+#+END_SRC
+
+* Tuning for specific workloads
+Up till now, we've been talking about general tuning strategies. In order to further increase performance, you may want to tune for your specific workload. Especially, if you are running database applications on your pool, you should check the specific tuning recommendation about your database software as ZFS doesn't perform well by default on this specific workload. For example, both ZFS and many database applications have caching policies, but generally database applications will have higher efficiency on caching, as they have more info on which data are being used. So we can disable ZFS's caching in such circumstances to give more memory for the database applications.
+
+I would not list specific instructions on how to do these here, as these instructions changes over time. Instead, here are some nice, up-to-date resources.
++ [[https://openzfs.github.io/openzfs-docs/Performance%20and%20Tuning/Workload%20Tuning.html][Workload Tuning - OpenZFS Docs]]
++ [[https://github.com/letsencrypt/openzfs-nvme-databases][How Let's Encrypt set up their MariaDB on ZFS]]
+
