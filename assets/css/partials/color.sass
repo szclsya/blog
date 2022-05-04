@@ -82,6 +82,7 @@ article
         background-color: $grey20
     .current
       background-color: $grey20
+
 // For single.html
 #page-nav
   a
@@ -89,3 +90,8 @@ article
   h3
     @media screen and (max-width: $singleColWidth)
       border-color: $grey150
+
+// For term.html
+// Highlight target term (with anchor) with color
+.list-item:target .section-info
+  color: $grey150
