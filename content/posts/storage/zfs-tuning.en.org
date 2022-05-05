@@ -78,10 +78,11 @@ ZFS provides a lot of options on how a pool should operate. This allows tuning t
 
 Moreover, a dataset can act like a standalone volume. This means you can mount it to anywhere you wish. Also, you can take snapshots on datasets. And when you need to retrive some data in a snapshot, you can mount the snapshot just like a dataset.
 
-In order to create a dataset:
-
 #+BEGIN_SRC 
+In order to create a dataset:
 # zfs create <pool_name>/<dataset_name>
+In order to see all pools and their datasets:
+# zfs list
 #+END_SRC
 
 Then, you can set options on this dataset without affecting other data in the pool. For example, you can disable =atime= in a dataset in order to improve performance:
@@ -105,6 +106,11 @@ For cold data, we can use zstd to save up even more space.
 For data that are already highly compressed, we can disable compression.
 # zfs set compression=off <pool_name>/<dataset_name>
 #+END_SRC
+
+* Keep pool space under 90% utilized
+Due to the CoW model used by ZFS, every time something is written to a pool, ZFS has to find some free blocks to write them. This means when the free space is low and fragmented, ZFS would have to spend a lot of time finding usable blocks and leads to serious performance degradation.
+
+By default, ZFS reserves 3.2% of the whole pool space to make sure it always has at least some blocks to spare (see [[https://openzfs.github.io/openzfs-docs/Performance%20and%20Tuning/Module%20Parameters.html#spa-slop-shift][spa_slop_shift]]). But in order to prevent performance drop, it's still a good idea to keep a pool under 90% utilized.
 
 * Tuning for specific workloads
 Up till now, we've been talking about general tuning strategies. In order to further increase performance, you may want to tune for your specific workload. Especially, if you are running database applications on your pool, you should check the specific tuning recommendation about your database software as ZFS doesn't perform well by default on this specific workload. For example, both ZFS and many database applications have caching policies, but generally database applications will have higher efficiency on caching, as they have more info on which data are being used. So we can disable ZFS's caching in such circumstances to give more memory for the database applications.
