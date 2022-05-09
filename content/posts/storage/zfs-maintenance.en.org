@@ -1,0 +1,157 @@
+#+TITLE: Have fun with ZFS: Maintenance and Error Recovery
+#+DATE: 2022-05-09T17:21:52
+#+DESCRIPTION: Just in case something goes wrong...
+#+TAGS[]: linux filesystem
+#+SERIES: zfs
+#+TOC: true
+#+LICENSE: cc-sa
+#+STARTUP: indent
+
+Now we have a pool, running smoothly. Let's learn a bit about regular maintenance, and what to do when things go wrong.
+
+* Monitoring pool health
+The simplest way to check pool status is to use ~zpool status~ to view the pool status manually. This may be sufficient for small scale, non-critical systems; but for critical systems, we will want to know something went wrong the instant such event happens.
+
+ZFS has a component called =ZED (ZFS event daemon)=, which, when configured correctly, will send emails to specified address when certain events (like scrubs, excess errors and more) happens. We will discuss the specific steps to setup ZED, as it requires setting up email forwarder on your system, and such is out-of-scope for this article. Check [[https://wiki.archlinux.org/title/ZFS#Monitoring_/_Mailing_on_Events][ZFS#Monitoring - ArchWiki]] for more.
+
+It's also a good idea to use [[https://wiki.archlinux.org/title/S.M.A.R.T.#smartd][smartd]] to monitor and report health condition reported by the disk itself, so that we will be able to spot and replace problematic disks before it becomes catastrophic.
+
+* Configuring scheduled scrubbing
+We've mentioned in [[{{< ref "zfs-intro" >}}][the Introduction chapter]] that ZFS has self-healing capability, but this only applies to active data (data that are being read and/or modified). For cold data, ZFS provides a mechanism called ~scrubbing~. This accesses all data on the pool and validate their checksum, so that ZFS knows if all data on the pool is in good shape.
+
+Generally, it is advised to scrub at least once a month. For consumer drives, consider to scrub even more frequently. Many distros and OSs provides scripts or tasks to do this for you. For example, for Debian and its derived distros:
+
+#+BEGIN_SRC bash
+# Enable weekly scrubbing for debian
+systemctl enable --now zfs-scrub-weekly@POOL.timer
+# Enable monthly scrubbing for debian
+systemctl enable --now zfs-scrub-monthly@POOL.timer
+#+END_SRC
+
+Check your distro's manual for how to enable periodic scrubbing. If your distro doesn't come with one, try [[https://github.com/lnicola/systemd-zpool-scrub][systemd-zpool-scrub - GitHub]].
+
+* Using snapshots
+Thanks to the CoW model, creating snapshots in ZFS is incredibly cheap. Thus, we can take snapshot frequently and keep a handful of snapshots for a certain period of time, just in case we need to recover files from earlier.
+
+#+BEGIN_SRC bash
+# To create a snapshot called test:
+zfs snapshot POOL/DATASET@test
+# To create snapshot recursively (for all its underlying datasets), add -r
+zfs snapshot -r POOL/DATASET@test
+# List all snapshots
+zfs list -t snapshots
+# List snapshots for a specific dataset
+zfs list -t snapshots POOL/DATASET
+#+END_SRC
+
+** Accessing files inside a snapshot
+For every dataset, there's a hidden directory ~.zfs~ under it. ~ls -a~ won't reveal it, but we can just enter it via ~cd~[fn:secret-zfs-dir]. Inside it, there's a folder called =snapshot=, where we can find all snapshots and all files inside each snapshot.
+
+[fn:secret-zfs-dir] How does this even works? See [[https://unix.stackexchange.com/questions/332192/how-are-files-dirs-hidden-from-ls-a-while-still-being-accessible-otherwise-in-a#comment584984_332192][How are files/dirs hidden from ls -a while still being accessible otherwise in a POSIX compliant system?]].
+
+** Rolling back to a snapshot
+Note that we can only rollback to the most recent snapshot. In order to rollback to an earlier snapshot, *ALL* snapshots after that specific snapshot will be destroyed! So if we just want to access a few files, just use the secret folder we mentioned above.
+
+#+BEGIN_SRC bash
+# To rollback to the nearest snapshot
+zfs rollback POOL/DATASET@SNAPSHOT
+# To rollback to a previous snapshot. Danger!
+zfs rollback -r POOL/DATASET@SNAPSHOT
+#+END_SRC
+
+** Using an automated snapshot manager
+There are several tools for automating ZFS snapshots. Generally, they can create snapshots periodically and delete certain old ones to maintain a certain amount of snapshots per day, month or year. Personally, I use [[https://github.com/jimsalterjrs/sanoid][sanoid]], but other tools works too. You can even create your own, as creating snapshots is just a ~zpool~ command.
+
+* Backup
+{{% card warning %}}
+mirror/RAIDz is *NOT* backup! Redundancy only protects against disk failures, but not scenarios like software errors (rewrite good data with garbage) and human errors!
+{{% /card %}}
+
+The recommended strategy of backup in ZFS is to create snapshots and send them to a backup source. The main advantage of sending snapshots is that it preserves file history and saves backup space (as only the delta between snapshots are stored). Such source may be another ZFS pool (whether on local system or not) or a file, which can be written to a backup media like optical disc or tape. We can also send incremental data between two snapshots only, which can reduce the amount of data sent.
+
+#+BEGIN_SRC bash
+# To send a snapshot to a local pool
+zfs send source/dataset@snapshot | zfs recv backup/dataset
+# To send a snapshot to a remote pool (at remote.ip) via SSH
+zfs send source/dataset@snapshot | ssh remote.ip zfs recv backup/dataset
+# To send incremental data between snap1 and snap2 only
+zfs send source/dataset@snap1 source/dataset@snap2 | ssh remote.ip zfs recv backup/dataset
+#+END_SRC
+
+{{% btw %}}
+There are many options on using ~zfs send/recv~. See more on this topic on [[https://openzfs.github.io/openzfs-docs/man/8/zfs-recv.8.html][zfs-recv.8]] and [[https://openzfs.github.io/openzfs-docs/man/8/zfs-send.8.html][zfs-send.8]].
+{{% /btw %}}
+
+A common way to do backup in ZFS is to periodically attach a backup drive (or a drive array) and send the latest snapshot to the backup ZFS pool on it.
+
+Just like taking snapshots, sending snapshots can also be automated. Many ZFS snapshot management tools either contains, or works well with replication tools. For example, Sanoid (mentioned above) has a replication tool called [[https://github.com/jimsalterjrs/sanoid#syncoid][Syncoid]] that can work with Sanoid. Check your snapshot management tool's manual on how to use it to automatically send snapshots to a backup source.
+
+* In case of drive failures...
+So, bad things do happen and ZFS reports faults on our drives. What we do now?
+
+There are actually a few possible reasons for this. Sometimes it's just a power loss, which may causes some errors on filesystem level but shouldn't do much harm to modern drives. In this case, we just need to clear the errors (and probably invest a UPS!):
+
+#+BEGIN_SRC 
+# A typical error report after power loss
+  pool: data
+ state: DEGRADED
+status: One or more devices has experienced an unrecoverable error.  An
+        attempt was made to correct the error.  Applications are unaffected.
+action: Determine if the device needs to be replaced, and clear the errors
+        using 'zpool clear' or replace the device with 'zpool replace'.
+   see: https://openzfs.github.io/openzfs-docs/msg/ZFS-8000-9P
+  scan: none requested
+
+config:
+
+        NAME                      STATE     READ WRITE CKSUM
+        data                      DEGRADED     0     0     0
+          ata-VOLUME-1            DEGRADED    13     0     0  too many errors
+
+errors: No known data errors
+#+END_SRC
+
+#+BEGIN_SRC bash
+# Clear the error of a pool, if you believe there's nothing to worry about:
+zpool clear cadet
+#+END_SRC
+
+The other possibility is that there is, indeed, something wrong with the drive. In this case, it would be a good idea to replace the faulty drive with a good one. this can be done via using the ~zpool replace~ command:
+
+#+BEGIN_SRC bash
+# Replace a faulty drive (ata-FAULTY) with a new drive (ata-GOOD)
+# ZFS will start a process called "resilvering", which will copy known-good data from the faulty drive to the good one.
+# Or, if in a redundancy array, it will re-form the redundancy.
+zpool replace POOL ata-FAULTY ata-GOOD
+#+END_SRC
+
+* In case of data lost...
+In many cases, when data loss do happens, ZFS will reconstruct the data from backup sources (either redundancy drives or memory cache). But if there's not enough redundancy, we lose data. Unlike traditional RAID products, ZFS can tell us exactly what files are affected:
+
+#+BEGIN_SRC 
+  pool: data
+ state: ONLINE
+status: One or more devices has experienced an unrecoverable error.  An
+        attempt was made to correct the error.  Applications may be affected.
+action: Restore the file in question if possible.  Otherwise restore the
+        entire pool from backup.
+   see: https://openzfs.github.io/openzfs-docs/msg/ZFS-8000-8A
+  scan: none requested
+
+config:
+
+        NAME                      STATE     READ WRITE CKSUM
+        data                      ONLINE       0     0     0
+          ata-VOLUME-1            ONLINE       0     0     0
+
+errors: Permanent errors have been detected in the following files:
+
+        [REDACTED]
+#+END_SRC
+
+In this situation, ZFS will not be able to recover these files for us. Hopefully you have a backup on hand, if this does happen. Consider replacing the faulty drives and introduce enough redundancy to prevent such events from happening in the future.
+
+* Epilogue
+And this concludes our journey with ZFS! I hope this series helps you to become a competent ZFS administrator. Obviously, there are still a lot to learn about this topic, so don't stop just here: read documentations, create dummy pools and poke around, scripting automation, tweaking arguments, or even intentionally corrupt a pool and try to fix it! Reading theories are important, but it is equally important to fiddle around and get a general feeling of how things work.
+
+Happy hacking!
