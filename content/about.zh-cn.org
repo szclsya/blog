@@ -22,9 +22,15 @@ Hi.
 ** PGP
 如果可能的话，用 PGP 联系我吧。
 
-PGP KeyID: =7AFA625869F5F54C009E34BF182F45943F57E31D= (公钥更新于 2022-03-22)
+PGP KeyID: =7AFA625869F5F54C009E34BF182F45943F57E31D= (公钥更新于 2022-05-23)
 
-你可以使用 [[https://keys.openpgp.org/search?q=7AFA625869F5F54C009E34BF182F45943F57E31D][keys.openpgp.org]] 来获得公钥，或者直接从 [[http://szclsya.me/public.asc][这里]] 下载。
+如果你的 PGP 工具支持 WKD 的话，则可以使用 WKD 自动获取公钥：
+
+#+BEGIN_SRC bash
+gpg --locate-keys i@szclsya.me
+#+END_SRC
+
+也可以直接从 [[http://szclsya.me/public.asc][这里]] 下载，或在 [[https://keys.openpgp.org/search?q=7AFA625869F5F54C009E34BF182F45943F57E31D][keys.openpgp.org]] 上搜索 Key ID 来获取公钥。
 
 * 关于这博客
 此博客使用 [[https://gohugo.io/][Hugo]] 构建，使用了我自己构建的主题。文章与主题的相关源代码公开于 [[https://github.com/szclsya/blog][szclsya/blog - GitHub]]。每篇文章的许可协议或分享要求可以在文章页面的底部找到。请在不违反注明的条款与要求的前提下分享或演绎。
