@@ -13,4 +13,4 @@ I will try to write down some interesting and unique aspects of my life here. As
 
 If you wish to see something I write, you can view them in [[/posts/][Posts]]. Or, you can also browse them in [[/tags/][Tags]]. If you are really boring, why not try to find some non-existing pages? Just in case there's something interesting. ;)
 
-Note that due to my laziness, many articles are not translated (so, some only in Chinese, and some only in English). If you understand both languages, you may want to see article list of both languages to see all I wrote.
+Note that due to +my laziness+ and the practical difficulty of translating articles, some articles are, unfortunately, not translated (so, some only in Chinese, and some only in English). If you understand both languages, you may want to see article list of both languages to see everything I have to say.
