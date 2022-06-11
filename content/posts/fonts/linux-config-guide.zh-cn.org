@@ -6,6 +6,10 @@
 #+LICENSE: cc-sa
 #+TOC: true
 
+{{% card info %}}
+本文于2022年6月11日更新过，修复了全局字体规则导致的等宽字体显示异常问题。
+{{%/ card %}}
+
 很长时间以来，Linux上的中文字体呈现一直……不容乐观。但是随着 FreeType2 由于专利过期默认开启了高质量的 LCD 优化，以及一批高质量的开源字体的公布，Linux 上的中文字体渲染已经可以和 macOS 扳扳手腕了。
 
 当然，这里是 Linux，你需要一点小小的配置。
@@ -15,31 +19,33 @@
 （其实 macOS 的糊成一片的渲染方式也有它的问题，但这就不在本文讨论范围之内了。）
 
 * 太长不看版
-安装字体：
+安装字体： =Noto=, =Noto CJK=, =Noto Emoji= 和 =Sarasa Gothic= 。
 #+BEGIN_SRC bash
+# On Arch Linux
 sudo pacman -S noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-sarasa-gothic
+# Do your research on other Linux distros
 #+END_SRC
 
-下载 [[https://github.com/szclsya/dotfiles/blob/master/fontconfig/fonts.conf][fonts.conf]] 并扔进你的 ~~/.config/fontconfig~ 里面, 重新登录，结束。[fn:1]
-
-[fn:1] 这份 font.conf 基于 Michael Yang 的 [[https://ohmyarch.github.io/2017/01/15/Linux%E4%B8%8B%E7%BB%88%E6%9E%81%E5%AD%97%E4%BD%93%E9%85%8D%E7%BD%AE%E6%96%B9%E6%A1%88/][Linux下终极字体配置方案]]. 本文很多内容也基于这篇文章, 感谢!
+下载 [[https://github.com/szclsya/dotfiles/blob/master/fontconfig/fonts.conf][fonts.conf]] 并扔进你的 ~~/.config/fontconfig~ 里面, 重新登录，结束。
 
 * 选择字体
-Arch Linux 提供了成吨的字体可供选择。完整的列表可以在 [[https://wiki.archlinux.org/index.php/Fonts#Font_packages][这里]] 找到，找自己看得顺眼的就是，具体不再赘述。
+近几年来出现了一大批自由字体（包括工作量极大的 CJK 字体），使 Linux 下的字体选择一下子丰富了起来。如果愿意花一点时间的话，可以去各个字体的网站上看一看，选自己看得最顺眼的。[[https://wiki.archlinux.org/index.php/Fonts#Font_packages][Fonts - ArchWiki]] 上涵盖了相当多的自由字体，可以从这里选起。
 
 这是我选择字体：
 + 拉丁字体
   - *Noto Sans* - 无衬线
   - *Noto Serif* - 衬线
   - *Sarasa Term SC* - 等宽（也可以直接使用 Iosevka Term 以节省空间，但可能会导致 Emacs 中的渲染 bug）
+    - 这是一种拉丁文字符严格为半宽的字体，中英文混排时很协调。如果不适应这种较瘦的字体风格，则可以尝试使用 *Adobe Source Pro* ， *Cascadia Code* 或 *Fira Code* 。
 + 中文字体
   - *Noto Sans CJK SC* （又称 思源黑体）
   - *Noto Serif CJK SC* （又称 思源宋体）
 
 * 安装字体
+这里同样使用 Arch Linux 举例，其他发行版请搜索相应的软件仓库。
 + ~noto-fonts~ Noto Sans, Noto Serif
 + ~noto-fonts-cjk~ Noto Sans CJK SC, Noto Serif CJK SC
-+ ~noto-fonts-emoji~ Emoji
++ ~noto-fonts-emoji~ Noto Emoji
 + ~ttf-sarasa-gothic~ Sarasa Term SC
 
 * 配置
@@ -116,14 +122,6 @@ DPI 即为 Dots per inch (每英尺点数), 可简单理解为显示器的像素
 ** 设置首选字体
 依照自己的选则替换即可。
 #+BEGIN_SRC xml
-  <!-- 全局默认字体　-->
-  <!-- Default font (no fc-match pattern) -->
-  <match>
-    <edit mode="prepend" name="family">
-      <string>Noto Sans</string>
-    </edit>
-  </match>
-
   <!-- 全局默认中文字体 -->
   <!-- Default font for the zh_CN locale (no fc-match pattern) -->
   <match>
@@ -211,7 +209,41 @@ DPI 即为 Dots per inch (每英尺点数), 可简单理解为显示器的像素
   </alias>
 #+END_SRC
 
-** 大功告成!
+** 设置特定英文网站的字体
+至此，所有未制定特定字体的程序和网站都应该按照我们规定的优先级选择字体了。但是有一些 Linux 友好的网站会指名选择一些 Linux 下的字体（如 Google 和 GitHub 会指名使用 =Liberation= 系列字体）。如果你认为这样的行为可以接受，则可跳过这一节。但如果你想让这些网站也使用我们的字体优先级顺序，则需要一些额外配置。
+
+在显示设置之后（antialias 块之后）加入如下配置：
+
+#+BEGIN_SRC xml
+<!-- 将 Liberation 系列对应到我们定义的优先字体上 -->
+<!-- Map fonts that are commonly used by web pages to our preferred fonts -->
+<match target="pattern">
+  <test qual="any" name="family"><string>Liberation Sans</string></test>
+  <edit name="family" mode="assign" binding="same"><string>sans-serif</string></edit>
+</match>
+
+<match target="pattern">
+  <test qual="any" name="family"><string>Liberation Mono</string></test>
+  <edit name="family" mode="assign" binding="same"><string>monospace</string></edit>
+</match>
+#+END_SRC
+
+由于 GitHub 指名了 Helvetica 而大多数发行版的 Fontconfig 的配置将其替换成了 Nimbus Sans，有时浏览器会显示使用了 sans-serif ，但实际上却使用了 Nimbus Sans。如果你不会在任何程序中使用 Nimbus Sans 这个字体的话，一个简单的解决手段是直接在 Fontconfig 中屏蔽 Nimbus Sans:
+
+#+BEGIN_SRC xml
+  <selectfont>
+    <rejectfont>
+      <pattern>
+        <patelt name="family" >
+          <!-- This font is causing problem with GitHub -->
+          <string>Nimbus Sans</string>
+        </patelt>
+      </pattern>
+    </rejectfont>
+  </selectfont>
+#+END_SRC
+
+* 大功告成!
 把配置文件保存，打开一个程序(比如浏览器)，应该就可以看到变化了!
 
 还有几点需要注意:
