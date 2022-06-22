@@ -1,7 +1,9 @@
 #+TITLE: Notes
 
 #+BEGIN_QUOTE
-Life could be an experiment for the knowledge-seeker - not a duty, not a disaster, not a deception! (The Gay Science, 324)
+Life could be an experiment for the knowledge-seeker - not a duty, not a disaster, not a deception!
+
+-- Friedrich Nietzsche. The Gay Science, 324.
 #+END_QUOTE
 
 This part is dedicated to ideas that either too small for a blog post, or I yet to write it as a full blog post. Thus, little to none background knowledge will be explored, and minimum effort is made to make them approachable.
