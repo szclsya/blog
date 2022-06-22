@@ -14,7 +14,9 @@ links:
 back:
   other: 'Back'
 back-to-posts:
-  other: 'Back to Posts'
+  other: 'More Posts'
+back-to-notes:
+  other: 'More Notes'
 view-in-other-lang:
   other: '查看中文版本'
 tags:
@@ -25,6 +27,8 @@ last-modified-on:
   other: 'Last modified on'
 other-articles-in-this-series:
   other: 'Other articles in this series:'
+other-notes-in-this-category:
+  other: 'Other notes in this category:'
 
 # footnote
 footnote-msg:

@@ -1,0 +1,41 @@
+#+TITLE: Use ZED with msmtp on Debian
+#+DESCRIPTION: Send email notification when things go wrong
+#+DATE: 2022-06-22T13:33:00
+#+CATEGORY: storage
+#+LICENSE: cc-sa
+
+Install ~msmtp~ and its mta.
+#+BEGIN_SRC bash
+apt install msmtp msmtp-mta mailutils
+#+END_SRC
+
+Edit ~/root/.msmtprc~
+
+#+BEGIN_SRC
+defaults
+auth           on
+tls            on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+logfile        ~/.msmtp.log
+
+aliases        /etc/aliases
+
+account        alerts
+host           SMTP_ADDRESS
+port           587
+from           SENDER_EMAIL_ADDRESS
+user           SMTP_ACCOUNT
+password       SMTP_PASSWORD 
+
+account default : alerts
+#+END_SRC
+
+Edit ~/etc/zfs/zed.d/zed.rc~:
++ Change ~ZED_EMAIL_ADDR~ to your desired mailbox
++ Uncomment ~ZED_EMAIL_PROG=mail~
++ Uncomment ~ZED_EMAIL_OPTS~ and edit value: ~"-s '@SUBJECT@' @ADDRESS@ -r sender@example.org"~
++ Uncomment ~ZED_NOTIFY_VERBOSE=1~
+  - For testing only, change to 0 to ignore events on healthy pools
+
+Scrub a pool and wait till finish to send a test email. 
+  

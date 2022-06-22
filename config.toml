@@ -16,6 +16,8 @@ title = "Leo's Field"
 [taxonomies]
   tag = "tags"
   series = "series"
+  # Used by notes
+  category = "category"
 
 [languages]
   [languages.en]

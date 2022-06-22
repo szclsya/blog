@@ -1,0 +1,112 @@
+{{- define "title" -}}
+{{ .Title }} - {{ .Site.Title }}
+{{- end -}}
+
+{{- define "meta" -}}
+  <meta property="og:title" content="{{ .Title }} - {{ .Site.Title }}" />
+  <meta property="og:description" content="{{ .Page.Description }}" />
+  <meta property="og:type" content="article" />
+  <meta property="og:type" content="website" />
+  <meta property="og:description" content="{{ .Description }}" />
+  <meta name="description" content="{{ .Description }}" />
+  <meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z0700" }}" />
+  {{- if not (eq .Lastmod .Date) -}}
+    <meta property="article:modified_time" content="{{ .Lastmod.Format "2006-01-02T15:04:05Z0700" }}" />
+  {{- end -}}
+  {{- if isset .Params "tags" -}}
+    <meta property="article:tags" content="{{ delimit .Params.tags " " }}" />
+  {{- end -}}
+{{- end -}}
+
+
+{{- define "stylesheet" -}}
+{{- if isset .Params "math" -}}
+{{ partial "katex.html" . }}
+{{- end -}}
+{{- end -}}
+
+{{- define "main" -}}
+  <div id="offcenter">
+    <div class="container-content">
+      <main>
+        <!-- Controls -->
+        <div class="left control">
+          <a class="button no-dot" href='{{ "/notes" | relLangURL }}'>
+            <svg xmlns='http://www.w3.org/2000/svg' class='icon' viewBox='0 0 512 512'><title>Arrow Back</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M244 400L100 256l144-144M120 256h292'/></svg>
+            <span>{{ i18n "back-to-notes" }}</span>
+          </a>
+
+          {{- if .IsTranslated -}}
+            <a class="button no-dot" href="{{ (index .Translations 0).Permalink }}">
+              <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>
+              <span>{{ i18n "view-in-other-lang" }}</span>
+            </a>
+          {{- end -}}
+        </div>
+
+        <header>
+          <h1>{{ .Title }}</h1>
+          <h2>{{ .Description }}</h2>
+        </header>
+
+        <div id="page-nav" class="left">
+          <!-- Table of Contents -->
+          {{- if .Params.toc -}}
+            <h3 class="hide-on-wide">On This Page:</h3>
+            {{ .TableOfContents }}
+          {{- end -}}
+
+          <!-- Other articles in the same category -->
+          <div id="series">
+            {{- $thisLink := .Permalink -}}
+            {{- if isset .Params "category" -}}
+              <h3 class="series-title">{{- i18n "other-notes-in-this-category" -}}</h3>
+              {{- $category := index .Site.Taxonomies "category" -}}
+              
+              <ul>
+                {{- range (index $category (lower .Params.category)).Pages.ByDate -}}
+                  <li>
+                    {{- if eq .Permalink $thisLink -}}
+                      <p>{{ .Title }} <span class="this-article-indicator">(Self)</span></p>
+                    {{- else -}}
+                      <a href="{{ .Permalink }}">{{ .Title }}</a>
+                    {{- end -}}
+                {{- end -}}
+                  </li>
+              </ul>
+
+            {{- end -}}
+          </div>
+        </div>
+
+        <article>
+          {{- .Content -}}
+        </article>
+
+        <!-- Tags -->
+        <div id="meta">
+          <div class="tags">
+            {{- if isset .Params "tags" -}}
+              {{- range $i, $e := .Params.tags -}}
+                <a href="{{ "/tags" | relLangURL }}/#{{ . }}">#{{- . -}}</a>
+              {{- end -}}
+            {{- end -}}
+          </div>
+          <div class="right">
+            <span>{{ i18n "published-on" }} {{ .Date.Format (i18n "date-format") }}</span>
+            {{- if not (eq .Lastmod .Date) -}}
+              <span style="margin-left: .5em">
+                {{ i18n "last-modified-on" }} {{ .Lastmod.Format (i18n "date-format") }}
+              </span>
+            {{- end -}}
+          </div>
+        </div>
+
+        {{ partial "licence.html" . }}
+
+      </main>
+    </div>
+
+    {{ partial "footer" }}
+  </div>
+{{- end -}}
