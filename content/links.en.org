@@ -18,3 +18,4 @@ Or a copper RJ45 wire, whatever.
 + VOID001 :: [[https://void-shana.moe][VOID001's wowo]]. Produced a [[https://www.bilibili.com/video/av12169693/][great series]] on kernel development!
 + Frantic1048 :: [[https://pyonpyon.today][Pyon Pyon Today]]. Seasoned frontend developer.
 + quininer :: [[https://quininer.github.io][icebox]]. Rust && cryptography.
++ Yuuta :: [[https://blog.yuuta.moe/][Garden in the Wonderland]]. Fellow homelabber.

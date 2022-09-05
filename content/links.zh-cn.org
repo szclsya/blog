@@ -19,3 +19,5 @@
 + VOID001 :: [[https://void-shana.moe/][VOID001's wowo]] 创作了[[https://www.bilibili.com/video/av12169693/][ 一系列]] 很棒的内核开发视频！
 + Frantic1048 :: [[https://pyonpyon.today][Pyon Pyon Today]] 前端技艺精湛的卡夫老师。
 + quininer :: [[https://quininer.github.io/][icebox]]. Rust && cryptography. +起名大师+
++ Yuuta :: [[https://blog.yuuta.moe/][Garden in the Wonderland]]. Fellow homelabber.
+
