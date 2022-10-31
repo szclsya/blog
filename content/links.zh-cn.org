@@ -10,6 +10,7 @@
 * [[https://garoad.bandcamp.com/track/friendly-conversation][Friendly Conversation]]
 有幸线下相遇过的朋友们。
 + PoiScript :: [[https://blog.poi.cat][Solomon PoiScript's Blog]] 难得的也用 Org-mode 写博客的同好。
++ cleoold :: [[https://cleoold.com][Im cleoold]] Nice drawing!
 
 * 透过神奇的光纤...
 也有可能是 RJ45 铜缆, 不要在意这些细节。

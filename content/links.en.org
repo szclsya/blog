@@ -9,6 +9,7 @@
 * [[https://garoad.bandcamp.com/track/friendly-conversation][Friendly Conversation]]
 Friends that I've met in real life.
 + PoiScript :: [[https://blog.poi.cat][Solomon PoiScript's Blog]] Also use Org-mode in his blog!
++ cleoold :: [[https://cleoold.com][Im cleoold]] Nice drawing!
 
 * Over a magical fishing wire...
 Or a copper RJ45 wire, whatever.
