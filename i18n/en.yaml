@@ -19,6 +19,8 @@ back-to-notes:
   other: 'More Notes'
 view-in-other-lang:
   other: '查看中文版本'
+not-available-in-other-lang:
+  other: '暂无翻译版本'
 tags:
   other: 'Tags'
 published-on:

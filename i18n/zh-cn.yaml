@@ -19,6 +19,8 @@ back-to-notes:
   other: '更多笔记'
 view-in-other-lang:
   other: 'View English Version'
+not-available-in-other-lang:
+  other: 'Translation Not Available'
 tags:
   other: '标签'
 published-on:
