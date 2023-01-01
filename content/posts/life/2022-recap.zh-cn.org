@@ -2,7 +2,6 @@
 #+DATE: 2022-12-31T11:59:59
 #+DESCRIPTION: Cold fire clenched to my heart, in the blue of night
 #+TOC: true
-#+DRAFT: true
 
 It's that time of the year again, eh?
 
