@@ -9,6 +9,7 @@
 * [[https://garoad.bandcamp.com/track/friendly-conversation][Friendly Conversation]]
 Friends that I've met in real life.
 + PoiScript :: [[https://blog.poi.cat][Solomon PoiScript's Blog]] Also use Org-mode in his blog!
++ Yuuta :: [[https://blog.yuuta.moe/][Garden in the Wonderland]]. Fellow homelabber.
 + cleoold :: [[https://cleoold.com][Im cleoold]] Nice drawing!
 
 * Over a magical fishing wire...
@@ -20,4 +21,3 @@ Or a copper RJ45 wire, whatever.
 + VOID001 :: [[https://void-shana.moe][VOID001's wowo]]. Produced a [[https://www.bilibili.com/video/av12169693/][great series]] on kernel development!
 + Frantic1048 :: [[https://pyonpyon.today][Pyon Pyon Today]]. Seasoned frontend developer.
 + quininer :: [[https://quininer.github.io][icebox]]. Rust && cryptography.
-+ Yuuta :: [[https://blog.yuuta.moe/][Garden in the Wonderland]]. Fellow homelabber.
