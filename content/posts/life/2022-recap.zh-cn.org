@@ -95,15 +95,15 @@ It's that time of the year again, eh?
 
 ** 其他
 这些游戏就没那么多感想了，快速列一下吧。
-+ Stormworks (N/A)
++ Stormworks /(N/A)/
   - 这种沙盒游戏怎么打分？8/10 too much water?
   - 关于玩个游戏还要写 Lua 这件事
 + Red Alert 3 /(3/5)/
   - 纯粹是怀旧了。对于手残用户那就是手忙脚乱模拟器
-+ Hearts of Iron IV (N/A)
++ Hearts of Iron IV /(N/A)/
   - 一年总是要开上一把的（笑）
-+ Xenogears (N/A)
-  - 由于年代过于久远+流程太常，选择云通关了。
++ Xenogears /(N/A)/
+  - 由于年代过于久远+流程太长，选择云通关了。Forgive me
   - 剧情相当震撼，同时也能看到好多后来的高桥哲哉作品的影子。也许这就是没有做成 FFVII 的执念吧
 + 主播女孩重度依赖 /(3/5)/
   - 打出治病结局急速通关（笑）
