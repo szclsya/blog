@@ -1,14 +1,14 @@
 #+TITLE: Sending Emails, with netcat
 #+DESCRIPTION: Plaintext protocol for the win!
 #+DATE: 2023-10-30T18:02:14
-#+TAGS[]: linux net
+#+TAGS[]: net linux
 #+LICENSE: cc-sa
 
 #+STARTUP: indent
 
-Sending email might sound complicated -- in fact it is. After years of spam fighting efforts, layers upon layers of complexity was added and Email has turned into the behemoth we are dealing with today, where most people and organization leave it to dedicated mail providers.
+Sending email might sound complicated—in fact it is. After years of spam fighting efforts, layers upon layers of complexity was added and Email has turned into the behemoth we are dealing with today, where most people and organization leave it to dedicated mail providers.
 
-But that's a rant of another day. Most of the complicated black magic happens under the hood, *after* we have submitted our mail to the server. And the submission part, fortunately, stays pretty simple. The way you /read/ your Email changed quite a bit (POP1 -> [[https://en.wikipedia.org/wiki/Post_Office_Protocol][POP3]] -> [[https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol][IMAP]]), but /sending/ still uses [[https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol][SMTP]], just like the 1980s. There has been extensions [fn:esmtp], yes, but it remains to be plaintext and most of the commands remains. And since it's plaintext, let's open up ~netcat~ and send an email with just that!
+But that's a rant of another day. Most of the complicated black magic happens under the hood, *after* we have submitted our mail to the server. And the submission part, fortunately, stays pretty simple. The way you /read/ your Email changed quite a bit (POP1 -> [[https://en.wikipedia.org/wiki/Post_Office_Protocol][POP3]] -> [[https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol][IMAP]]), but /sending/ still uses [[https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol][SMTP]], just like the 1980s. There has been extensions[fn:esmtp], yes, but it remains to be plaintext and most of the commands remains. And since it's plaintext, let's open up ~netcat~ and send an email with just that!
 
 [fn:esmtp] ESMTP (Extended Simple Mail Transfer Protocol), defined in [[https://datatracker.ietf.org/doc/html/rfc1869][RFC1869]].
 
@@ -17,7 +17,7 @@ But that's a rant of another day. Most of the complicated black magic happens un
 We will denote lines that are sent from the server with a ~>~ in the front.
 {{% /card %}}
 
-First we need to establish a connection to a mail server. I'm using one of the mail server that I maintain, [[https://wiki.csclub.uwaterloo.ca/Mail][University of Waterloo Computer Science Club's mail server]] as an example. If you are happy with sending your mail in plaintext, then any ~netcat~ implementation would do. If you want some semblance of modern Internet and want encrypted communication though, we will use =TLS/SSL= to connect instead of =STARTTLS=, as the latter requires TLS handshake _after_ inputting a SMTP command and is difficult to do with just netcat.
+First we need to establish a connection to a mail server. I'm using one of the mail server that I maintain, [[https://wiki.csclub.uwaterloo.ca/Mail][University of Waterloo Computer Science Club's mail server]] as an example. If you are happy with sending your mail in plaintext, then any netcat implementation would do. If you want some semblance of modern Internet and want encrypted communication though, we will use =TLS/SSL= to connect instead of =STARTTLS=, as the latter requires TLS handshake _after_ inputting a SMTP command and is difficult to do with just netcat.
 
 {{% card warning %}}
 Note that since password is transferred in Base64 on most SMTP servers, your username and password is NOT encrypted if you are using plaintext connection! SSL is strongly recommended, unless you are sitting right next to the mail server.
@@ -38,7 +38,7 @@ $ ncat --ssl mail.csclub.uwaterloo.ca 465
 And the server greets us with a happy [[https://en.wikipedia.org/wiki/List_of_SMTP_server_return_codes#%E2%80%94_2yz_Positive_completion][220]], means server ready!
 
 * Say Hello!
-And now it's time to say hello. We do so by sending ~EHLO~ with a hostname. The hostname is mostly used as a check when mails are sent between servers, and is not relevant here. Thus we will just send a loopback address.
+And now it's time to say hello. We do so by sending ~EHLO~ with a hostname. The hostname is mostly used as a check when mails are sent /between/ servers, so it's not relevant here. We will just send a loopback address.
 
 But why is it called ~EHLO~ rather than ~HELO~? Well actually both exists, but we will be using ~EHLO~ since that indicates we will use ESMTP [fn:esmtp] which supports username and password login we will be using.
 
@@ -62,7 +62,7 @@ EHLO 127.0.0.1
 > 250 CHUNKING
 #+END_SRC
 
-And the server greets us about its capabilities.
+And the server tells us about its capabilities.
 
 * Login
 Now we will provide the server with our credentials. Note that in SMTP, although the name says it's "plain auth", which may make you believe plaintext username and password are sent, they are actually combined into one string and get encoded with BASE64. To obtain the correct credential, use:
@@ -91,20 +91,22 @@ MAIL FROM:<y266shen@csclub.uwaterloo.ca>
 > 250 2.1.0 Ok
 # And who are the recipients.
 # Note that there can be multiple RCPT TO commands to indicate multiple recipients
-# The CC and BCC information is actually added in the DATA field,
+# The To, Cc and Bcc information is actually added in the DATA field,
 # which we will be typing in shortly
 RCPT TO:<i@szclsya.me>
 > 250 2.1.5 Ok
 #+END_SRC
 
-And finally, the mail body. SMTP will just send whatever is before the termination symbol (~<CR><LF>.<CR><LF>~ here [fn:crlf]) as the contents, and it doesn't care about it's plaintext or not. So to do attachments, you just concat the content of the file directly into the mail body, with some boundaries and metadata around it. But that's too complicated for a party trick with netcat, we will just send a plaintext mail here:
+And finally, the mail body. SMTP will just send whatever is before the termination symbol (~<CR><LF>.<CR><LF>~ here[fn:crlf]) as the contents, and it doesn't care about it's plaintext or not. So to do attachments, you just concat the content of the file directly into the mail body, with some boundaries and metadata around it. But that's too complicated for a party trick with netcat, we will just send a plaintext mail here:
 
 [fn:crlf] In case you didn't know, in UNIX world (popular example being Linux, macOS and *BSD) ~<CR><LF>~ represents a new line. So to input ~<CR><LF>.<CR><LF>~, just press =Enter=, type =.=, and press =Enter= again.
 
 
 #+BEGIN_SRC bash
+# Tell the server we are now sending the data portion
 DATA
 > 354 End data with <CR><LF>.<CR><LF>
+# Type in the mail headers and body
 From: [Leo Shen] <y266shen@csclub.uwaterloo.ca>
 To: <i@szclsya.me>
 Date: Wed, 19 Jul 2023 23:16:48 -0400
@@ -124,4 +126,4 @@ QUIT
 > 221 2.0.0 Bye
 #+END_SRC
 
-And you've sent your Email with just netcat and your bare hands!
+Check the destination mailbox, and if everything goes okay, you've sent your Email with just netcat and your bare hands!
