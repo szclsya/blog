@@ -1,8 +1,8 @@
 {{- $pctx := . -}}
 {{- if .IsHome -}}{{ $pctx = .Site }}{{- end -}}
 {{- $pages := slice -}}
-{{- if or $.IsHome -}}
-{{- $pages = $pctx.AllRegularPages -}}
+{{- if or $.IsHome $.IsSection }}
+{{- $pages = $pctx.RegularPages }}
 {{- else -}}
 {{- $pages = $pctx.Pages -}}
 {{- end -}}
