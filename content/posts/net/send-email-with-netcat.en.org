@@ -3,7 +3,7 @@
 #+DATE: 2023-10-30T18:02:14
 #+TAGS[]: net linux
 #+LICENSE: cc-sa
-
+#+TOC: true
 #+STARTUP: indent
 
 Sending email might sound complicated—in fact it is. After years of spam fighting efforts, layers upon layers of complexity was added and Email has turned into the behemoth we are dealing with today, where most people and organization leave it to dedicated mail providers.
