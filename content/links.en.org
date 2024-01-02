@@ -4,7 +4,6 @@
 * Old Sports
 + Chenyijia001 (a.k.a learningis1st) :: [[https://learningis1.st/]]. A long-term friend of mine. Active Wikipedian and PC enthusiast. 
 + PeterCxy :: [[https://typeblog.net/][TypeBlog]] Android porting expert! ~(PeterCxy android-device?) → rom?~
-+ aidenclx :: [[https://kitamura.moe][Poffy亭]] The shallow deep-diver.
 
 * [[https://garoad.bandcamp.com/track/friendly-conversation][Friendly Conversation]]
 Friends that I've met in real life.
@@ -14,7 +13,6 @@ Friends that I've met in real life.
 
 * Over a magical fishing wire...
 Or a copper RJ45 wire, whatever.
-+ ヨイツの賢狼ホロ :: [[https://blog.yoitsu.moe][约伊兹的萌狼乡手札]]. The Goddess of Harvest (according to the novel anyway). The guy who lead me into the [[/posts/coreboot/x220/][coreboot]] thing and static site generator thing.
 + Le Code d'Origine as Force0x1 :: [[https://blog.origincode.me][OriginCode Base]] Still at high school, but already an expert at package maintenance on Arch Linux/AOSC OS. Good job!
 + Farseerfc :: [[https://farseerfc.me/][Farseerfc's Nest]]. Arch Linux TU. Developed the awesome [[https://github.com/farseerfc/pacvis][pacvis]] tool. Also have a great interest in filesystem implementation.
 + Alynx Zhou :: [[https://sh.alynx.one/][喵's StackHarbor - Whisper to the World]]. Streams CS:GO and Dota quite a lot on Bilibili.
