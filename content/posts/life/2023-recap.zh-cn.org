@@ -1,4 +1,4 @@
-#+TITLE: 回望 2023：现实的荒原
+#+TITLE: 回望 2023：又是一扇门
 #+DATE: 2024-01-01T11:59:59
 #+DESCRIPTION: Like a proud wolf alone in the dark, with eyes that watch the world
 #+TOC: true
