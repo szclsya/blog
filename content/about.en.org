@@ -7,7 +7,7 @@ Hi.
 This is Leo Shen. If you see a guy called =szclsya= somewhere, that should be me.
 
 * ~/me~
-+ Undergraduate Mathematics student at University of Waterloo.
++ ~job_seek.poll() -> Poll::Pending~
 + Music enthusiast, have a few Walkman [[/tags/#walkman][and use them to do weird things]].
 + Use [[https://www.archlinux.org][Arch Linux]] && [[https://aosc.io][AOSC OS]], also a contributer to AOSC OS.
 + Use [[https://github.com/szclsya/.emacs.d][Emacs]] & vim, little bit more Emacs.
