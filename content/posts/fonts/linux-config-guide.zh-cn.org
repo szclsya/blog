@@ -7,6 +7,8 @@
 #+TOC: true
 
 {{% card info %}}
+本文于2024年1月15日更新过，将默认无衬线英语字体换为 Inter。
+
 本文于2022年6月11日更新过，修复了全局字体规则导致的等宽字体显示异常问题。
 {{%/ card %}}
 
@@ -19,10 +21,10 @@
 （其实 macOS 的糊成一片的渲染方式也有它的问题，但这就不在本文讨论范围之内了。）
 
 * 太长不看版
-安装字体： =Noto=, =Noto CJK=, =Noto Emoji= 和 =Sarasa Gothic= 。
+安装字体： =Noto=, =Inter=, =Noto CJK=, =Noto Emoji= 和 =Sarasa Gothic= 。
 #+BEGIN_SRC bash
 # On Arch Linux
-sudo pacman -S noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-sarasa-gothic
+sudo pacman -S noto-fonts inter-font noto-fonts-cjk noto-fonts-emoji ttf-sarasa-gothic
 # Do your research on other Linux distros
 #+END_SRC
 
@@ -33,7 +35,8 @@ sudo pacman -S noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-sarasa-gothic
 
 这是我选择字体：
 + 拉丁字体
-  - *Noto Sans* - 无衬线
+  - *[[https://rsms.me/inter/][Inter]]* - 无衬线
+    - 这是一种类似于 Roboto 但更适合屏幕显示的字体
   - *Noto Serif* - 衬线
   - *Sarasa Term SC* - 等宽（也可以直接使用 Iosevka Term 以节省空间，但可能会导致 Emacs 中的渲染 bug）
     - 这是一种拉丁文字符严格为半宽的字体，中英文混排时很协调。如果不适应这种较瘦的字体风格，则可以尝试使用 *Adobe Source Pro* ， *Cascadia Code* 或 *Fira Code* 。
@@ -44,6 +47,7 @@ sudo pacman -S noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-sarasa-gothic
 * 安装字体
 这里同样使用 Arch Linux 举例，其他发行版请搜索相应的软件仓库。
 + ~noto-fonts~ Noto Sans, Noto Serif
++ ~inter-font~ Inter
 + ~noto-fonts-cjk~ Noto Sans CJK SC, Noto Serif CJK SC
 + ~noto-fonts-emoji~ Noto Emoji
 + ~ttf-sarasa-gothic~ Sarasa Term SC
@@ -140,7 +144,7 @@ DPI 即为 Dots per inch (每英尺点数), 可简单理解为显示器的像素
     <test qual="any" name="family">
       <string>sans-serif</string></test>
     <edit name="family" mode="prepend" binding="same">
-      <string>Noto Sans</string>
+      <string>Inter</string>
     </edit>
   </match>
 
@@ -176,7 +180,7 @@ DPI 即为 Dots per inch (每英尺点数), 可简单理解为显示器的像素
   <alias>
     <family>sans-serif</family>
     <prefer>
-      <family>Noto Sans</family>
+      <family>Inter</family>
       <family>Noto Sans CJK SC</family>
       <family>Noto Sans CJK TC</family>
       <family>Noto Sans CJK JP</family>
@@ -244,8 +248,8 @@ DPI 即为 Dots per inch (每英尺点数), 可简单理解为显示器的像素
 #+END_SRC
 
 * 大功告成!
-把配置文件保存，打开一个程序(比如浏览器)，应该就可以看到变化了!
+把配置文件保存，打开一个程序（比如浏览器），应该就可以看到变化了!
 
 还有几点需要注意:
-+ 有一些比较老的程序会忽略 Fontconfig 的设置，需要修改 [[https://wiki.archlinux.org/index.php/Font_configuration#Applications_without_fontconfig_support][Xresources]]. ArchWiki 上提供的事例配置应该足够了。
-+ 很多程序有自己的字体配置。一般而言，将无衬线字体设置成 =sans-serif=, 将衬线字体设置成 =serif=, 将等宽字体设置成 =monospace=, 就会遵循 fontconfig 的设置了。
++ 有一些比较老的程序会忽略 Fontconfig 的设置，需要修改 [[https://wiki.archlinux.org/index.php/Font_configuration#Applications_without_fontconfig_support][Xresources]] 。 ArchWiki 上提供的事例配置应该足够了。
++ 很多程序有自己的字体配置。比如 =qt5ct= 就会默认指定 Noto 系列字体而忽略我们的设置。一般而言，手动将无衬线字体设置成 =sans-serif=, 衬线字体设置成 =serif=, 等宽字体设置成 =monospace= 后，这些程序就会遵循 fontconfig 的设置了。
