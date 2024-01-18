@@ -6,80 +6,127 @@
 #+TOC: ture
 #+LICENSE: cc-sa
 #+STARTUP: indent
-#+DRAFT: true
 
-我们现在有一个正常运行的存储池了。此文会介绍一些常见的性能调优技巧。
+我们现在有一个正常运行的存储池了。现在我们来看看一些常见的性能调优技巧。
 
 * 禁用 ~atime~ (文件访问时间)
 默认配置下，ZFS 会记录文件的最后访问时间。现实中，这个功能其实并不是很有用，但会导致大量写入并降低性能。如果你不需要知道文件访问时间，并不用任何依赖这个属性的程序的话（最常见的例子是一些邮件程序依赖 atime 来确定邮件是不是已读），我们可以关闭 atime 记录以降低磁盘写入压力。 [fn:atime-criticism]
 
 [fn:atime-criticism] 英文维基 [[https://en.wikipedia.org/wiki/Stat_(system_call)#Criticism_of_atime][Wikipedia: Stat(system call)#Criticism of atime]] 上有更多对于这个属性是否有意义的争论。
 
+
+关闭整个存储池的访问时间记录：
+#+BEGIN_SRC bash
+zfs set atime=off <pool_name>
+#+END_SRC
+
+
 * 启用 TRIM
 SSD 需要时不时的 [[https://zh.wikipedia.org/zh-cn/Trim%E5%91%BD%E4%BB%A4][TRIM]] 来保证最佳性能与寿命。我们可以让 ZFS 在合适的时机自动执行 TRIM 操作：
 
-#+BEGIN_SRC 
-# zpool set autotrim=on <pool_name>
+#+BEGIN_SRC bash
+zpool set autotrim=on <pool_name>
 #+END_SRC
 
 我们也可以手动触发一次 TRIM：
-#+BEGIN_SRC 
-# zpool trim <pool_name>
+#+BEGIN_SRC bash
+zpool trim <pool_name>
 #+END_SRC
 
-值得注意的是由于 [[https://github.com/openzfs/zfs/commit/1b939560be5c51deecf875af9dada9d094633bf7][ZFS 对 TRIM 的实现细节]]，即使开启了 autotrim，偶尔手动跑一次 TRIM 也是有好处的（可以回收一些很小的块）。具体怎么操作可以查阅 [[https://wiki.archlinux.org/title/ZFS#Enabling_TRIM][ArchWiki: ZFS#Enabling_TRIM]]。
+值得注意的是由于 [[https://github.com/openzfs/zfs/commit/1b939560be5c51deecf875af9dada9d094633bf7][ZFS 对 TRIM 的实现细节]]，即使开启了 autotrim，偶尔手动跑一次 TRIM 也是有好处的（手动 TRIM 会回收一些 autotrim 忽略的体积较小的块）。可以用 systemd 自动定期执行 trim，具体可以查阅 [[https://wiki.archlinux.org/title/ZFS#Enabling_TRIM][ArchWiki: ZFS#Enabling_TRIM]]。
 
 * SSD 缓存
 除了常规的存储 VDEV （比如 RAIDz 和 mirror）以外，ZFS 还支持一些不能当作存储空间用的特殊 VDEV：
 
 + *cache*: 也称 *L2ARC* ，ZFS 的高速读缓存
   - 注意！ZFS 已经会用内存作为缓存了（叫 *ARC* ，这就是为什么 cache 叫 L2ARC，即 Level 2 ARC，二级 ARC）
-  - 因此，如果你的常用数据没那么大的话，添加这种缓存可能完全不会提升性能
+  - 因此，如果你的常用数据没那么大的话，添加这种缓存 _可能完全不会提升性能_
 + *log*: 也称 *slog* ，ZFS 的写缓存，加速 *同步* 写入
   - 注意！slog 只影响同步写入，异步写入（比如拷贝文件）是不受影响的。一般只有非常关键的数据会要求同步写入（例如数据库程序）
-  - 因此，如果你的工况不涉及同步写入的话，添加此种缓存也有可能完全不会提升性能
+  - 因此，如果你的工况不涉及同步写入的话，添加此种缓存也 _可能完全不会提升性能_
 + *special*: 用来在高速盘上储存一些 ZFS 内部数据的 VDEV，不常用
 
-如果你有一块比已有存储盘快的盘（大多数情况下，SSD）的话，你可以用它加速已有的阵列：
+如果你有一块比已有存储盘快的盘（大多数情况下，SSD）且你的工况满足以上描述的话，你可以用它加速已有的存储池：
 
-#+BEGIN_SRC 
-添加一块 l2arc 盘。无需冗余，掉线的话 ZFS 会用阵列中的数据
-# zpool add <pool_name> cache <volume>
+#+BEGIN_SRC bash
+# 添加一块 l2arc 盘。无需冗余，缓存离线的话 ZFS 会直接跳过 l2arc 读取阵列中的数据
+zpool add <pool_name> cache <volume>
 #+END_SRC
 
-#+BEGIN_SRC
-单写入缓存，不安全，如果掉线则会丢失还未写回的数据
-# zpool add <pool_name> log <volume>
-镜像写入缓存，推荐，需要两块或更多存储盘
-# zpool add <pool_name> log mirror <volumes>
+#+BEGIN_SRC bash
+# 单写入缓存，不安全，如果缓存离线则会丢失还未写回的数据
+zpool add <pool_name> log <volume>
+# 镜像写入缓存，推荐，需要两块或更多存储盘
+zpool add <pool_name> log mirror <volumes>
 #+END_SRC
 
 * 升级存储池功能
-OpenZFS 的开发者们会时不时搞一些 exiting 的新功能出来。例如使用 [[https://github.com/facebook/zstd][Zstd]] 作为透明压缩就是作为 =zstd_compress= 存储池功能引入的。如果你是在新功能引入前就创建了存储池，最简单的方式就是通过升级存储池来启用所有新功能。
+OpenZFS 的开发者们会时不时搞一些 exiting 的新功能出来。例如使用 [[https://github.com/facebook/zstd][Zstd]] 用作透明压缩算法就是通过添加 =zstd_compress= 存储池功能引入的。如果你是在新功能引入前就创建了存储池，最简单的方式就是通过升级存储池来启用所有新功能。
 
 {{% card warning %}}
 如果你同时使用几个不同的 OpenZFS 版本的话（比如在不同的操作系统上用同一个存储池），启用新功能可能会导致不兼容（比如在旧版本的 OpenZFS 上只能以只读挂载存储池）。
 {{% /card %}}
+
+#+BEGIN_SRC bash
+# Show features that can be enabled
+# 显示可以开启的存储池功能
+zpool upgrade
+# Enable all new features for a specific pool
+# 针对一个存储池开启所有可用功能
+zpool upgrade $POOL_NAME
+#+END_SRC
+
 
 * 使用数据集
 ZFS 有很多配置选项。我们可以根据工况调整 ZFS 以达成最佳性能表现。例如，在其他工况（比如 NAS）下很有用的内存缓存在数据库工况下就只能帮倒忙，因为现代数据库都自带了更智能内存缓存，因此这种情况下我们一般会关掉 ZFS 的缓存。但如果一个存储池需要承载不同种类的任务，因此需要截然相反的优化的话，事情就会变得棘手起来。ZFS 的解决方法是数据集（ =datasets= ），我们可以把不同任务放在不同的数据集上然后只调整这些数据集的选项，而不是整个存储池。
 
 更棒的是，对于操作系统来说，数据集表现的就像一个独立的文件系统，所以我们可以将它们挂载到任意位置上。我们也可以对数据集打快照，并可以将快照作为一个只读文件系统挂载。
 
-#+BEGIN_SRC 
-创建数据集：
-# zfs create <pool_name>/<dataset_name>
-创建嵌套数据集，子数据集会遵循上一级的设置：
-# zfs create [-p] <pool_name>/<dataset_name>/<dataset_name>
-显示所有存储池，数据集和快照：
-# zfs list
+#+BEGIN_SRC bash
+# 创建数据集：
+zfs create <pool_name>/<dataset_name>
+# 创建嵌套数据集，子数据集会遵循上一级的设置：
+zfs create [-p] <pool_name>/<dataset_name>/<dataset_name>
+# 显示所有存储池，数据集和快照：
+zfs list
 #+END_SRC
 
 然后我们就可以针对每个数据集修改配置了。举个例子，只在一个数据集上禁用访问时间记录（atime）：
 
-#+BEGIN_SRC 
-# zfs set atime=off <pool_name>/<dataset_name>
+#+BEGIN_SRC bash
+zfs set atime=off <pool_name>/<dataset_name>
 #+END_SRC
 
 * 透明压缩
+ZFS 支持自动压缩所有写入的数据。这样做不仅可以节省空间，在数据压缩高的场合甚至还可能提升存储池的吞吐量和降低 IO 负载（因为实际需要写入和读取的数据量降低了）。
+
+目前 ZFS 支持 =lz4= （默认）， =gzip= 和 =zstd= 压缩算法。一般情况下，除非存储池中的数据已经被压缩过了（比如已压缩的视频和图片），开启 =lz4= 几乎不会错。 =lz4= 的 CPU 占用极低（相对的，压缩比相比 =gzip= 和 =zstd= 差）且对文字类工况有良好的压缩表现。而且 =lz4= 会在发现数据压缩比低时自动放弃压缩，所以即使遇到无法压缩的数据也不会有太大的性能损耗。
+
+对于性能要求不高的存储池/数据集上我们就可以用压缩比更高但性能损耗也更高的压缩算法了（例如 =gzip= 和 =zstd= ）。这些压缩算法会消耗更多的 CPU 时间并可能降低吞吐量，但用在备份或冷数据存储池/数据集上很合适。现在一般使用 zstd，因为它能提供相对 gzip 快得多（2x）的压缩/解压缩性能，并且压缩比甚至更好。
+
+#+BEGIN_SRC bash
+# 大多数情况下，直接将 compression 设置为 on 即可。ZFS 会默认使用 lz4
+zfs set compression=on <pool_name>/<dataset_name>
+# 对于冷数据，我们可以用 zstd 来节省更多空间
+zfs set compression=zstd <pool_name>/<dataset_name>
+# 对于难已压缩或已经压缩过的数据，我们可以禁用压缩
+zfs set compression=off <pool_name>/<dataset_name>
+#+END_SRC
+
+* 尽量让存储池使用率低于 90%
+由于 ZFS 使用 CoW （写入时复制）策略，每次写入数据时 ZFS 都会在存储池中寻找一块未使用的块写入数据。这就意味着当存储池快要写满时，寻找可使用的块会越来越难。现实中，这就意味着爆增的写入延迟和爆减的吞吐量。
+
+{{% btw %}}
+和 SSD 不要写满是一个原理
+{{%/ btw %}}
+
+默认情况下，ZFS 总会保留 3.2% 的存储池容量作为应急使用（详见 [[https://openzfs.github.io/openzfs-docs/Performance%20and%20Tuning/Module%20Parameters.html#spa-slop-shift][spa_slop_shift]]），但如果不想遇到性能问题的话，多留一点空间给 ZFS 总没错。
+
+* 根据工况调整
+目前为止我们都在讨论一些比较通用的调整策略。在这之上，我们可以通过分析应用的实际工况以有针对性地微调。最常见的例子是 ZFS 的默认参数在数据库工况下通常表现不佳：数据库通常会自带相比 ZFS 粒度更细的内存缓存与完整性校验，而 ZFS 默认开启的内存缓存和完整性校验在这种情况下只会浪费内存和 CPU 时间，因此在这种情况下关闭这些高级文件系统功能反而是有益的。
+
+由于具体的优化策略会随着时间变化与演进，在这里不会我们不会过多讨论。作为 +课后作业+ 替代，这里有一些很棒的资源：
++ [[https://openzfs.github.io/openzfs-docs/Performance%20and%20Tuning/Workload%20Tuning.html][Workload Tuning - OpenZFS Docs]]
++ [[https://github.com/letsencrypt/openzfs-nvme-databases][How Let's Encrypt set up their MariaDB on ZFS]]
+
 
