@@ -12,6 +12,17 @@ But that's a rant of another day. Most of the complicated black magic happens un
 
 [fn:esmtp] ESMTP (Extended Simple Mail Transfer Protocol), defined in [[https://datatracker.ietf.org/doc/html/rfc1869][RFC1869]].
 
+* Choosing a netcat client
+*tl/dr* Use ~ncat~ bundled with =Nmap=. If you don't need encryption (you really should though), OpenBSD's netcat would do.
+
+Wait there's difference on which netcat version to use? Wait there're a trillion different implementations of netcat? Indeed and it's a pain to explain...
+
+Basically there're two things we are looking for here: SSL support and use CRLF as newline character.
+
+SSL support is self-explanatory: you want encryption to the server, and you should as password is sent via Base64 on SMTP, which a sniffer can easily reveal with a Base64 decoder if being sent via plaintext. Only =Nmap='s version support SSL out of the box.
+
+The CRLF shenanigan is more subtle: POSIX-compatible systems (so any UNIX, Linux, and all their derivatives) uses ~<LF>~ as a line break character, while Windows and most of the communication protocols (stuff like HTTP, SMTP) uses ~<CR><LF>~ instead. So when you hit =Enter= on UNIX/Linux, you are sending ~<LF>~ to the server to indicate newline, which is technically bad behavior. Most SMTP servers will simply ignore this by default and proceed to provide service, but some picky ones (namely Microsoft Exchange) might get mad. Since we are already pedantic enough to send Emails via netcat, let's make it right. Thus this leaves =OpenBSD='s and =Nmap='s implementation, both support convert all newline characters to ~<CR><LF>~.
+
 * Establish a connection
 {{% card info %}}
 We will denote lines that are sent from the server with a ~>~ in the front.
@@ -25,13 +36,14 @@ Note that since password is transferred in Base64 on most SMTP servers, your use
 
 #+BEGIN_SRC bash
 # For plaintext connection
-# This is GNU Netcat here, but OpenBSD Netcat should work the same
-$ nc mail.csclub.uwaterloo.ca 25
+# This is OpenBSD Netcat here, GNU Netcat doesn't support LF to CRLF conversion (the -C argument)
+$ nc -C mail.csclub.uwaterloo.ca 25
 > 220 mail.csclub.uwaterloo.ca ESMTP Postfix
 
 # For SSL
 # ncat is bundled with Nmap, so make sure that Nmap is installed
-$ ncat --ssl mail.csclub.uwaterloo.ca 465
+# 465 is the port for SMTP with SSL/TLS
+$ ncat -C --ssl mail.csclub.uwaterloo.ca 465
 > 220 mail.csclub.uwaterloo.ca ESMTP Postfix
 #+END_SRC
 
@@ -97,10 +109,7 @@ RCPT TO:<i@szclsya.me>
 > 250 2.1.5 Ok
 #+END_SRC
 
-And finally, the mail body. SMTP will just send whatever is before the termination symbol (~<CR><LF>.<CR><LF>~ here[fn:crlf]) as the contents, and it doesn't care about it's plaintext or not. So to do attachments, you just concat the content of the file directly into the mail body, with some boundaries and metadata around it. But that's too complicated for a party trick with netcat, we will just send a plaintext mail here:
-
-[fn:crlf] In case you didn't know, in UNIX world (popular example being Linux, macOS and *BSD) ~<CR><LF>~ represents a new line. So to input ~<CR><LF>.<CR><LF>~, just press =Enter=, type =.=, and press =Enter= again.
-
+And finally, the mail body. SMTP will just send whatever is before the termination symbol (~<CR><LF>.<CR><LF>~ here, just press Enter, followed by a dot, then another Enter) as the contents, and it doesn't care about it's plaintext or not. So to do attachments, you just concat the content of the file directly into the mail body, with some boundaries and metadata around it. But that's too complicated for a party trick with netcat, we will just send a plaintext mail here:
 
 #+BEGIN_SRC bash
 # Tell the server we are now sending the data portion
