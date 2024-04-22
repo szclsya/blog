@@ -1,0 +1,68 @@
+#+TITLE: ZFS 入门指北：维护与灾难恢复
+#+DATE: 2024-04-22T00:00:00
+#+DESCRIPTION: 如果运气不太好...
+#+TAGS[]: linux filesystem
+#+SERIES: zfs
+#+TOC: true
+#+LICENSE: cc-sa
+#+STARTUP: indent
+#+DRAFT: true
+
+我们现在有一个流畅运行的存储池了。现在，我们来看看日常维护的一些技巧，以及如果很不幸地遇上了故障应如何处理。
+
+* 监控存储池状态
+查看存储池状态最简单的的方式就是手动使用我们之前介绍过的 ~zpool status~ 命令。对于一些小规模或可用性要求不高的部署来说这就够了，但是对于大规模集群或者要求高可用的集群来说，我们希望能在出现故障征兆时能立即反应。
+
+ZFS 内置了 =ZED (ZFS event daemon, 即 ZFS 事件服务)= ，一般会配置为当有 ZFS 事件（如 scrub 开始/完成，读写错误过多，磁盘下线等）时通过配置的方式（通常为 Email）发送通知。由于涉及到邮件发送等比较复杂且不相关的课题，本文不会详细介绍 ZED 的配置方法。想知道更多的话可以查阅 [[https://wiki.archlinux.org/title/ZFS#Monitoring_/_Mailing_on_Events][ZFS#Monitoring - ArchWiki]]。
+
+除去 ZFS 自身的相关监控外，监控硬盘的 SMART 健康状态也很重要。一般来说 SMART 会早于 ZFS 发现硬盘的健康问题。在 Linux 上一般会用 [[https://wiki.archlinux.org/title/S.M.A.R.T.#smartd][smartd]]，具体用法同样请参见文档。
+
+* 配置定时 scrub
+我们在 [[{{< ref "zfs-intro" >}}][入门篇]] 提到了 ZFS 拥有自愈特性，但这仅对热数据有效（即经常被读写的数据）。对于冷数据，ZFS 提供了 ~scrubing~ 机制，即定期读取一遍存储池内的所有数据并检验校验和，以发现冷数据中的数据错误。
+
+一般来说，推荐至少每月做一次 scrub。对于消费级硬盘来说，由于数据可靠性相对更低，应考虑更频繁地进行 scrub 操作。很多发行版会随着 ZFS 本身安装定期 scrub 的脚本/服务配置，例如在 Debian 上可以用这些命令开启定期 scrub：
+
+#+BEGIN_SRC bash
+# Debian 上启用每周自动 scrub
+systemctl enable --now zfs-scrub-weekly@POOL.timer
+# Debian 上启用每月自动 scrub
+systemctl enable --now zfs-scrub-monthly@POOL.timer
+#+END_SRC
+
+对于 Debian 以外的发行版/OS 则可查询相应的手册或 Wiki。对于使用 systemd 且没有自带脚本的系统，可以使用  [[https://github.com/lnicola/systemd-zpool-scrub][systemd-zpool-scrub - GitHub]]。
+
+* 使用快照
+由于 ZFS 使用 COW （写入时赋值）策略，对 ZFS 存储池建立快照几乎不需要占用任何空间及计算资源。因此，我们可以频繁建立快照并保留一段时间，这样如果出现了误操作就可以找回之前的版本。注意 ZFS 允许对数据集建立快照，非常实用，可以根据数据的用途和重要性建立不同的数据集并选择不同的快照策略。
+
+#+BEGIN_SRC bash
+# 对 POOL 存储池中的 DATASET 数据集建立名为 test 的快照
+zfs snapshot POOL/DATASET@test
+# 对所有 DATASET 以内的数据集也递归地建立快照 (-r)
+zfs snapshot -r POOL/DATASET@test
+# 显示所有快照
+zfs list -t snapshots
+# 显示 POOL 存储池中的 DATASET 数据集的所有快照
+zfs list -t snapshots POOL/DATASET
+#+END_SRC
+
+** 访问快照中的个别文件
+如果么我们只需要某快照中的个别文件，可以在数据集的根目录进入 ~.zfs~ 隐藏目录。这个目录是无法被 ~ls -a~ 看见的，但是可以用 ~cd[fn:secret-zfs-dir]~ 进入。这个目录内有个 ~snapshot~ 文件夹，其中可直接访问任意快照中的任意文件。
+
+[fn:secret-zfs-dir] 听上去像魔法？简单来说就是列举目录和进入目录是两个 syscall，ZFS 的内核驱动就对这两个 syscall 做了不同的响应。详见 [[https://unix.stackexchange.com/questions/332192/how-are-files-dirs-hidden-from-ls-a-while-still-being-accessible-otherwise-in-a#comment584984_332192][How are files/dirs hidden from ls -a while still being accessible otherwise in a POSIX compliant system?]]
+
+** 回滚快照
+如果我们想放弃 _所有后续更改_ 并回到数据集一个先前的状态，我们可以整体回滚到一个先前的快照上。注意默认情况下我们只能回到最新的一个快照上，如果想回滚多个快照之前的版本则需要 ~-r~ 参数。
+
+{{% card danger %}}
+注意！回滚到多个快照之前会销毁所有之后的快照！
+{{% /card %%}}
+
+#+BEGIN_SRC bash
+# 回滚到最近的快照
+zfs rollback POOL/DATASET@SNAPSHOT
+# 回滚到多个快照之前。注意！会销毁所有之后的快照！
+zfs rollback -r POOL/DATASET@SNAPSHOT
+#+END_SRC
+
+** 使用自动快照管理器
+

@@ -12,7 +12,7 @@ Now we have a pool, running smoothly. Let's learn a bit about regular maintenanc
 * Monitoring pool health
 The simplest way to check pool status is to use ~zpool status~ to view the pool status manually. This may be sufficient for small scale, non-critical systems; but for critical systems, we will want to know something went wrong the instant such event happens.
 
-ZFS has a component called =ZED (ZFS event daemon)=, which, when configured correctly, will send emails to specified address when certain events (like scrubs, excess errors and more) happens. We will discuss the specific steps to setup ZED, as it requires setting up email forwarder on your system, and such is out-of-scope for this article. Check [[https://wiki.archlinux.org/title/ZFS#Monitoring_/_Mailing_on_Events][ZFS#Monitoring - ArchWiki]] for more.
+ZFS has a component called =ZED (ZFS event daemon)=, which, when configured correctly, will send emails to specified address when certain events (like scrubs, excess errors and more) happens. We won't discuss the specific steps to setup ZED, as it requires setting up email forwarder on your system, and such is out-of-scope for this article. Check [[https://wiki.archlinux.org/title/ZFS#Monitoring_/_Mailing_on_Events][ZFS#Monitoring - ArchWiki]] for more.
 
 It's also a good idea to use [[https://wiki.archlinux.org/title/S.M.A.R.T.#smartd][smartd]] to monitor and report health condition reported by the disk itself, so that we will be able to spot and replace problematic disks before it becomes catastrophic.
 
