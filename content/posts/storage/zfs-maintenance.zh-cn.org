@@ -45,7 +45,7 @@ zfs list -t snapshots POOL/DATASET
 #+END_SRC
 
 ** 访问快照中的个别文件
-如果么我们只需要某快照中的个别文件，可以在数据集的根目录进入 ~.zfs~ 隐藏目录。这个目录是无法被 ~ls -a~ 看见的，但是可以用 ~cd[fn:secret-zfs-dir]~ 进入。这个目录内有个 ~snapshot~ 文件夹，其中可直接访问任意快照中的任意文件。
+如果么我们只需要某快照中的个别文件，可以在数据集的根目录进入 ~.zfs~ 隐藏目录。这个目录是无法被 ~ls -a~ 看见的，但是可以用 ~cd~ 进入[fn:secret-zfs-dir]。这个目录内有个 ~snapshot~ 文件夹，其中可直接访问任意快照中的任意文件。
 
 [fn:secret-zfs-dir] 听上去像魔法？简单来说就是列举目录和进入目录是两个 syscall，ZFS 的内核驱动就对这两个 syscall 做了不同的响应。详见 [[https://unix.stackexchange.com/questions/332192/how-are-files-dirs-hidden-from-ls-a-while-still-being-accessible-otherwise-in-a#comment584984_332192][How are files/dirs hidden from ls -a while still being accessible otherwise in a POSIX compliant system?]]
 
