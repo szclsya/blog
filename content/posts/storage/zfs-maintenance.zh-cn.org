@@ -1,12 +1,11 @@
 #+TITLE: ZFS 入门指北：维护与灾难恢复
-#+DATE: 2024-04-22T00:00:00
+#+DATE: 2024-04-23T00:00:00
 #+DESCRIPTION: 如果运气不太好...
 #+TAGS[]: linux filesystem
 #+SERIES: zfs
 #+TOC: true
 #+LICENSE: cc-sa
 #+STARTUP: indent
-#+DRAFT: true
 
 我们现在有一个流畅运行的存储池了。现在，我们来看看日常维护的一些技巧，以及如果很不幸地遇上了故障应如何处理。
 
