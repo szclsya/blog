@@ -54,7 +54,7 @@ zfs list -t snapshots POOL/DATASET
 
 {{% card danger %}}
 注意！回滚到多个快照之前会销毁回滚到的快照之后所有之后的快照！
-{{% /card %%}}
+{{% /card %}}
 
 #+BEGIN_SRC bash
 # 回滚到最近的快照
