@@ -113,7 +113,7 @@ errors: No known data errors
 
 #+BEGIN_SRC bash
 # Clear the error of a pool, if you believe there's nothing to worry about:
-zpool clear cadet
+zpool clear data
 #+END_SRC
 
 The other possibility is that there is, indeed, something wrong with the drive. In this case, it would be a good idea to replace the faulty drive with a good one. this can be done via using the ~zpool replace~ command:

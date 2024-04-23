@@ -15,7 +15,7 @@
 
 ZFS 内置了 =ZED (ZFS event daemon, 即 ZFS 事件服务)= ，一般会配置为当有 ZFS 事件（如 scrub 开始/完成，读写错误过多，磁盘下线等）时通过配置的方式（通常为 Email）发送通知。由于涉及到邮件发送等比较复杂且不相关的课题，本文不会详细介绍 ZED 的配置方法。想知道更多的话可以查阅 [[https://wiki.archlinux.org/title/ZFS#Monitoring_/_Mailing_on_Events][ZFS#Monitoring - ArchWiki]]。
 
-除去 ZFS 自身的相关监控外，监控硬盘的 SMART 健康状态也很重要。一般来说 SMART 会早于 ZFS 发现硬盘的健康问题。在 Linux 上一般会用 [[https://wiki.archlinux.org/title/S.M.A.R.T.#smartd][smartd]]，具体用法同样请参见文档。
+除去 ZFS 自身的相关监控外，监控硬盘的 SMART 健康状态也很重要。一般来说 SMART 会早于 ZFS 发现硬盘的健康问题。在 Linux 上一般会用 [[https://wiki.archlinux.org/title/S.M.A.R.T.#smartd][smartd]] 发送硬盘健康度通知，具体用法同样请参见文档。
 
 * 配置定时 scrub
 我们在 [[{{< ref "zfs-intro" >}}][入门篇]] 提到了 ZFS 拥有自愈特性，但这仅对热数据有效（即经常被读写的数据）。对于冷数据，ZFS 提供了 ~scrubing~ 机制，即定期读取一遍存储池内的所有数据并检验校验和，以发现冷数据中的数据错误。
@@ -32,7 +32,7 @@ systemctl enable --now zfs-scrub-monthly@POOL.timer
 对于 Debian 以外的发行版/OS 则可查询相应的手册或 Wiki。对于使用 systemd 且没有自带脚本的系统，可以使用  [[https://github.com/lnicola/systemd-zpool-scrub][systemd-zpool-scrub - GitHub]]。
 
 * 使用快照
-由于 ZFS 使用 COW （写入时赋值）策略，对 ZFS 存储池建立快照几乎不需要占用任何空间及计算资源。因此，我们可以频繁建立快照并保留一段时间，这样如果出现了误操作就可以找回之前的版本。注意 ZFS 允许对数据集建立快照，非常实用，可以根据数据的用途和重要性建立不同的数据集并选择不同的快照策略。
+由于 ZFS 使用 COW （写入时赋值）策略，对 ZFS 存储池建立快照几乎不需要占用任何空间及计算资源。因此，我们可以频繁建立快照并保留一段时间，这样如果出现了误操作就可以找回之前的版本。注意 ZFS 不仅可以对整个存储池进行快照，也允许对数据集建立快照，因此可以根据数据的用途和重要性建立不同的数据集并选择不同的快照策略，非常实用。
 
 #+BEGIN_SRC bash
 # 对 POOL 存储池中的 DATASET 数据集建立名为 test 的快照
@@ -54,7 +54,7 @@ zfs list -t snapshots POOL/DATASET
 如果我们想放弃 _所有后续更改_ 并回到数据集一个先前的状态，我们可以整体回滚到一个先前的快照上。注意默认情况下我们只能回到最新的一个快照上，如果想回滚多个快照之前的版本则需要 ~-r~ 参数。
 
 {{% card danger %}}
-注意！回滚到多个快照之前会销毁所有之后的快照！
+注意！回滚到多个快照之前会销毁回滚到的快照之后所有之后的快照！
 {{% /card %%}}
 
 #+BEGIN_SRC bash
@@ -64,5 +64,98 @@ zfs rollback POOL/DATASET@SNAPSHOT
 zfs rollback -r POOL/DATASET@SNAPSHOT
 #+END_SRC
 
-** 使用自动快照管理器
+** 自动快照管理
+除了手动在一些关键时间节点打快照外，我们也可以使用一些工具自动管理快照。一般这些工具都能实现定期创建快照，删除旧快照以及对于各个时间段保留一定数量的快照（例如本周的快照每天保留一个，更旧的每月保留一个，再旧的每年保留一个等）。我个人用的是 [[https://github.com/jimsalterjrs/sanoid][sanoid]]，但其他同类型的工具应该都能做到。如果愿意的话甚至可以手搓一个，毕竟本质上只是定期运行 ~zpool~ 命令，读取快照列表并创建/删除快照罢了。
+
+* 备份
+{{% card warning %}}
+mirror/RAIDz _不是_ 备份！这些手段被称为冗余，只能确保磁盘损坏不会影响数据，而不能保护类似人为因素/软件崩溃/硬件故障等其他灾害情况。永远不要仅依赖冗余保护数据！
+{{% /card %}}
+
+ZFS 上最好的备份方式是定期创建快照，然后把它们发送到备份源中。这种方法最大的优点是快照中的文件历史也能留存下来，且相对而言传输/存储的压力都较小（因为只会传输并存储两个快照中的增量数据）。备份源可以是另一个 ZFS 存储池（可以是本地的，也可以在网络上的），也可以作为文件存储在别的介质上（例如光或磁带存储介质）。一个常见的做法是定期接上一块备份移动硬盘并将最新的快照发送到这块盘的存储池上。
+
+#+BEGIN_SRC bash
+# 将快照发送至本地的另一个存储池
+zfs send source/dataset@snapshot | zfs recv backup/dataset
+# 通过 SSH 将快照发送到网络上的另一个存储池
+zfs send source/dataset@snapshot | ssh remote.ip zfs recv backup/dataset
+# 仅发送 snap1 和 snap2 中的增量数据
+zfs send source/dataset@snap1 source/dataset@snap2 | ssh remote.ip zfs recv backup/dataset
+#+END_SRC
+
+{{% btw %}}
+~zfs send/recv~ 有许多配置选项。详见 [[https://openzfs.github.io/openzfs-docs/man/8/zfs-recv.8.html][zfs-recv.8]] 和 [[https://openzfs.github.io/openzfs-docs/man/8/zfs-send.8.html][zfs-send.8]]。
+{{% /btw %}}
+
+和打快照一样，发送快照也可以被自动化。许多快照管理软件要么可以和同步软件协同，要么直接内置了数据同步工具。例如之前提到的 sanoid 就内置了名为 [[https://github.com/jimsalterjrs/sanoid?tab=readme-ov-file#syncoid][syncoid]] 的同步工具。如果你用的不是 sanoid 的话，快照软件的文档里一般也会介绍如何使用他们内置的同步工具，或如何与外部的同步软件协同。
+
+* 如果真的遇上了存储池故障...
+运气不太好，存储池真的坏了。现在怎么办？
+
+首先我们得知道到底发生了什么。最常见的故障有存储盘下线和读写错误过多。有时突然断电就会导致出现读写错误，但这种故障通常是软件层面的，硬盘本身没有问题。如果硬盘本身真的没问题的话，我们仅需让 ZFS 忽略这次事故即可。
+
+#+BEGIN_SRC
+# 常见的由突然断电导致的读写错误
+  pool: data
+ state: DEGRADED
+status: One or more devices has experienced an unrecoverable error.  An
+        attempt was made to correct the error.  Applications are unaffected.
+action: Determine if the device needs to be replaced, and clear the errors
+        using 'zpool clear' or replace the device with 'zpool replace'.
+   see: https://openzfs.github.io/openzfs-docs/msg/ZFS-8000-9P
+  scan: none requested
+
+config:
+
+        NAME                      STATE     READ WRITE CKSUM
+        data                      DEGRADED     0     0     0
+          ata-VOLUME-1            DEGRADED    13     0     0  too many errors
+
+errors: No known data errors
+#+END_SRC
+
+#+BEGIN_SRC bash
+# 我们仅需清零错误计数器即可
+zpool clear data
+#+END_SRC
+
+另一种可能则是硬盘的确有问题。在这种情况下就最好在硬盘完全失效前换上一块好硬盘了：
+
+#+BEGIN_SRC bash
+# 使用好硬盘 (ata-GOOD) 换下已知有问题的硬盘 (ata-FAULTY)
+# 如果是简单卷的话 ZFS 会自动进入重新构建 RAID 的过程（称为 resilvering）并将旧硬盘的数据复制到新盘上
+# 如果是在 mirror/RAIDz 中的话 ZFS 会重建阵列
+zpool replace POOL ata-FAULTY ata-GOOD
+#+END_SRC
+
+* 如果真的遇上了数据损坏...
+如果前期冗余留的足够的话，大多数情况下 ZFS 都能从冗余盘中重构数据并正常运行（并如前文所示报告读写错误）。但如果冗余不足以重构数据，我们就遇上了数据损坏。与传统 RAID 不同的是，ZFS 可以精确告诉我们哪些文件卷入了数据损坏中：
+
+#+BEGIN_SRC 
+  pool: data
+ state: ONLINE
+status: One or more devices has experienced an unrecoverable error.  An
+        attempt was made to correct the error.  Applications may be affected.
+action: Restore the file in question if possible.  Otherwise restore the
+        entire pool from backup.
+   see: https://openzfs.github.io/openzfs-docs/msg/ZFS-8000-8A
+  scan: none requested
+
+config:
+
+        NAME                      STATE     READ WRITE CKSUM
+        data                      ONLINE       0     0     0
+          ata-VOLUME-1            ONLINE       0     0     0
+
+errors: Permanent errors have been detected in the following files:
+
+        [REDACTED]
+#+END_SRC
+
+在这种情况下备份（希望有！）就派上用场了。考虑换下出问题的盘并增加冗余量，以防这种事件再次发生。
+
+* 尾声
+这就是我们 ZFS 之旅的尾声了！希望你目前已经是一个称职的 ZFS 管理员了。当然，这只是对 ZFS 及文件系统的一个极其肤浅的介绍，所以如果你感兴趣的话：多看看相关文档，玩玩脚本自动化，调整参数，甚至用磁盘镜像创建虚拟存储池并刻意地试图搞坏它，然后再尝试修好！了解你的工具很重要，但实际上手把玩也是学习的重要部分。
+
+Happy hacking!
 
