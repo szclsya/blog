@@ -1,0 +1,135 @@
+#+TITLE: 发邮件，但只用 netcat
+#+DESCRIPTION: 又：为什么纯文本协议是好文明
+#+DATE: 2024-07-05T18:02:14
+#+TAGS[]: net linux
+#+LICENSE: cc-sa
+#+TOC: true
+#+STARTUP: indent
+
+发邮件听上去是个很复杂的工作——事实上，在几十年的对抗垃圾邮件的战争后，发邮件*的确*是个很复杂的工作（光 IETF RFC 就有至少九个！[fn:email-rfc]），直接导致了大多数个人与组织都选择那几个大邮件运营商中的一个，完全违背了邮件协议开放的初衷。
+
+但我们今天不是来抱怨这个的。其实大部分这些邮件黑魔法都是由邮件服务处理的，作为用户，我们只需要把想发的邮件提交到服务器即可；而这部分其实并不复杂。我们读邮件的方式有好几次大变化（POP1 -> [[https://en.wikipedia.org/wiki/Post_Office_Protocol][POP3]] -> [[https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol][IMAP]]），但是发邮件还在用 [[https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol][SMTP]]，和 80 年代那会并没什么不一样。而由于 SMTP 使用纯文本协议，我们完全可以只用 ~netcat~ 发邮件！
+
+
+[fn:email-rfc] [[https://datatracker.ietf.org/doc/html/rfc8617][ARC]]，[[https://datatracker.ietf.org/doc/html/rfc7208][SPF]]，[[https://datatracker.ietf.org/doc/html/rfc6376][DKIM]] + [[https://datatracker.ietf.org/doc/html/rfc8301][DKIM - SHA2]] + [[https://datatracker.ietf.org/doc/html/rfc8463][DKIM - Ed25519]]，[[https://datatracker.ietf.org/doc/html/rfc7671][DANE]] + [[https://datatracker.ietf.org/doc/html/rfc7672][DANE - SMTP]] + [[https://datatracker.ietf.org/doc/html/rfc7673][DANE - DNS SRV]]，[[https://datatracker.ietf.org/doc/html/rfc8461][MTA-STS]]。
+
+* 选择 netcat 实现
+_太长不看：_ 用 =Nmap= 项目提供的 ~ncat~ 。如果可以接受明文传输的话（坏主意！），OpenBSD 项目的 ~netcat~ 实现也能用。
+
+等等，netcat 还有好几种的？功能还不一样？没错！简直让人觉得每个学网络和 POSIX API 的人都会搓一个 netcat 来玩玩…… 不过我们只需选择一个具有下列两个功能的实现就行：TLS 和 CRLF 转换。
+
+TLS 支持比较好理解：我们希望和服务器的通讯是加密的，以防 MITM 攻击。其实消息本身明文也就算了，但是在大多数 SMTP 实现上用户名与密码是通过 Base64 传输的，而 Base64 可以轻易地被解码；也就是说如果没有 TLS 的话，攻击者可以轻易获得你的密码！（这就是之前不推荐用明文传输的原因）因此前文推荐 =Nmap= 的实现，因为目前在广泛使用的客户端中只有这个版本开箱支持 TLS。
+
+CRLF 转换要更微妙些：POSIX 系统（UNIX 和它的朋友们）使用 ~<LF>~ 作为换行符，但 Windows 和几乎所有互联网协议（HTTP，SMTP 等）都使用 ~<CR><LF>~ 。所以如果不作任何转换的话，在 UNIX/Linux 环境下在 ~netcat~ 里面敲换行会发一个 ~<LF>~ 到服务器那一端，这在 SMTP 协议里理论上是违规的。很多服务端（例如 Postfix）能自动识别这种行为，但其他服务端会直接报错（例如 Microsoft Exchange）。既然你已经愿意手敲 SMTP 了，不如做到完美，对吧？目前在广泛使用的 netcat 实现中 =OpenBSD= 和 =Nmap= 都（通过一个参数）支持 ~<CR><LF>~ 转换。
+
+* 建立连接
+{{% card info %}}
+接下来会用 ~>~ 前缀表示从服务端发来的信息。
+{{% /card %}}
+
+首先我们需要建立到邮件服务器的连接。这里我使用我（部分）维护的服务器， [[https://wiki.csclub.uwaterloo.ca/Mail][UWaterloo CSC 的邮件服务器]]。如果你准备用 TLS 连接的话，请注意使用 =TLS/SSL= 的端口而不是 =STARTTLS= 的端口，因为 =TLS/SSL= 会在连接一开始就建立 TLS 连接（和 HTTPS 一样，ncat 支持）而 =STARTTLS= 是在 SMTP 握手后再建立连接，更不安全（可能有降级攻击）以及不被 ncat 支持。
+
+{{% card warning %}}
+就如之前所说，在大多数 SMTP 服务器上密码都是通过 Base64 转换后传输的，基本就是明文，所以除非你就坐在服务器旁边的话，尽量使用 TLS 加密。
+{{% /card %}}
+
+#+BEGIN_SRC bash
+# 明文连接
+# 这里使用 OpenBSD netcat, GNU netcat 不支持 -C 参数（使用 CFLF 转换）
+$ nc -C mail.csclub.uwaterloo.ca 25
+> 220 mail.csclub.uwaterloo.ca ESMTP Postfix
+
+# TLS 加密连接
+# ncat 一般在 Nmap 包里，debian 系发行版上则是个独立的 ncat 包
+# 465 是最常见的 SSL/TLS SMTP 端口
+$ ncat -C --ssl mail.csclub.uwaterloo.ca 465
+> 220 mail.csclub.uwaterloo.ca ESMTP Postfix
+#+END_SRC
+
+服务器则回应 [[https://en.wikipedia.org/wiki/List_of_SMTP_server_return_codes#%E2%80%94_2yz_Positive_completion][220]]，代表服务器就绪。
+
+* Say Hello!
+现在该打招呼了。在 SMTP 协议上我们使用 ~EHLO~ 命令和我们的主机名。主机名主要是用在 SMTP 服务器 _之间_ 的通讯（用来标明发送方的身份），所以这里并不重要，用 ~127.0.0.1~ 就可以了。
+
+但 ~EHLO~ 是什么玩意？其实之前的确是用 ~HELO~ 的，但我们会用 ESMTP （一个现代化的 SMTP 扩展协议）中的身份验证协议，所以这里用 ~EHLO~ [fn:esmtp]。
+
+#+BEGIN_SRC bash
+# Say hello!
+EHLO 127.0.0.1
+> 250-mail.csclub.uwaterloo.ca
+> 250-PIPELINING
+> 250-SIZE 52428800
+> 250-ETRN
+> 250-AUTH PLAIN
+> 250-AUTH=PLAIN
+> 250-ENHANCEDSTATUSCODES
+> 250-8BITMIME
+> 250-DSN
+> 250-SMTPUTF8
+> 250 CHUNKING
+#+END_SRC
+
+然后服务器就返回了它支持的功能。
+
+
+[fn:esmtp] ESMTP，发表于 [[https://datatracker.ietf.org/doc/html/rfc1869][RFC1869]]。我们会用 =PLAIN= 认证方式。你问为什么没有 =LOGIN= ？其实 =LOGIN= 也存在，但现在都用 =PLAIN= ，因为可以一次性发送用户名与密码，而 LOGIN 需要两个来回。是不是充满了历史感？（笑）
+
+* 登录
+现在该让服务器验证我们的身份了。如前文所述，我们将用 Base64 编码用户名与密码：
+
+#+BEGIN_SRC bash
+echo "$USERNAME:$PASSWORD" | base64
+#+END_SRC
+
+然后把编码后的认证信息发给服务器：
+#+BEGIN_SRC bash
+# 告诉服务器我们将使用 PLAIN 认证方式
+AUTH PLAIN
+> 334
+# 然后发送我们的认证信息
+[BASE64编码的认证信息]
+> 235 2.7.0 Authentication successful
+# 认证成功
+#+END_SRC
+
+* 终于，该发邮件了
+首先我们得告诉服务器这封邮件是从哪个信箱发出的，以及目的地：
+
+#+BEGIN_SRC bash
+# 发件邮箱
+MAIL FROM:<y266shen@csclub.uwaterloo.ca>
+> 250 2.1.0 Ok
+# 收件邮箱
+# 注意这里包含了收件人，抄送和密送。具体谁该收件，抄送和密送是在邮件内容段填写的
+RCPT TO:<i@szclsya.me>
+> 250 2.1.5 Ok
+#+END_SRC
+
+然后就是填写邮件内容了。SMTP 会将终止符前的所有数据作为邮件内容发送，并不在乎里面是什么。因此，邮件附件其实就是将附件原样塞进邮件内容里，并在前后附上标识和一些元数据。不过这对我们的小实验来说有点太复杂了，我们这里只会发一封纯文本邮件：
+
+#+BEGIN_SRC bash
+# 告诉服务器接下来是邮件内容段
+DATA
+> 354 End data with <CR><LF>.<CR><LF>
+# 用 <CR><LF>.<CR><LF> 标识内容结束，现实中只需要输入换行，一个英文句号（.）和另一个换行即可
+From: [Leo Shen] <y266shen@csclub.uwaterloo.ca>
+To: <i@szclsya.me>
+Date: Fri, 05 Jul 2024 17:47:28 -0400
+Subject: Hello from netcat!
+
+此邮件由 `ncat --ssl mail.csclub.uwaterloo.ca 465` 发送。
+
+.
+> 250 2.0.0 Ok: queued as 108142E003A
+#+END_SRC
+
+服务器表示我们的邮件已经被放入待发信件列表了，就像一个真正的邮局一样。
+
+然后就可以结束连接了：
+
+#+BEGIN_SRC bash
+QUIT
+> 221 2.0.0 Bye
+#+END_SRC
+
+如果没问题的话，你的邮件应该不久后就在收件邮箱了。
