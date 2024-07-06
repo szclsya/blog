@@ -51,7 +51,7 @@ $ ncat -C --ssl mail.csclub.uwaterloo.ca 465
 * Say Hello!
 现在该打招呼了。在 SMTP 协议上我们需要发送 ~EHLO~ 命令和我们的主机名。主机名主要是用在 SMTP 服务器 _之间_ 的通讯（用来标明发送方的地址，方便通过 rDNS 验证），所以这里并不重要，填上 ~127.0.0.1~ 就可以了。
 
-但 ~EHLO~ 是什么玩意？其实在原始的 SMTP 谢以中的确是用 ~HELO~ 握手的，但我们会用 ESMTP （一个现代化的 SMTP 扩展协议）中的身份验证协议，所以这里用 ESMTP 标准的握手命令，即 ~EHLO~ [fn:esmtp]。
+但 ~EHLO~ 是什么玩意？其实在原始的 SMTP 协议中的确是用 ~HELO~ 握手的，但我们会用 ESMTP （一个现代化的 SMTP 扩展协议）中的 =PLAIN= 认证方式，所以这里用 ESMTP 标准的握手命令，即 ~EHLO~ [fn:esmtp]。
 
 #+BEGIN_SRC bash
 # Say hello!
@@ -72,7 +72,7 @@ EHLO 127.0.0.1
 服务器如期返回了它支持的功能。
 
 
-[fn:esmtp] ESMTP，发表于 [[https://datatracker.ietf.org/doc/html/rfc1869][RFC1869]]。我们会用 =PLAIN= 认证方式。你问为什么没有 =LOGIN= ？其实 =LOGIN= 也存在，但现在都用 =PLAIN= ，因为可以一次性发送用户名与密码，而 LOGIN 需要两个来回。是不是充满了历史感？（笑）
+[fn:esmtp] ESMTP，发表于 [[https://datatracker.ietf.org/doc/html/rfc1869][RFC1869]]。我们会用 =PLAIN= 认证方式。你问为什么没有 =LOGIN= ？其实 =LOGIN= 也存在，但现在都用 =PLAIN= ，因为可以一次性发送用户名与密码，而 LOGIN 需要两个来回。是不是充满了 +屎山+ 历史感？（笑）
 
 * 登录
 现在该让服务器验证我们的身份了。如前文所述，我们需要用 Base64 编码用户名与密码：
