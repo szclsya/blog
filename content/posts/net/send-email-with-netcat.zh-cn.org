@@ -14,7 +14,7 @@
 [fn:email-rfc] [[https://datatracker.ietf.org/doc/html/rfc8617][ARC]]，[[https://datatracker.ietf.org/doc/html/rfc7208][SPF]]，[[https://datatracker.ietf.org/doc/html/rfc6376][DKIM]] + [[https://datatracker.ietf.org/doc/html/rfc8301][DKIM - SHA2]] + [[https://datatracker.ietf.org/doc/html/rfc8463][DKIM - Ed25519]]，[[https://datatracker.ietf.org/doc/html/rfc7671][DANE]] + [[https://datatracker.ietf.org/doc/html/rfc7672][DANE - SMTP]] + [[https://datatracker.ietf.org/doc/html/rfc7673][DANE - DNS SRV]]，[[https://datatracker.ietf.org/doc/html/rfc8461][MTA-STS]]。
 
 * 选择 netcat 实现
-_太长不看：_ 用 =Nmap= 项目提供的 ~ncat~ 。如果可以接受明文传输的话（坏主意！），OpenBSD 项目的 ~netcat~ 实现也能用。
+_太长不看：_ 使用 =Nmap= 项目提供的 ~ncat~ 即可。如果可以接受明文传输的话（坏主意！），OpenBSD 项目的 ~netcat~ 实现也能用。
 
 等等，netcat 还有好几种的？功能还不一样？没错！简直让人觉得每个学网络和 POSIX API 的人都会搓一个 netcat 来玩玩…… 不过我们只需选择一个具有下列两个功能的实现就行：TLS 和 CRLF 转换。
 
@@ -49,9 +49,9 @@ $ ncat -C --ssl mail.csclub.uwaterloo.ca 465
 服务器则回应 [[https://en.wikipedia.org/wiki/List_of_SMTP_server_return_codes#%E2%80%94_2yz_Positive_completion][220]]，代表服务器就绪。
 
 * Say Hello!
-现在该打招呼了。在 SMTP 协议上我们使用 ~EHLO~ 命令和我们的主机名。主机名主要是用在 SMTP 服务器 _之间_ 的通讯（用来标明发送方的身份），所以这里并不重要，用 ~127.0.0.1~ 就可以了。
+现在该打招呼了。在 SMTP 协议上我们需要发送 ~EHLO~ 命令和我们的主机名。主机名主要是用在 SMTP 服务器 _之间_ 的通讯（用来标明发送方的地址，方便通过 rDNS 验证），所以这里并不重要，填上 ~127.0.0.1~ 就可以了。
 
-但 ~EHLO~ 是什么玩意？其实之前的确是用 ~HELO~ 的，但我们会用 ESMTP （一个现代化的 SMTP 扩展协议）中的身份验证协议，所以这里用 ~EHLO~ [fn:esmtp]。
+但 ~EHLO~ 是什么玩意？其实在原始的 SMTP 谢以中的确是用 ~HELO~ 握手的，但我们会用 ESMTP （一个现代化的 SMTP 扩展协议）中的身份验证协议，所以这里用 ESMTP 标准的握手命令，即 ~EHLO~ [fn:esmtp]。
 
 #+BEGIN_SRC bash
 # Say hello!
@@ -69,13 +69,13 @@ EHLO 127.0.0.1
 > 250 CHUNKING
 #+END_SRC
 
-然后服务器就返回了它支持的功能。
+服务器如期返回了它支持的功能。
 
 
 [fn:esmtp] ESMTP，发表于 [[https://datatracker.ietf.org/doc/html/rfc1869][RFC1869]]。我们会用 =PLAIN= 认证方式。你问为什么没有 =LOGIN= ？其实 =LOGIN= 也存在，但现在都用 =PLAIN= ，因为可以一次性发送用户名与密码，而 LOGIN 需要两个来回。是不是充满了历史感？（笑）
 
 * 登录
-现在该让服务器验证我们的身份了。如前文所述，我们将用 Base64 编码用户名与密码：
+现在该让服务器验证我们的身份了。如前文所述，我们需要用 Base64 编码用户名与密码：
 
 #+BEGIN_SRC bash
 echo "$USERNAME:$PASSWORD" | base64
@@ -105,7 +105,7 @@ RCPT TO:<i@szclsya.me>
 > 250 2.1.5 Ok
 #+END_SRC
 
-然后就是填写邮件内容了。SMTP 会将终止符前的所有数据作为邮件内容发送，并不在乎里面是什么。因此，邮件附件其实就是将附件原样塞进邮件内容里，并在前后附上标识和一些元数据。不过这对我们的小实验来说有点太复杂了，我们这里只会发一封纯文本邮件：
+然后就是填写邮件内容了。SMTP 会将终止符前的所有数据作为邮件内容发送，并不在乎里面具体是什么。因此，邮件附件不过就是将附件原样塞进邮件内容里，并在前后附上标识和一些元数据罢了。不过这对我们的小实验来说有点太复杂了，我们这里只会发一封简单的纯文本邮件：
 
 #+BEGIN_SRC bash
 # 告诉服务器接下来是邮件内容段
@@ -125,7 +125,7 @@ Subject: Hello from netcat!
 
 服务器表示我们的邮件已经被放入待发信件列表了，就像一个真正的邮局一样。
 
-然后就可以结束连接了：
+大功告成！然后就可以结束连接了：
 
 #+BEGIN_SRC bash
 QUIT
