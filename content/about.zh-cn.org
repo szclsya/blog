@@ -6,7 +6,7 @@ Hi.
 我是 Leo，常用的 ID 是 =szclsya= 。如果你在哪看到了一个叫 =szclsya= 的家伙，那大概率就是我。
 
 * ~/me~
-+ ~job_seek.poll() -> Poll::Pending~
++ ~job_seek.poll() -> Poll::Ready~
 + 热爱音乐, 有几个 Walkman 并[[/zh-cn/tags/#walkman][用它们做奇怪的事情]]
 + 用 [[https://www.archlinux.org][Arch Linux]] 和 [[https://aosc.io][AOSC OS]]，在 AOSC OS 那里有一点微小的贡献
 + 使用 [[https://github.com/szclsya/.emacs.d][Emacs]] & vim，Emacs 多一点
