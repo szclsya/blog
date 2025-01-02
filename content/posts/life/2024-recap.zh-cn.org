@@ -1,0 +1,133 @@
+#+TITLE: 回望 2024：漂泊
+#+DATE: 2025-01-01T23:59:59
+#+DESCRIPTION: 日子在日历的方格中流逝
+#+TOC: true
+
+It's that time of the year again, eh?
+
+* 前言
+#+BEGIN_QUOTE
+VOLITION - Subdue your regret, dust yourself off, proceed. You'll get it in the next life, where you don't make mistakes. Do what you can with this one, while you're still alive.
+
+平心定气 - 压下后悔，拍尽浮尘，继续前进。你来生回得到那些的，先在此生做到你能做到的一切吧。
+#+END_QUOTE
+
+* 我所写的
+在 2024 年内，本站一共诞生了... 仅有三篇中文翻译！真有你的啊 Leo！（欸我去年是不是说过这句）
+
+{{< img src="/img/life/2024/site-statistics.png" caption="Steady grow" >}}
+
+既然没啥好说的，那就来聊聊这个博客的第一个五年吧。
+
++什么 meta-blog+
+
+** 伍
+静态页面生成器（static site generator，以下将简称 *SSO* ）算是一个孤悬在外的技术：它们生成的一般都是 web 页面，但真 web 开发们又大抵不屑于用一个非 JavaScript 语言来折腾 DOM（比如 Jinja2 和 Go template）。所以五年前选型用 Hugo （本站使用的 SSO）时其实就有一点逃避学前端的感觉（笑）。不过好处就是一切都很简单：部署时跑一下 hugo 然后把产物扔进 webroot 就行；这两年甚至更简单了，写好了 commit + push 就行，CI 会处理一切。
+
++于是 blog 的 git repo 里就多了一堆修错字的小 commit，我保证我不是来刷 commit 的！+
+
+不过这套技术栈还出奇的有用，之后陆续搞的 [[https://github.com/AOSC-Dev/wiki][AOSC Wiki]] （具体的 commit 大概得往前翻翻）和 [[https://git.csclub.uwaterloo.ca/public/mirror/src/branch/master/mirror-index][CSC Mirror]] 都使用了 SSO，CSC Mirror 那里甚至用上了 [[https://htmx.org/][HTMX]] 以逃避写前端，可见我有多么不喜欢搞 JS（笑）。不过 SSO 也的确适合这些相对简单的场合：的确很省流量，及对老设备兼容良好（只要别乱写 CSS 就成，甚至在 CLI 浏览器上都还能看）。
+
+至于样式，现在看来第一版（可以看看 [[/zh-cn/posts/blog-story/mk1/1-some-notes/][当时的截图]]）真的挺糙的，于是一年半后就重写了。第二版受 Metro UI 启发（没错，就是日常被吐槽的 Windows 8 的设计语言），主要靠纯色和优秀的无衬线字体撑起来。效果也的确让我满意，IBM Plex Sans 很好地撑起了整个界面。不过中文字体还是像五年前一样随缘，在 macOS 和 [[/zh-cn/posts/fonts/linux-config-guide/][正确配置]] 的 Linux 设备上就还不错，Windows 则还是抱着微软雅黑不放，由于 Adobe 的中文 webfont 在一些地区连接仍不稳定且可能会导致阅读中随机字体替换的问题，只能战略性放弃。
+
+{{% btw %}}
+Windows 10 时代的 Noble Scarlet 项目五年后还是毫无动静，令人感叹。只能说微软可能的确没什么品味。
+{{% /btw %}}
+
+至于插图，一开始就是最普通的单一 JPG，后来折腾了下 [[/zh-cn/posts/blog-story/mk2/notes/#headline-3][多格式支持（AVIF/WebP）]]。现在看来 AVIF 的确快赢得这一届 web 图片的标准战争了，不过这玩意转换起来还是好慢好慢，也不知道是不是我用的编码器有问题。今年也在密切关注 HDR 图片的进展（不是包围曝光叠起来那种，是视频 HDR 那种），大概是没人信任硬件厂人均瞎搞的 tone mapping 吧，现在看来 gain map 这种听上去就有点屎上雕花的技术路线要成了（8bit JPG 搞 HDR 是认真的么 = =）。不过我用的开源图片工具链还暂时不支持，不然这里多少放两张；就看 2025 了。
+
+还有一件小事：PGP 密钥。在开始写博客之前也用过好多密钥了，但都因为管理不善丢失主密钥后成为了 SKS 网络上永不过期的黑历史（悲）。不过在 [[https://gist.github.com/rjhansen/67ab921ffb4084c865b3618d6955275f][SKS 网络攻击]] 后大概也没人在乎了吧，大概，希望如此。不过自从开始写博客后由于有了稳定的使用场景（签名 commit），这五年来的密钥管理就负责任多了；目前已经轮换到第三把密钥，感觉良好。之前还静态生成了 [[https://wiki.gnupg.org/WKD][WKD]]，现在甚至可以不要第三方密钥服务器，从 DNS + HTTP 那里直接获取我的密钥了。
+
+大概就是这样。
+
+* 我所做的
+首先，最重要的： ~job.poll() => Poll::Ready(Redacted)~
+
+** RetroFutrism, Part II
+去年搞了一点 90 年代的老音频设备，今年则是再倒退十年，搞了台 Nikon FE2。
+
+起因是玩数码有点腻了，于是在外面晃荡偶遇一个 retro camera shop 后就冲动消费了。倒是乘着日元汇率给它配了个相当现代化的镜头（Voigtlander Ultron 40mm f/2 SL IIS）。
+
+{{< img src="/img/life/2024/fe2.jpg" caption="FE2 in the park" >}}
+
+至于感受？一开始由于习惯了现代 CMOS 的高感，用 FE2 的 A 挡时日常过于乐观然后听到反光板半天不弹上来，内心充满绝望；不过时间久了就慢慢会眼估曝光了。还有就是习惯了慢慢构图，毕竟这个每按一下都要钱的（笑）。
+
+哦还有，Ektachrome 100 的确很棒。
+
+** 乱按快门
+数码方面倒没什么改变，也就添加了一枚 90mm 手动对焦的微距镜头用来翻拍胶片。倒是东奔西走拍了不少地方。
+
+来点作品？
+
+{{< img src="/img/life/2024/_LEA8323.jpg" caption="Toronto Metropolitan" >}}
+
+{{< img src="/img/life/2024/_LEA9009.jpg" caption="Albany Beach" >}}
+
+{{< img src="/img/life/2024/LEA01013.jpg" caption="Seattle, shot on Portra 400" >}}
+
+{{< img src="/img/life/2024/_LEA0295.jpg" caption="SIP" >}}
+
+{{< img src="/img/life/2024/LEA01297.jpg" caption="Winter Wasteland, a.k.a. Ottawa" >}}
+
+{{< img src="/img/life/2024/LEA01427.jpg" caption="Niagara-on-the-Lake" >}}
+
+** Project QuarterTera
+其实就是把 NAS 升级到了 25GbE 连接。之前用的是一块 [[https://www.asrockrack.com/general/productdetail.asp?Model=X570D4I-2T][ASRock Rack X570D4I-2T]]，当时买它主要是看中了自带 IPMI，极高的集成度和板上双 10GbE 电口，但用下来相当不满意：高集成度导致无论搞什么都很麻烦（比如加 CUDA 加速卡），而看上去很香的双 10GbE 电口其实很难伺候。众所周知电口万兆非常烫且挑线材，于是这个电口就日常掉速，到最后有一个电口直接不识别了（有网络设备，但检测不到线材）。看上去很美好的集成 IPMI 也实际上 bug 超多，远不如 iLO 或类似方案。
+
+于是忍无可忍，趁黑五购买了一块消费级 B550 MATX 主板（[[https://www.gigabyte.com/Motherboard/B550M-AORUS-ELITE-AX-rev-13][Gigabyte B550M AORUS ELITE AX]]）换掉了这垃圾。用上 MATX 也意味着好得多的扩展性，现在二手 ConnectX-4 也相当便宜，干脆买了一对直连 PC 和 NAS 了事。值得一提的是这块主板有一个 M.2 插槽是 PCIe 3.0x2 的，拿来跑 SSD 略嫌浪费，但正好可以插一条同样是 PCIe 3.0x2 Optane M10，拿来给 HDD ZFS 阵列加速刚刚好。以及感谢苏妈，这块主板也能完美支持 ECC 内存。 +ZFS魔怔人狂喜+
+
+至于远程管理，现在 NanoKVM 还算好用。虽然自带的采集卡有点 quirk 但胜在便宜。不过想把标准版 NanoKVM 塞进机箱还是有点走线难度的，得从亮机卡后面一路绕进机箱插到 NanoKVM 上。
+
+{{% btw %}}
+不用 PCIe 版的 NanoKVM 是因为 x1 插槽已经被显卡挡住了。
+{{% /btw %}}
+
+{{< img src="/img/life/2024/project-quartertera-nanokvm.jpg" caption="Jonsbo N4 的 2.5 寸盘位倒是正好可以放 NanoKVM，就是走线很割手" >}}
+
+* 我所玩的
+今年忙着跑来跑去还真没玩啥特别值得一提的... 来点快闪得了。
+
++ 逆转裁判123：成步堂精选集 /(4/5)/
+  - 一斤鸭梨！
++ 城市：天际线2 /(N/A)/
+  - Economy 2.0 后经营总算有点策略性了，模组支持 + 几个 asset pack 后真正能玩了
+  - 这是什么，公共医疗？ /扣预算/
++ 东方夜雀食堂 /(4/5)/
+  - 我没有文化底蕴（确信
+  - 音乐出奇的不错，有几首 bassline 很跳脱
+
+* 我所看的
+Not a lot this year...
+
++ 神探狄仁杰1/2
+  - 还是很棒的古装政治剧
++ 摇曳露营△
+
+* 我所听的
++ Dover Quartet - ENCORES
+  - 很 metal 的四重奏，里面的肖斯塔柯维奇第八弦乐四重奏尤其金属
++ Stravinsky - The Rite of Spring
+  - 一旦接受了这种设定...
++ Jean Roundeau - Dynastie: Bach Concertos
+  - we need more harpsichord in metal!
++ Кино - *Кончится лето*
++ 东方夜雀食堂 - OST原声音乐集
+  - 很好的打工背景音
+
+* Bonus Track: 灰
+#+BEGIN_QUOTE
+孤独的矢量在你的心灵的注视下延伸，深入远方荒芜的灰域。那是一段难以想象的距离，遗忘，遗忘……直到你再也记不起任何事情——城市不再，山脉不再，海洋不再。最终——矢量不再，一切不再。完全空白的空间，没有任何参照物，在那里只有一种可能的动态，种人类的喉咙也能做得出来的动作：吞噬。然后，你突然意识到：南向高速路的终点，是你 /从未出生/ 的瞬间。以前你在加姆洛克街道上游荡的时候就有过这种想法。你是一小片迷途的人，一个黑暗的希望。
+#+END_QUOTE
+
+《极乐迪斯科》中一个重要的背景设定是 “灰域”。灰域的本质是虚无，吞噬着一切旧日之物。
+
+如果你一不小心把一卷黑白胶卷不经过冲洗直接扯了出来，原先应该有图像的地方只剩下了一长条灰色的虚无。也许那里曾经有过些什么，但在你看到它的那一刻，这些过去的图像都不存在了。它们已经被过量的光子所摧毁了。
+
+看看我这一年做了些什么，无论是写博客，摄影还是搞存储，似乎都与 “记录” 二字相连。记录曾经有过的思想，记录曾经发生过的事件，记录我们曾经的创造。我们追求更高的信噪比，更好的采样质量，似乎都是在对抗那无处不在的灰。
+
+为什么一定要记录呢？让一切回归灰不好么？我也不知道，但似乎总有一种力量让我想去记录。
+
+也许记录本身就是意义。
+
+* 致 2025
+Be vigilant.
