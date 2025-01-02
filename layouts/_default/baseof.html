@@ -10,13 +10,14 @@
     </title>
 
     {{/* Some common tags */}}
-    <meta name="renderer" content="webkit"> 
+    <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <link rel="canonical" href="{{ .Permalink }}" />
     <meta property="og:site_name" content="{{ .Site.Title }}" />
     <meta property="og:image" content="favicon.svg" />
     <meta name="author" content="{{ .Site.Params.Author }}">
     <meta property="og:url" content="{{ .Permalink }}" />
+    <meta name="darkreader-lock">
     {{- block "meta" . -}}
       <meta property="og:title" content="{{ .Title }} - {{ .Site.Title }}" />
       <meta property="og:type" content="website" />
