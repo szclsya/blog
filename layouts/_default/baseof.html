@@ -25,7 +25,7 @@
       <meta name="description" content="{{ .Description }}" />
     {{- end -}}
 
-    {{- with resources.Get "css/mk2.sass" | toCSS | resources.PostCSS (dict "use" "autoprefixer") | resources.Minify -}}
+    {{- with resources.Get "css/mk2.sass" | toCSS | postCSS | resources.Minify -}}
       <style>{{ .Content | safeCSS }}</style>
     {{- end -}}
 
