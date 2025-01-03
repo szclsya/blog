@@ -13,4 +13,12 @@ Hello there!
 
 如果你想看看我写的文字，[[/zh-cn/posts][档案室]] 在这里。或者也可以以 [[/zh-cn/tags/][标签]] 浏览。如果你真的很无聊的话，也可以试着看看有没有什么荒芜的角落？也许会找到什么有趣的东西，谁知道呢 ;)
 
+不知从何读起？试试这些：
+
++ [[/zh-cn/posts/storage/zfs-intro/][ZFS 入门指北（系列）]]
++ [[/zh-cn/posts/fonts/linux-config-guide/][Linux 下的字体调校指南]]
++ [[/zh-cn/posts/net/send-email-with-netcat/][发邮件，但只用 netcat]]
++ [[/zh-cn/posts/linux/audio-system/][概览 Linux 音频系统]]
+
+
 另外，由于 +我懒+ 以及翻译真的很累，有些内容还没有被翻译过。所以如果你能看懂英语的话, 英语的文章列表可能包含没读过的文章。

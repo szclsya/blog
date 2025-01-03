@@ -1,7 +1,7 @@
 #+TITLE: ZFS 入门指北：基础篇
 #+DATE: 2020-02-09T20:55:17
 #+DESCRIPTION: File system can be fun!
-#+TAG[]: linux filesystem
+#+TAGS[]: linux filesystem
 #+SERIES: zfs
 #+LICENSE: cc-sa
 #+TOC: true
@@ -47,7 +47,7 @@
 ** 自愈
 +听上去不是一个用来描述文件系统的词...+
 
-ZFS 没有 =fsck= （或者 =CHKDSK= ，如果你用的是 Windows 的话）。 +所以说再也不会在开机界面卡半天了+ 
+ZFS 没有 =fsck= （或者 =CHKDSK= ，如果你用的是 Windows 的话）。 +所以说再也不会在开机界面卡半天了+
 
 与之相对的，ZFS 的文件系统检查发生在每一次读取过程中。每当一个存储块被读取时，ZFS 会计算这个块的校验和，并与文件系统中记录的这个块应该有的校验和进行比对。如果校验和匹配，则一切正常；如果不匹配的话，ZFS 就会自动从一个备份源中获取这个块的数据（例如 内存中的缓存，RAIDZ（稍后会提）中的冗余等），将这个正确的数据块提交给程序，并将损坏的块标注为不可靠以免未来再用。
 
