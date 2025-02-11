@@ -60,4 +60,10 @@
   {{- with resources.Get "js/mk2.js" | resources.Minify -}}
     <script>{{ .Content | safeJS }}</script>
   {{- end -}}
+
+  <script data-goatcounter="https://clicks.szclsya.me/count"
+          async src="https://clicks.szclsya.me/count.js"></script>
+  <noscript>
+    <img src="https://clicks.szclsya.me/count?p={{ .Path | safeURL }}">
+  </noscript>
 </html>
