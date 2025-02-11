@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Install build essentials
-npm install autoprefixer postcss postcss-cli
+pnpm install postcss-cli postcss autoprefixer
 
 # Build
 hugo
