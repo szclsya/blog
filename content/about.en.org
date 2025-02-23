@@ -38,3 +38,5 @@ Alternatively, you can download it from [[http://szclsya.me/public.asc][here]] o
 
 * This blog
 This blog is built with [[https://gohugo.io/][Hugo]] with a customized theme designed by myself. The source code of this blog (including theme and articles) is open source at [[https://github.com/szclsya/blog][szclsya/blog - GitHub]]. The license of articles can be found at the bottom of the corresponding article pages. Feel free to share and remix my work, as long as the license under the article is followed.
+
+This site uses a self-hosted version of [[https://www.goatcounter.com/][GoatCounter]] to collect some privacy-friendly statistics. Check them out at [[https://clicks.szclsya.me][clicks.szclsya.me]].

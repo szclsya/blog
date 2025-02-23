@@ -19,4 +19,6 @@ Need somewhere to get started? Here's some highlights:
 + [[/posts/net/send-email-with-netcat/][Sending Emails, with netcat]]
 + [[/posts/linux/audio-system/][A Breif Look at Linux's Audio System]]
 
+Want to know what's everyone else reading? [[https://clicks.szclsya.me][Site Statistics]] is available to the public.
+
 Note that due to +my laziness+ and the practical difficulty of translating articles, some articles are, unfortunately, not translated (so, some only in Chinese, and some only in English). If you understand both languages, you may want to see article list of both languages to see everything I have to say.

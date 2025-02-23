@@ -37,3 +37,5 @@ gpg --locate-keys i@szclsya.me
 
 * 关于此博客
 此博客使用 [[https://gohugo.io/][Hugo]] 构建，使用了我自己构建的主题。文章与主题的相关源代码公开于 [[https://github.com/szclsya/blog][szclsya/blog - GitHub]]。每篇文章的许可协议或分享要求可以在文章页面的底部找到。请在不违反注明的条款与要求的前提下分享或演绎。
+
+本站使用自建的 [[https://www.goatcounter.com/][GoatCounter]] 有限地收集访问信息，并不会涉及任何用户追踪。收集到的数据亦完全开放，请见 [[https://clicks.szclsya.me][clicks.szclsya.me]]。

@@ -20,5 +20,6 @@ Hello there!
 + [[/zh-cn/posts/net/send-email-with-netcat/][发邮件，但只用 netcat]]
 + [[/zh-cn/posts/linux/audio-system/][概览 Linux 音频系统]]
 
+想看看别人在读什么？[[https://clicks.szclsya.me][本站的统计信息]] 是公开的。
 
 另外，由于 +我懒+ 以及翻译真的很累，有些内容还没有被翻译过。所以如果你能看懂英语的话, 英语的文章列表可能包含没读过的文章。
