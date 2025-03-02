@@ -1,0 +1,59 @@
+#+TITLE: Don't nuke my docker network, nftables.service!
+#+DESCRIPTION: A tale of several confusing service interruptions
+#+DATE: 2025-03-02T16:47:22
+#+TAGS[]: net linux
+#+LICENSE: cc-sa
+#+TOC: true
+#+STARTUP: indent
+
+If you've ever used docker or other container software you might notice that they need to fiddle with the system firewall to wire things up correctly. And since you are on a server, you'd also want to have some kind of firewall to block unintended traffic. So you set both up, and life is good.
+
+That is, until you need to reload your firewall. This is typically done via running ~systemctl restart nftables.service~, but after that you'll find your docker network no longer working. What happened?
+
+Well, if we dig into ~nftables.service~, we will find this:
+
+{{% btw %}}
+I'm not sure if this config is universal or not, but it seems that both Fedora's and Debian's ~nftables.service~ looks similar to this. Arch Linux doesn't seem to have this issue.
+{{% /btw %}}
+
+#+BEGIN_SRC pacmanconf
+[Unit]
+Description=nftables
+...ignored...
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/sbin/nft -f /etc/nftables.conf
+ExecReload=/usr/sbin/nft -f /etc/nftables.conf
+ExecStop=/usr/sbin/nft flush ruleset
+
+[Install]
+...not relavent...
+#+END_SRC
+
+And there's our problem! ~ExecStop=~ configures what to do when the service stops, and it's configured to ~nft flush ruleset~, thus erasing all the rules (including our rules and rules injected by services like docker and systemd-nspawn) when we restart the service, and thus breaking docker and systemd-nspawn's network.
+
+How do we solve this then? We just ask systemd to not run ~ExecStop~! systemd has an override system, which allows us to modify the config of a service without modifying the original service file (this is bad because it will be overwritten by package updates). For our problem, we just write this:
+
+#+BEGIN_SRC pacmanconf
+# Put me in `/etc/systemd/system/nftables.service.d/override.conf`
+[Service]
+ExecStop=
+#+END_SRC
+
+This set ~ExecStop~ to nothing, overriding the ~ExecStop~ defined in the default service file.
+
+Then, we can just flush the firewall table only in ~/etc/nftables.conf~, so we won't touch docker's or systemd-nspawn's firewall rules when reloading our ruleset:
+
+#+BEGIN_SRC bash
+# Change this line
+flush ruleset
+# To
+table inet firewall
+flush table inet firewall
+
+table inet firewall {
+    # Proceed to define your firewall rules
+}
+#+END_SRC
