@@ -1,0 +1,136 @@
+#+TITLE: 回望 2025：赛博锅炉工
+#+DATE: 2026-02-07T23:59:59
+#+DESCRIPTION: Status quo and Procrastination
+#+TOC: true
+
++It's that time of the year again, eh?+ It has passed that time of the year, oof.
+
+* 前言
+#+BEGIN_QUOTE
+我们不能以眼睛的老成和灵巧的手艺自夸，我们不需要这些来互相理解。
+
+手中的烟卷，桌上的茶，舒适圈就此封闭，我们忽然变得害怕起了改变。
+
+-- KINO
+#+END_QUOTE
+
+* 我所写的
+在 2025 年，本站一共诞生了... 仅有一篇英语文章！真有你的啊 Leo！（欸我去年和前年是不是说过这句）
+
+{{< img src="/img/life/2025/google-statistics.png" caption="...oof" >}}
+
+/cough/ 总之博客产出降低大概是打工的一部分吧，没办法的事。对于博客来说今年是平静的一年，感谢 CloudFlare Pages 这地方也没啥好打理的 ( +除了 CF 把自己搞炸的那两次以外+ )。
+
+不过今年还算有意思的是给本站挂了一个自建的访问分析。别担心，不是那种会收集一打数据然后跨站追踪的（笑），只是些最基础的点击数据罢了。收集到的数据甚至都是（几乎）实时公开的，有兴趣的可以去 [[https://clicks.szclsya.me][clicks.szclsya.me]] 看看。
+
+{{< img src="/img/life/2025/clicks-statistics.png" caption="Absolutely privacy aware" >}}
+
+* 我所做的
+平平无奇的打工生活。
+
+** Futurism, just futurism
+#+BEGIN_QUOTE
+Fly, fly you little printhead, fly like what you're printing actually have a purpose!
+#+END_QUOTE
+
+前两年都在折腾老东西，今年来玩一点新玩意：3D 打印机。
+
+{{< img src="/img/life/2025/bambu-p1s.jpg" caption="" >}}
+
+为啥？主要还是一些小玩意（比如超微的 2.5' 转接板之类）如果正儿八经还挺难找而且物流得等很久，直接打印一个就很方便。还有就是一些非标但对结构强度要求不高的小玩意，比如 [[https://www.printables.com/model/380870-customizable-honeycomb-storage-wall-openscad][可以自定义尺寸的蜂窝挂板]] 之类的（还乘机稍微学了点 OpenSCAD 描述式建模）。
+
+{{% btw %}}
+搓 CAD 都能编译错误是什么鬼啊
+{{% /btw %}}
+
+总之现在家里的一堆像肥皂碟之类的小玩意都是自己打印的了（肥皂碟甚至比买的好用，自带疏水槽），经典的搞了一把锤子就看什么都想钉子 XD
+
+** 乱按快门
+#+BEGIN_QUOTE
+摄影，是用光的艺术 —— 把钱用光的艺术。
+#+END_QUOTE
+
+年初时原价购入一台 GR3X。别急，不是因为小红书（笑），主要是用 FE2 上面挂的福伦达 40mm 发现还挺顺手，平时出门也没法背着主机，一搜还真有个用 40mm 的口袋机，无需多言，买！
+
+感受？在这个体积下画质的确令人惊叹，但所有周围的部分又提醒你这毕竟是理光宾得：前照式 CMOS，拉风箱对焦，聊胜于无的防抖以及中古手机 app（梦回 Android 2.3），但用过真胶片后这都不是事（笑）。也算是给理光宾得稍微续了点命吧，不过 GR4 以后理光也愈发恰烂钱，GR4 本身也是乏善可陈，就这样吧。
+
+{{% btw %}}
+虽然理光不恰这点烂钱也会被黄牛恰了就是... 无所谓了
+{{% /btw %}}
+
+至于可换镜头系统，年底时添置了一支 Sony FE 20-70mm f/4 G，雀食好用。我之前就很喜欢 20mm 定焦，但 20/35mm 定焦来回切换的确很麻烦，标准变焦能到 20mm 几乎都把原来的 20 定优化掉了（笑）。唯一的缺点大概是光圈毕竟比定焦小了很多，但索尼五代机的机身防抖+ darktable 的机型特化降噪后也算是能看，除非大半夜拍 action， f/4 也不是不能用。
+
+来点作品？
+
+{{< img src="/img/life/2025/2025-02.jpg" caption="GR autofocus.jpg" >}}
+{{< img src="/img/life/2025/2025-04.jpg" caption="First macro on film" >}}
+{{< img src="/img/life/2025/2025-05.jpg" caption="Dandelion" >}}
+{{< img src="/img/life/2025/2025-08.jpg" caption="Untitiled" >}}
+{{< img src="/img/life/2025/2025-09.jpg" caption="Airshow" >}}
+{{< img src="/img/life/2025/2025-10.jpg" caption="Edge of Warmness" >}}
+
+还记得去年提到的基于亮度图的 HDR 图片方案么？虽然技术上很丑陋但今年还是正式铺开了，Pixel 的相机应用已经默认拍摄带亮度图的图片了，连哈苏都来凑热闹搞了个能直出的新机（ +不过这玩意有 RAW 就能搞，也不知道有啥好吹的+ ）。如果你的显示设备支持的话最后一张图应该已经亮到你看不清楚这一段写的是啥了（笑）
+
+** CSC
+#+BEGIN_QUOTE
+配过 LDAP/Kerberos 就等着毕不了业留校维护吧
+
+如果还维护过 Mail/Exchange，完蛋更别想走了
+#+END_QUOTE
+
+如果你读过 [[https://szclsya.me/zh-cn/posts/life/2023-recap/#headline-3][2023 年的回望]] 的话也许你还记得那些灵车的 AMD Opteron 们。好消息！它们总算要淘汰了！坏消息！没人会迁移老系统！快去召唤老登！
+
+于是毕业了好几年后我还在修 CSC 的 LDAP/Kerberos/mail... 不过还是很有意思的，上学时就一直想把 LDAP/Kerberos 系统升级下了，但是一直被 NFS 服务器卡着（只支持很老的 Krb5 加密）。在几轮硬件更迭后总算换掉了总共服役了快十五年的老存储集群，把 LDAP 的系统一口气 debian 9 -> debian 13 了。
+
+虽然很欣慰上学时一直就想修的玩意总算能修了，但是越来越难找愿意搞这些东西的新人了，祝他们好运吧。
+
+* 我所玩的
+游戏失欲康复中...
+
++ Helldivers 2 /(4/5)/ -> /(3/5)/
+  - 有损友一起玩体验还是很不错的
+  - 虫巢更新后体验太粪了
++ 工人与资源 /(4/5)/
+  - 重生之我是 OGAS
+  - 虽然工业模拟很有策略性，但过于手动了 +为啥买个拖拉机也要手操啊+
++ 战地6 /(4/5)/
+  - 回想起来还是 beta 测试最上头...
+  - 遗老发言：地图太小了！
+
+* 我所听的
++ Bach: Goldberg Variations, BWV 988 (Arr. Garcia & Morinière for Two Guitars)
+  - 意外地和古尔德版挺神似的
++ Bartók: String Quartet No.4
+  - 如果你觉得现在的 bass 不够带劲可以试试第五乐章 XD
++ Пикник: Чужестранец
++ ZUN: 大空魔術 ～ Magical Astronomy
+  - +别问为啥到现在才开始听这张+
+
+* 我所看的：两个上月球的故事
+朝花夕拾x2
+
++ 月与莱卡与吸血公主
+  - 肉眼可见的贫穷，有些运动镜头分镜莫名其妙，但至少伊琳娜没崩
++ 赛博朋克：边缘行者
+  - 我们所在的这条世界线也慢慢走向赛博朋克了呢...
+  - 在最黑暗处迸发出的最耀眼的光是浪漫主义的永恒话题
+
+** 迷思
+太空时代的先辈们用 4KiB 内存，2MHz 的 Apollo Guidance Computer 登上了月球（苏联那里更癫，甚至是模拟计算机），而我们正在用双核 240MHz 的 ESP32 开灯[fn:esp32]，更别提手持平台上用几十 G 存储一打文字的某聊天软件了，ehhh what are we doing again?
+
+[fn:esp32] 搞过只支持 2.4G WiFi 的智能插座/开关么？里面就是这玩意。80Mhz 起步哦！
+
+
+哦，最近在爬 HAL9000 的科技树，那没事了。
+
+** 迷思 Part 2
+很有意思的是这两部作品可以泛泛得属于两个朋克归类：原子朋克与赛博朋克。一个往前看，“看看我们能用这些新（老）玩意搞出什么来！”，一个往后看，“看看我们即使有了这些新玩意也多完蛋！”。我们正不幸地滑向那第二类，抱着一个远超当年超级计算机的手机 doom scroll 以生成一点可怜的多巴胺。
+
+他妈的，得向老前辈借点乐观主义精神.jpg
+
+* 致 2026
+#+BEGIN_QUOTE
+SOMETHING BEAUTIFUL IS GOING TO HAPPEN
+#+END_QUOTE
+
+Hopefully at least.
