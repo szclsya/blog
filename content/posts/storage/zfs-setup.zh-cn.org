@@ -30,9 +30,9 @@
   - 相应的，最少需要 3/4/5 块存储盘
   - 使用校验信息块，类似于 RAID 5/6
 
-{{% btw %}} 
+{{% card info %}}
 这里只介绍了实际存储数据的几种 VDEV。我们会在之后的章节中提到其他几种用于性能优化的 VDEV。
-{{% /btw %}} 
+{{% /card %}}
 
 ** 空间效率及容错率
 ~mirror~ 计算起来很简单：你将获得单盘的空间大小。只要阵列中有一块盘还活着，数据就不会丢失。
@@ -60,7 +60,7 @@ ZFS 不允许缩小一块盘上的分区尺寸，且不能轻易转换 VDEV 的�
 我们之前已经提过空间效率与容错了，因此这里主要介绍性能相关考量。一般而言，只需要在负载较大的系统上考虑性能问题即可（例如，zpool 上会承载数据库等），如果只是 NAS 用途的话无需过于担心。性能方面有这些常见的经验法则：
 + 如果预算允许，用 ~mirror~
 + 如果用 ~RAIDz~ 的话，一般会使用 \( 2^n + p \) 块存储盘以平衡性能与空间效率
-  
+
 针对负载类型调整 ZFS 的运行参数也是很有效的做法，但这就超出本文讨论的范围了。
 
 * 创建阵列
@@ -86,7 +86,7 @@ zpool create -f -o ashift=12 -m <mountpoint> <pool_name> [raidz|raidz2|raidz3|mi
 + ~-m <mountpoint>~ 指定默认挂载点。
 + ~<pool_name>~ 指定存储池名。
 + ~[raidz|raidz2|raidz3|mirror] <volumes>~ 指定 VDEV 类型。不使用冗余则省略 VDEV 类型标识。注意这段可重复多次以创建拥有多个 VDEV 的阵列。
-  
+
 在指定存储盘时注意使用盘的持久标识（如 ~/dev/disks/by-id~ 内标注的），而不是非持久标识（如 ~sdX~ 或 ~nvmeX~ ）。一旦硬盘排布发生变化（例如增减了硬盘），使用非持久标识的阵列在开机时可能会找不到或使用了错误的存储盘，而导致挂载失败。使用持久标识则可避免这个问题。
 
 ** 例子：创建无冗余的单盘存储池
@@ -119,7 +119,7 @@ zpool create -f -o ashift=12 -m <mountpoint> <pool_name> [raidz|raidz2|raidz3|mi
 
 * 检查存储池状态
 创建完成后，我们就可以检查存储池的状态了:
-#+BEGIN_SRC 
+#+BEGIN_SRC
 # zpool status data
   pool: data
  state: ONLINE
@@ -156,7 +156,7 @@ errors: No known data errors
 ** 将简单盘转为 mirror VDEV
 这个操作也可以被用来扩展已有的 mirror VDEV。
 
-#+BEGIN_SRC 
+#+BEGIN_SRC
 # zpool attach [pool_name] <exisitng_volume/VDEV_name> <new_volumes>
 #+END_SRC
 
@@ -174,12 +174,12 @@ errors: No known data errors
 * 导入和导出存储池
 如果要在别的设备/操作系统上使用存储池，首先需要将存储池导出。
 
-#+BEGIN_SRC 
+#+BEGIN_SRC
 # zpool export <pool_name>
 #+END_SRC
 
 导入存储池时需注意，ZFS on Linux 默认会使用非持久命名导入数据盘。为了避免磁盘排布变化造成无法开机时载入存储池，导入时应注明从哪个位置搜索磁盘：
 
-#+BEGIN_SRC 
+#+BEGIN_SRC
 # zpool import -d /dev/disk/by-id <pool_name>
 #+END_SRC

@@ -96,23 +96,25 @@ main
   // Shortcode components
   aside
     padding: 0 1em
-    width: 13em
-
+    width: 15em
     position: absolute
     right: 100%
-    text-align: right
     p
-      margin: 0
+      position: absolute
+      width: 15em
+      margin: 0 1em 1em 0
+      bottom: 0
+      text-align: right
     @media screen and (max-width: $singleColWidth)
-      font-size: .9em
       position: relative
       margin: 1em 0 1em auto
+      font-size: .9em
       padding: 1em .5em
       right: 0
       bottom: 0
       text-align: left
       width: initial
-      max-width: 75%
+      max-width: 67%
       // Styling
       border-top: 1px solid
       border-bottom: 1px solid
@@ -122,6 +124,11 @@ main
         position: absolute
         right: 0
         bottom: .1em
+      p
+        position: relative
+        margin: 0
+        width: initial
+        text-align: left
 
   .card
     margin: 1em 0
