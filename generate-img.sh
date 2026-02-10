@@ -9,7 +9,7 @@ for img in $(find ./img | grep "avif$"); do
     mkdir -p "$(dirname "$new_path")"
     # Generate minified JPG
     if [[ ! -e ${new_path/'.avif'/'.jpg'} ]]; then
-        magick "$img" -resize "$SIZE" -strip -interlace Plane -gaussian-blur 0.05 -quality 60% "${new_path/'.avif'/'.jpg'}"
+        magick "$img" -resize "$SIZE" -strip -interlace Plane -gaussian-blur 0.05 -quality 80% "${new_path/'.avif'/'.jpg'}"
     fi
     # Generate WebP
     if [[ ! -e ${new_path/'.avif'/'.webp'} ]]; then
@@ -27,7 +27,7 @@ for img in $(find ./img | grep "jpg$"); do
     mkdir -p "$(dirname "$new_path")"
     # Generate minified JPG
     if [[ ! -e $new_path ]]; then
-        magick "$img" -resize "$SIZE" -strip -interlace Plane -gaussian-blur 0.05 -quality 60% "$new_path"
+        magick "$img" -resize "$SIZE" -strip -interlace Plane -gaussian-blur 0.05 -quality 80% "$new_path"
     fi
     # Generate WebP
     if [[ ! -e ${new_path/'.jpg'/'.webp'} ]]; then
