@@ -7,12 +7,14 @@
 #+TOC: true
 
 {{% card info %}}
-本文于2024年1月15日更新过，将默认无衬线英语字体换为 Inter。
+本文于2026年7月28日更新过，将默认衬线拉丁字体换为 Source Serif 4 并更新了 OLED 显示器相关的设置。
+
+本文于2024年1月15日更新过，将默认无衬线拉丁字体换为 Inter。
 
 本文于2022年6月11日更新过，修复了全局字体规则导致的等宽字体显示异常问题。
 {{%/ card %}}
 
-很长时间以来，Linux上的中文字体呈现一直……不容乐观。但是随着 FreeType2 由于专利过期默认开启了高质量的 LCD 优化，以及一批高质量的开源字体的公布，Linux 上的中文字体渲染已经可以和 macOS 扳扳手腕了。
+很长时间以来，Linux上的中文字体呈现一直……不容乐观。但是在 2019 年前后，随着 FreeType2 由于专利过期默认开启了高质量的 LCD 优化，以及一批高质量的开源字体的公布，Linux 上的中文字体渲染已经可以和 macOS 扳扳手腕了。
 
 当然，这里是 Linux，你需要一点小小的配置。
 
@@ -21,23 +23,23 @@
 （其实 macOS 的糊成一片的渲染方式也有它的问题，但这就不在本文讨论范围之内了。）
 
 * 太长不看版
-安装字体： =Noto=, =Inter=, =Noto CJK=, =Noto Emoji= 和 =Sarasa Gothic= 。
+安装字体： =Inter= ， =Source Serif= ， =Noto CJK= ， =Noto Emoji= 和 =Sarasa Gothic= 。
 #+BEGIN_SRC bash
 # On Arch Linux
-sudo pacman -S noto-fonts inter-font noto-fonts-cjk noto-fonts-emoji ttf-sarasa-gothic
+sudo pacman -S inter-font adobe-source-serif-fonts noto-fonts-cjk noto-fonts-emoji ttf-sarasa-gothic
 # Do your research on other Linux distros
 #+END_SRC
 
-下载 [[https://github.com/szclsya/dotfiles/blob/master/fontconfig/fonts.conf][fonts.conf]] 并扔进你的 ~~/.config/fontconfig~ 里面, 重新登录，结束。
+下载 [[https://github.com/szclsya/dotfiles/blob/master/fontconfig/fonts.conf][fonts.conf]] 并扔进你的 ~~/.config/fontconfig~ 里面，重新登录，完工。
 
 * 选择字体
-近几年来出现了一大批自由字体（包括工作量极大的 CJK 字体），使 Linux 下的字体选择一下子丰富了起来。如果愿意花一点时间的话，可以去各个字体的网站上看一看，选自己看得最顺眼的。[[https://wiki.archlinux.org/index.php/Fonts#Font_packages][Fonts - ArchWiki]] 上涵盖了相当多的自由字体，可以从这里选起。
+2017 年左右出现了一大批自由字体（包括工作量极大的 CJK 字体），使 Linux 下的字体选择一下子丰富了起来。如果愿意花一点时间的话，可以去各个字体的网站上看一看，选自己看得最顺眼的。[[https://wiki.archlinux.org/index.php/Fonts#Font_packages][Fonts - ArchWiki]] 上涵盖了相当多的自由字体，可以从这里选起。
 
 这是我选择字体：
 + 拉丁字体
   - *[[https://rsms.me/inter/][Inter]]* - 无衬线
     - 这是一种类似于 Roboto 但更适合屏幕显示的字体
-  - *Noto Serif* - 衬线
+  - *Source Serif 4* - 衬线
   - *Sarasa Term SC* - 等宽（也可以直接使用 Iosevka Term 以节省空间，但可能会导致 Emacs 中的渲染 bug）
     - 这是一种拉丁文字符严格为半宽的字体，中英文混排时很协调。如果不适应这种较瘦的字体风格，则可以尝试使用 *Adobe Source Pro* ， *Cascadia Code* 或 *Fira Code* 。
 + 中文字体
@@ -46,15 +48,15 @@ sudo pacman -S noto-fonts inter-font noto-fonts-cjk noto-fonts-emoji ttf-sarasa-
 
 * 安装字体
 这里同样使用 Arch Linux 举例，其他发行版请搜索相应的软件仓库。
-+ ~noto-fonts~ Noto Sans, Noto Serif
 + ~inter-font~ Inter
-+ ~noto-fonts-cjk~ Noto Sans CJK SC, Noto Serif CJK SC
++ ~adobe-source-serif-fonts~ Source Serif 4
++ ~noto-fonts-cjk~ Noto Sans CJK SC，Noto Serif CJK SC
 + ~noto-fonts-emoji~ Noto Emoji
 + ~ttf-sarasa-gothic~ Sarasa Term SC
 
 * 配置
 现在，什么也不用做，打开一个中文页面，应该已经不会存在豆腐块了[fn:noto]。
-[fn:noto] Noto 字体家族正是得名于此. Noto -> No Toufu -> 没有豆腐块.
+[fn:noto] Noto 字体家族正是得名于此。Noto -> No Toufu -> 没有豆腐块。
 
 
 然而……
@@ -72,7 +74,7 @@ sudo pacman -S noto-fonts inter-font noto-fonts-cjk noto-fonts-emoji ttf-sarasa-
 ** 一些基础
 Fontconfig 是一个用来 _配置_ 字体渲染的程序。也就是说，fontconfig 本身没有将字体渲染成位图的能力（真正执行这个工作的是 [[https://www.freetype.org/][FreeType]]），但是它能向程序提供可用字体列表并指导 FreeType 引擎将字体正确地渲染出来。
 
-默认情况下，Fontconfig 的用户配置文件位于 ~~/.config/fontconfig/fonts.conf~. 它使用 XML 格式，一个最简单配置文件长这样:
+默认情况下，Fontconfig 的用户配置文件位于 ~~/.config/fontconfig/fonts.conf~ 。它使用 XML 格式，一个最简单配置文件长这样:
 
 #+BEGIN_SRC xml
 <?xml version="1.0"?>
@@ -87,54 +89,131 @@ Fontconfig 是一个用来 _配置_ 字体渲染的程序。也就是说，fontc
 我们要做的就是往里面填写具体的配置.
 
 ** 渲染相关参数
+在现代（2020年后）的 Linux 发行版上，由于相关专利过期，这些配置应该都已经默认开启。不过如果你有特殊需求（例如在低分辨率显示器调高字体微调等级，或使用 OLED 显示器）则可以选择性地将这些片段加入配置。这里只列举了最常见的设置项，如果还是不满意，可以继续查看 [[https://wiki.archlinux.org/index.php/Font_configuration][ArchWiki]] 上更详细的参数解释。
 #+BEGIN_SRC xml
-  <!-- 显示器使用的像素排列方式. 现代显示器基本都是用rgb排列. -->
-  <match target="font">
+  <!-- 显示器使用的像素排列方式。现代 LCD 显示器基本都是用rgb排列 -->
+  <!-- 注意如果是异形排列的屏幕（例如 2025 年左右很常见的 LG RWGB 面板）需要指定这一项为 `none` 关闭次像素渲染 -->
+  <!-- 否则由于次像素排布不匹配字形周围会有彩色溢出 -->
+ <match target="font">
     <edit mode="assign" name="rgba">
       <const>rgb</const>
     </edit>
   </match>
 
-  <!-- 字体微调的程度, 可选为 hintnone, hintslight (默认), hintmedium, hintfull. -->
-  <!-- 简单来说，更高的 hinting 等级可以使字体更锐利，但同时也会损失更多的细节. -->
-  <!-- 如果你的显示器的 DPI 高得不像话 (>=300), 那么就可以关闭 hinting, 因为字体会自然对齐像素. -->
+  <!-- 字体微调的程度，可选为 hintnone，hintslight (默认)，hintmedium，hintfull。-->
+  <!-- 简单来说，更高的 hinting 等级可以使字体更锐利，但同时也会损失更多的细节。-->
+  <!-- 如果你的显示器的 DPI 高得不像话 (>=300)，那么就可以关闭 hinting，因为字体会自然对齐像素。-->
+  <!-- 或者如果你的显示器 DPI 较低，则可以使用更高的微调等级，以细节换清晰度。-->
   <match target="font">
     <edit mode="assign" name="hintstyle">
       <const>hintslight</const>
     </edit>
   </match>
 
-  <!-- 抗锯齿. 除非你的屏幕DPI奇高否则建议开启. -->
+  <!-- 抗锯齿（默认开启）。除非你的屏幕DPI奇高否则建议开启。-->
   <match target="font">
     <edit mode="assign" name="antialias">
       <bool>true</bool>
     </edit>
   </match>
-  
-  <!-- 关于lcdfilter, 因为我们在使用 FreeType2 自带的 Harmony 子像素渲染, 应该是不需要设置的. -->
 #+END_SRC
 
 {{% btw %}}
-DPI 即为 Dots per inch (每英尺点数), 可简单理解为显示器的像素密度。
-由于在较低的像素密度下, 字形无法严格对齐像素格, 我们必须通过 ~hinting~ 和 ~antialias (抗锯齿)~ 让字形在较低DPI的屏幕上有较好的观感。
-
-为了得到你的显示器的具体 DPI 数值, 可以使用 [[https://www.sven.de/dpi/][DPI Calculator]] 。
+DPI 即为 Dots per inch (每英尺点数)，可简单理解为显示器的像素密度。
+由于在较低的像素密度下，字形无法严格对齐像素格，我们必须通过 ~hinting~ 和 ~antialias (抗锯齿)~ 让字形在较低DPI的屏幕上有较好的观感。
+为了得到你的显示器的具体 DPI 数值，可以使用 [[https://www.sven.de/dpi/][DPI Calculator]] 。
 {{%/ btw %}}
 
-这只是一小部分，但是对于普通使用而言调整这些已经足够。如果还是不满意，可以继续查看 [[https://wiki.archlinux.org/index.php/Font_configuration][ArchWiki]] 。
+** 将常见通用字体名称映射至我们定义的通用字体组
+接下来我们会设置几个通用名的首选字体表（sans-serif，serif 和 monospace），但很多应用会使用 =system-ui= 等其他通用字体名或者干脆使用 Windows 的默认字体名。在指定我们的字体偏好以前，我们首先需要把这些映射到通用名上，这样使用这些名称的网页才能正确使用我们的设置。
+
+由于 Arial 已经在很多发行版默认的 fontconfig 配置中有强 binding，因此这里需要 prepend 而不是简单的 alias。
+#+BEGIN_SRC xml
+  <!-- Commonly used generic font names -->
+  <alias>
+    <family>system-ui</family>
+    <prefer><family>sans-serif</family></prefer>
+  </alias>
+  <alias>
+    <family>ui-monospace</family>
+    <prefer><family>monospace</family></prefer>
+  </alias>
+  <!-- Substitution for Windows/Mac OS X fonts -->
+  <alias>
+    <family>Courier New</family>
+    <prefer><family>monospace</family></prefer>
+  </alias>
+  <alias>
+    <family>Helvetica</family>
+    <prefer><family>sans-serif</family></prefer>
+  </alias>
+  <alias>
+    <family>Times</family>
+    <prefer><family>serif</family></prefer>
+  </alias>
+  <!-- Arial requires a stronger binding -->
+  <match target="pattern">
+    <test name="family" qual="any">
+      <string>Arial</string>
+    </test>
+    <edit name="family" mode="prepend" binding="strong">
+      <string>sans-serif</string>
+    </edit>
+  </match>
+#+END_SRC
 
 ** 设置首选字体
 依照自己的选则替换即可。
 #+BEGIN_SRC xml
-  <!-- 全局默认中文字体 -->
-  <!-- Default font for the zh_CN locale (no fc-match pattern) -->
+  <!-- Default font for the zh-cn locale (no fc-match pattern) -->
+  <!-- 默认中文无衬线字体 -->
   <match>
     <test compare="contains" name="lang">
-      <string>zh_CN</string>
+      <string>zh-cn</string>
+    </test>
+    <test compare="contains" name="family">
+      <string>sans-serif</string>
     </test>
     <edit mode="prepend" name="family">
-      <!-- 更改下一行即可, 以下同理 -->
       <string>Noto Sans CJK SC</string>
+    </edit>
+  </match>
+
+  <!-- 默认中文衬线字体 -->
+  <match>
+    <test compare="contains" name="lang">
+      <string>zh-cn</string>
+    </test>
+    <test compare="contains" name="family">
+      <string>serif</string>
+    </test>
+    <edit mode="prepend" name="family">
+      <string>Noto Serif CJK SC</string>
+    </edit>
+  </match>
+
+  <!-- 同样的逻辑，我们也可以为声明为日语的文本指定默认字体 -->
+  <!-- 由于我们使用的 noto-fonts-cjk 包含中日韩字形，所以无需多安装字体 -->
+  <match>
+    <test compare="contains" name="lang">
+      <string>ja</string>
+    </test>
+    <test compare="contains" name="family">
+      <string>sans-serif</string>
+    </test>
+    <edit mode="prepend" name="family">
+      <string>Noto Sans CJK JP</string>
+    </edit>
+  </match>
+  <match>
+    <test compare="contains" name="lang">
+      <string>ja</string>
+    </test>
+    <test compare="contains" name="family">
+      <string>serif</string>
+    </test>
+    <edit mode="prepend" name="family">
+      <string>Noto Serif CJK JP</string>
     </edit>
   </match>
 
@@ -142,7 +221,8 @@ DPI 即为 Dots per inch (每英尺点数), 可简单理解为显示器的像素
   <!-- Default sans-serif font -->
   <match target="pattern">
     <test qual="any" name="family">
-      <string>sans-serif</string></test>
+      <string>sans-serif</string>
+    </test>
     <edit name="family" mode="prepend" binding="same">
       <string>Inter</string>
     </edit>
@@ -155,7 +235,7 @@ DPI 即为 Dots per inch (每英尺点数), 可简单理解为显示器的像素
       <string>serif</string>
     </test>
     <edit name="family" mode="prepend" binding="same">
-      <string>Noto Serif</string>
+      <string>Source Serif 4</string>
     </edit>
   </match>
 
@@ -172,9 +252,9 @@ DPI 即为 Dots per inch (每英尺点数), 可简单理解为显示器的像素
 #+END_SRC
 
 ** 设置备用字体
-因为我们也会遇到其他语种的文字，需要告诉 Fontconfig 如果特定字符在默认字库里找不到应该去哪里找备用字形.
+因为我们也会遇到其他语种的文字，需要告诉 Fontconfig 如果特定字符在默认字库里找不到应该去哪里找备用字形。
 
-至于如何查找字体的具体名字，可以使用 ~fc-list | grep $fontName~ 查询.
+至于如何查找字体的具体名字，可以使用 ~fc-list | grep $fontName~ 查询。
 #+BEGIN_SRC xml
   <!-- Fallback fonts preference order -->
   <alias>
@@ -192,7 +272,7 @@ DPI 即为 Dots per inch (每英尺点数), 可简单理解为显示器的像素
   <alias>
     <family>serif</family>
     <prefer>
-      <family>Noto Serif</family>
+      <family>Source Serif 4</family>
       <family>Noto Serif CJK SC</family>
       <family>Noto Serif CJK TC</family>
       <family>Noto Serif CJK JP</family>
@@ -213,43 +293,10 @@ DPI 即为 Dots per inch (每英尺点数), 可简单理解为显示器的像素
   </alias>
 #+END_SRC
 
-** 设置特定英文网站的字体
-至此，所有未制定特定字体的程序和网站都应该按照我们规定的优先级选择字体了。但是有一些 Linux 友好的网站会指名选择一些 Linux 下的字体（如 Google 和 GitHub 会指名使用 =Liberation= 系列字体）。如果你认为这样的行为可以接受，则可跳过这一节。但如果你想让这些网站也使用我们的字体优先级顺序，则需要一些额外配置。
-
-在显示设置之后（antialias 块之后）加入如下配置：
-
-#+BEGIN_SRC xml
-<!-- 将 Liberation 系列对应到我们定义的优先字体上 -->
-<!-- Map fonts that are commonly used by web pages to our preferred fonts -->
-<match target="pattern">
-  <test qual="any" name="family"><string>Liberation Sans</string></test>
-  <edit name="family" mode="assign" binding="same"><string>sans-serif</string></edit>
-</match>
-
-<match target="pattern">
-  <test qual="any" name="family"><string>Liberation Mono</string></test>
-  <edit name="family" mode="assign" binding="same"><string>monospace</string></edit>
-</match>
-#+END_SRC
-
-由于 GitHub 指名了 Helvetica 而大多数发行版的 Fontconfig 的配置将其替换成了 Nimbus Sans，有时浏览器会显示使用了 sans-serif ，但实际上却使用了 Nimbus Sans。如果你不会在任何程序中使用 Nimbus Sans 这个字体的话，一个简单的解决手段是直接在 Fontconfig 中屏蔽 Nimbus Sans:
-
-#+BEGIN_SRC xml
-  <selectfont>
-    <rejectfont>
-      <pattern>
-        <patelt name="family" >
-          <!-- This font is causing problem with GitHub -->
-          <string>Nimbus Sans</string>
-        </patelt>
-      </pattern>
-    </rejectfont>
-  </selectfont>
-#+END_SRC
-
 * 大功告成!
 把配置文件保存，打开一个程序（比如浏览器），应该就可以看到变化了!
 
 还有几点需要注意:
 + 有一些比较老的程序会忽略 Fontconfig 的设置，需要修改 [[https://wiki.archlinux.org/index.php/Font_configuration#Applications_without_fontconfig_support][Xresources]] 。 ArchWiki 上提供的事例配置应该足够了。
-+ 很多程序有自己的字体配置。比如 =qt5ct= 就会默认指定 Noto 系列字体而忽略我们的设置。一般而言，手动将无衬线字体设置成 =sans-serif=, 衬线字体设置成 =serif=, 等宽字体设置成 =monospace= 后，这些程序就会遵循 fontconfig 的设置了。
++ 很多程序有自己的字体配置。比如 =qt5ct= 就会默认指定 Noto 系列字体而忽略我们的设置。一般而言，手动将无衬线字体设置成 =sans-serif=，衬线字体设置成 =serif=，等宽字体设置成 =monospace= 后，这些程序就会遵循 fontconfig 的设置了。
++ GTK 应用会使用 gsettings 里定义的字体（通常为 Adwaita Sans）。可以使用 ~gsettings set org.gnome.desktop.interface font-name 'sans-serif'~ 强制 GTK 使用我们定义的 =sans-serif= 字体组。
